@@ -10,7 +10,9 @@ namespace LD31
 {
     class Program
     {
-        //This value is used to stop the main update loop running too fast.
+        /// <summary>
+        /// This value is used to stop the main update loop running too fast.
+        /// </summary>
         private const Int32 UpdateDelay = 16;
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace LD31
         {
             Init();
 
-            while(GameRunning)//FIX THIS
+            while(GameRunning)
             {
                 Draw();
                 Update();
