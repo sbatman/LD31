@@ -1,4 +1,6 @@
 ﻿using LD31.Graphics;
+using LD31.Math;
+using LD31.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +22,20 @@ namespace LD31
         /// </summary>
         private static Boolean GameRunning = true;
 
+        /// <summary>
+        /// The player object.
+        /// </summary>
+        private static Player player = new Player(new Vector2());
 
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
         /// </summary>
         static void Init()
         {
-            GraphicsManager.Init();
+            //give the player a default weapon!
+            player.GiveWeapon(Weapon.Pistol);
+
+           // GraphicsManager.Init();
         }
 
         /// <summary>
@@ -34,11 +43,11 @@ namespace LD31
         /// </summary>
         static void Draw()
         {
-            GraphicsManager.StartDraw();
+            //GraphicsManager.StartDraw();
 
             //MAIN DRAW LOGIC HERE
 
-            GraphicsManager.EndDraw();
+           // GraphicsManager.EndDraw();
         }
 
         /// <summary>
