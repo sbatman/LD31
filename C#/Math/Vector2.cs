@@ -11,10 +11,19 @@ namespace LD31.Math
     /// </summary>
     public struct Vector2
     {
-        private double x;
+        /// <summary>
+        /// backing field
+        /// </summary>
+        private Double x;
 
-        private double y;
+        /// <summary>
+        /// backing field
+        /// </summary>
+        private Double y;
 
+        /// <summary>
+        /// X value
+        /// </summary>
         public Double X
         {
             get
@@ -27,6 +36,9 @@ namespace LD31.Math
             }
         }
 
+        /// <summary>
+        /// Y value
+        /// </summary>
         public Double Y
         {
             get
