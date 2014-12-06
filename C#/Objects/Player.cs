@@ -10,9 +10,23 @@ namespace LD31.Objects
         /// <summary>
         /// CTOR
         /// </summary>
-        public Player(Vector2 position)
+        public Player(Vector3 position)
             : base(position)
         {
+            Graphics.GraphicsManager.SetCameraPosition(position.X, position.Y, position.Z);
+        }
+
+        /// <summary>
+        /// This value represents the position of the object.
+        /// </summary>
+        public override Vector3 Position
+        {
+            get { return base.Position; }
+            set
+            {
+                base.Position = value;
+                Graphics.GraphicsManager.SetCameraPosition(value.X, value.Y,value.Z);
+            }
         }
     }
 }

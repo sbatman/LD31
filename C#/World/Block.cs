@@ -13,10 +13,15 @@ namespace LD31.Graphics
 
         private BlockType _BlockType;
 
+        private Tuple<Byte, Byte, Byte, Byte> _Colour;
+
+        private static Random rnd =new Random();
+
         public Block()
         {
             _BlockType = BlockType.Default;
             IsActive = true;
+            _Colour = new Tuple<byte, byte, byte, byte>((byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255),255);
         }
 
         public Block(BlockType type)
@@ -46,7 +51,7 @@ namespace LD31.Graphics
         public void Draw(Int32 x, Int32 y, Int32 z)
         {
             if (!_Active) return;
-            GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 80);
+            GraphicsManager.DrawWorldVoxel(x, y, z, _Colour.Item1, _Colour.Item2, _Colour.Item3, _Colour.Item4);
         }
 
         public void Dispose()

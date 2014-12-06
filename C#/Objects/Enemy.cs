@@ -10,7 +10,7 @@ namespace LD31.Objects
          /// <summary>
         /// CTOR
         /// </summary>
-        public Enemy(Vector2 position)
+        public Enemy(Vector3 position)
             : base(position)
         {
         }

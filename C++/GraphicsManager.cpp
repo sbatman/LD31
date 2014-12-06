@@ -57,10 +57,10 @@ void GraphicsManager::BeginDraw()
 	if (!_GLStatesSetup)SetupGLStates();
 
 	glLoadIdentity();
-	glTranslatef(_CameraPosX, _CameraPosY, _CameraPosZ);
+
 	glRotatef(_CameraRotX, 1, 0, 0);
 	glRotatef(_CameraRotZ, 0, 1, 0);
-
+	glTranslatef(-_CameraPosX, -_CameraPosY, -_CameraPosZ);
 	_TriCount = 0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -83,7 +83,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_CREATE:
 			_HDC = GetDC(hwnd);
 			int nPixelFormat;
-			pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+			pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
 			nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
 			SetPixelFormat(_HDC, nPixelFormat, &pfd);
 			_HDR = wglCreateContext(_HDC);
@@ -149,16 +149,18 @@ void GraphicsManager::SetupGLStates()
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float) _Height, 0.1, 5000);
+	gluPerspective(70, _Width / (float) _Height, 20, 2500);	
 	glClearColor(255, 0, 0, 255);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_LIGHTING);
 	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glDepthFunc(GL_LEQUAL);
 	glMatrixMode(GL_MODELVIEW);
-	glCullFace(GL_BACK);
+	glCullFace(GL_FRONT);
 	_GLStatesSetup = true;
 }
 

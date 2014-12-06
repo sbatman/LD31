@@ -27,16 +27,6 @@ namespace LD31.Graphics
             _SizeY = sizeY;
             _Blocks = new Block[sizeX, sizeZ, sizeY];
 
-            for (Int32 x = 0; x < _SizeX; x++)
-            {
-                for (Int32 z = 0; z < _SizeZ; z++)
-                {
-                    for (Int32 y = 0; y < _SizeY; y++)
-                    {
-                        _Blocks[x, z, y] = new Block();
-                    }
-                }
-            }
         }
 
         public void Render()

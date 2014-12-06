@@ -24,7 +24,7 @@ namespace LD31
         /// <summary>
         /// The player object.
         /// </summary>
-        private static readonly Player _Player = new Player(new Vector2());
+        private static Player _Player;
 
         private static Level _CurrentLevel;
 
@@ -33,11 +33,15 @@ namespace LD31
         /// </summary>
         static void Init()
         {
-            //give the player a default weapon!
-            _Player.GiveWeapon(Weapon.Pistol);
+
 
             GraphicsManager.Init();
 
+            _Player = new Player(new Vector3(200, 200, 200));
+           
+
+            //give the player a default weapon!
+            _Player.GiveWeapon(Weapon.Pistol);
             _CurrentLevel = new Level(30, 30, 5);
 
             for (int x = 0; x < 30; x++)
@@ -46,7 +50,7 @@ namespace LD31
                 {
                     for (int y = 0; y < 5; y++)
                     {
-                        _CurrentLevel.SetBlock(new Block(), x, y, z);
+                        if(((x==0||x==29)||(z==0||z==29))|| y==0)_CurrentLevel.SetBlock(new Block(), x, y, z);
                     }
                 }
             }

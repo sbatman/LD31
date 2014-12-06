@@ -29,16 +29,16 @@ namespace LD31.Graphics
         public void SetPosition(Double x, Double y, Double z)
         {
             _PositionX = x;
-            _PositionX = y;
-            _PositionX = z;
+            _PositionY = y;
+            _PositionZ = z;
             _Dirty = true;
         }
 
         public void Move(Double x, Double y, Double z)
         {
             _PositionX += x;
-            _PositionX += y;
-            _PositionX += z;
+            _PositionY += y;
+            _PositionZ += z;
             _Dirty = true;
         }
 
