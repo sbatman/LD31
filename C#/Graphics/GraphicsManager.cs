@@ -26,7 +26,7 @@ namespace LD31.Graphics
             public static extern void GraphicsManagerEndDraw();
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-            public static extern void GraphicsManagerDrawVoxel(Int32 x, Int32 y, Int32 z, Byte colourR, Byte colourG, Byte colourB, Byte alpha = 255,Byte size=32);
+            public static extern void GraphicsManagerDrawVoxel(double x, double y, double z, Byte colourR, Byte colourG, Byte colourB, Byte colourA, UInt16 sizeX, UInt16 sizeY, UInt16 sizeZ);
 
         }
 
@@ -36,7 +36,7 @@ namespace LD31.Graphics
         public static void Init()
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
-            NativeMethods.GraphicsManagerInit(800, 600, handelID);
+            NativeMethods.GraphicsManagerInit(1440, 800, handelID);
         }
 
         public static void Update()
@@ -61,9 +61,9 @@ namespace LD31.Graphics
         /// <param name="colourR">Colours red component</param>
         /// <param name="colourG">Colours green component</param>
         /// <param name="colourB">Colours blue component</param>
-        public static void DrawWorldVoxel(Int32 x, Int32 y, Int32 z, Byte colourR, Byte colourG, Byte colourB, Byte alpha = 255)
+        public static void DrawWorldVoxel(Int32 x, Int32 y, Int32 z, Byte colourR, Byte colourG, Byte colourB, Byte colourA = 255)
         {
-            NativeMethods.GraphicsManagerDrawVoxel(x * 32, y * 32, z * 32, colourR, colourG, colourB, alpha,32);
+            NativeMethods.GraphicsManagerDrawVoxel(x * 32, y * 32, z * 32, colourR, colourG, colourB, colourA, 32, 32, 32);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace LD31.Graphics
         /// </summary>
         public static void Destroy()
         {
-            
+
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace LD31.Graphics
         /// <param name="z"></param>
         public static void SetCameraPosition(Double x, Double y, Double z)
         {
-            
+
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace LD31.Graphics
         /// <param name="z">Used for looking left and right</param>
         public static void SetCameraRotation(Double x, Double z)
         {
-            
+
         }
 
     }

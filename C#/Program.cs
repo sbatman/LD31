@@ -46,10 +46,16 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
-            for (int x = -20; x < 20; x++)
-                for (int y = -20; y < 20; y++)
-                    for (int z = -20; z < 20; z++)
-                        GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 255);
+            for (int x = -16; x < 16; x++)
+            {
+                for (int y = -16; y < 16; y++)
+                {
+                    for (int z = -8; z < 8; z++)
+                    {
+                        GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 10);
+                    }
+                }
+            }
 
             //GraphicsManager.DrawWorldVoxel(-1, -1, -1, 255, 255, 255, 255);
             //GraphicsManager.DrawWorldVoxel(0, 0, 0, 255, 255, 255, 255);
@@ -67,7 +73,7 @@ namespace LD31
             //update logic here.
 
             //Allow user to quit the game.
-            if(InputHandler.IsButtonDown(ButtonConcept.Quit))
+            if (InputHandler.IsButtonDown(ButtonConcept.Quit))
             {
                 GameRunning = false;
             }

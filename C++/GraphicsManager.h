@@ -9,8 +9,10 @@ public:
 	void EndDraw();
 	void Update();
 	void Destroy();
-	void DrawVoxel(int32_t x, int32_t y, int32_t z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t alpha, uint8_t size);
+	void DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ);
 private:
-	const int VERTSPERFACE = 12;
-	const int COLOURPERFACE = 24;
+	const int FACESPERCUBE = 6;
+	const int TRISPERCUBE = FACESPERCUBE * 2;
+	const int VERTSPERFACE = 6;
+
 };

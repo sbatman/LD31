@@ -35,8 +35,8 @@ extern "C" {
 		}
 	}
 
-	__declspec(dllexport) void __cdecl GraphicsManagerDrawVoxel(int32_t x, int32_t y, int32_t z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t alpha, uint8_t size)
+	__declspec(dllexport) void __cdecl GraphicsManagerDrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
 	{
-		_GMInstance->DrawVoxel(x, y, z, colourR, colourG, colourB, alpha, size);
+		_GMInstance->DrawVoxel(x, y, z, colourR, colourG, colourB, colourA, sizeX, sizeY, sizeZ);
 	}
 }
