@@ -11,17 +11,17 @@ namespace LD31.Objects
     /// </summary>
     struct Vector2
     {
-        public Int32 X { get; set; }
+        public Double X { get; set; }
 
-        public Int32 Y { get; set; }
+        public Double Y { get; set; }
 
-        public Vector2(Int32 x, Int32 y)
+        public Vector2(Double x, Double y)
         {
             X = x;
             Y = y;
         }
 
-        public Vector2(Int32 xAndY)
+        public Vector2(Double xAndY)
         {
             X = xAndY;
             Y = xAndY;
