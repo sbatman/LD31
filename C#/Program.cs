@@ -46,6 +46,7 @@ namespace LD31
         /// </summary>
         static void Update()
         {
+            GraphicsManager.Update();
             //update logic here.
         }
 
