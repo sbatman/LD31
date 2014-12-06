@@ -25,7 +25,7 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 {
 	Width=width;
 	Height=height;
-	WNDCLASSEX windowClass;
+	WNDCLASSEX windowClass = { 0 };
 	hInstance = (HINSTANCE)handle;
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.lpfnWndProc = WndProc;

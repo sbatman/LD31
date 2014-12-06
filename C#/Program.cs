@@ -1,4 +1,5 @@
 ﻿using LD31.Graphics;
+using LD31.Input;
 using LD31.Math;
 using LD31.Objects;
 using System;
@@ -35,7 +36,7 @@ namespace LD31
             //give the player a default weapon!
             player.GiveWeapon(Weapon.Pistol);
 
-           // GraphicsManager.Init();
+            GraphicsManager.Init();
         }
 
         /// <summary>
@@ -43,11 +44,11 @@ namespace LD31
         /// </summary>
         static void Draw()
         {
-            //GraphicsManager.StartDraw();
+            GraphicsManager.StartDraw();
 
             //MAIN DRAW LOGIC HERE
 
-           // GraphicsManager.EndDraw();
+            GraphicsManager.EndDraw();
         }
 
         /// <summary>
@@ -57,6 +58,12 @@ namespace LD31
         {
             GraphicsManager.Update();
             //update logic here.
+
+            //Allow user to quit the game.
+            if(InputHandler.IsButtonDown(ButtonConcept.Quit))
+            {
+                GameRunning = false;
+            }
         }
 
         /// <summary>
@@ -71,11 +78,12 @@ namespace LD31
         /// The main entry point for the game. Make sure to release ALL resource before it exits.
         /// </summary>
         /// <param name="args"></param>
+        [STAThread] //we must declare the correct apartment state to use keyboard input. Clean this up and remove later!
         static void Main(string[] args)
         {
             Init();
 
-            while(GameRunning)
+            while (GameRunning)
             {
                 Draw();
                 Update();
