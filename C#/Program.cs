@@ -52,7 +52,7 @@ namespace LD31
                 {
                     for (int z = -8; z < 8; z++)
                     {
-                        GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 255);
+                        GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 10);
                     }
                 }
             }

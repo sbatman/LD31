@@ -14,7 +14,7 @@ int _TriCount;
 
 int Width;
 int Height;
-float testRotate=0;
+float testRotate = 0;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -58,15 +58,15 @@ void GraphicsManager::BeginDraw()
 	glRotatef(testRotate, 0, 0, 1);
 	glRotatef(testRotate*0.3f, 0, 1, 0);
 	_TriCount = 0;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void GraphicsManager::EndDraw()
 {
 	glVertexPointer(3, GL_DOUBLE, 0, _VertexList);
-	glColorPointer(4, GL_BYTE, 0, _ColourList);
-	glDrawArrays(GL_TRIANGLES, 0, _TriCount*3);
+	glColorPointer(4, GL_UNSIGNED_BYTE, 0, _ColourList);
+	glDrawArrays(GL_TRIANGLES, 0, _TriCount * 3);
 	glEnd();
 	SwapBuffers(_HDC);
 }
@@ -90,8 +90,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gluPerspective(70, Width / (float) Height, 0.1, 5000);
 			glClearColor(255, 0, 0, 255);
 			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_COLOR_ARRAY);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_LIGHTING);
+			glEnable(GL_BLEND);
 			glMatrixMode(GL_MODELVIEW);
-			
+
 			break;
 		case WM_CLOSE:
 			PostQuitMessage(0);
@@ -116,10 +120,10 @@ void GraphicsManager::Destroy()
 
 }
 
-void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t alpha, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
+void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
 {
-	int vertexArrayStart = _TriCount*3*3;
-	int colourArrayStart = _TriCount*COLOURPERFACE;
+	int vertexArrayStart = _TriCount * 3 * 3;
+	int colourArrayStart = _TriCount * 3 * 4;
 	int verpos = vertexArrayStart;
 
 	double halfSizeX = sizeX*0.5f;
@@ -135,98 +139,64 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 	double _blb[3] = { x - halfSizeX, y + halfSizeY, z + halfSizeZ };
 	double _brb[3] = { x + halfSizeX, y + halfSizeY, z + halfSizeZ };
 
-	//FRONT
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);
-	verpos += 3;
+	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);
-	verpos += 3;
+	for (int i = 0; i <FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i*4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
+
+
+	//FRONT
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
+
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
 
 	//LEFT
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
 
 	//RIGHT
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);
-	verpos += 3;
-
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
 
 	//Back
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
 
 	//Top
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
 
 	//Bottom
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);
-	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);
-	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);
-	verpos += 3;
-
-
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
 
 	_TriCount += 12;
 }
