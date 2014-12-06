@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,12 +10,25 @@ namespace LD31.Graphics
 {
     class GraphicsManager
     {
+
+        static class NativeMethods
+        {
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
+
+        }
+
         /// <summary>
         /// Used to initalise the graphics engine
         /// </summary>
         public static void Init()
         {
+            NativeMethods.GraphicsManagerInit(800, 600, Process.GetCurrentProcess().Handle.ToInt32());
+        }
 
+        public static void Update()
+        {
+            
         }
 
         /// <summary>

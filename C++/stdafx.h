@@ -9,6 +9,7 @@
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 
-
+#include <windows.h>		// Header File For Windows
+#include <inttypes.h>
 
 // TODO: reference additional headers your program requires here
