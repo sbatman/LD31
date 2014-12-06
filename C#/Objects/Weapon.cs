@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD31.Objects
 {
@@ -20,25 +16,24 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        Int32 ammunition;
+        Int32 _Ammunition;
 
         /// <summary>
         /// How much ammunition this weapon has.
         /// </summary>
         public Int32 Aummunition
         {
-            get { return ammunition; }
+            get { return _Ammunition; }
         }
 
 
         /// <summary>
         /// CTOR
         /// </summary>
-        /// <param name="type"></param>
         /// <param name="ammunition"></param>
         private Weapon(Int32 ammunition)
         {
-            this.ammunition = ammunition;
+            _Ammunition = ammunition;
         }
 
 
@@ -48,7 +43,7 @@ namespace LD31.Objects
         /// <param name="ammoToGive"></param>
         public void IncreaseAmmo(Int32 ammoToGive)
         {
-            if (ammoToGive > 0) ammunition += ammoToGive;
+            if (ammoToGive > 0) _Ammunition += ammoToGive;
         }
 
 
@@ -58,7 +53,7 @@ namespace LD31.Objects
         /// <param name="ammoToTake"></param>
         public void DecreaseAmmo(Int32 ammoToTake)
         {
-            if (ammoToTake > 0) ammunition -= ammoToTake;
+            if (ammoToTake > 0) _Ammunition -= ammoToTake;
         }
 
 
@@ -67,7 +62,7 @@ namespace LD31.Objects
         /// </summary>
         public void Fire()
         {
-            if(ammunition > 0) ammunition -= 1;
+            if (_Ammunition > 0) _Ammunition -= 1;
         }
     }
 }
