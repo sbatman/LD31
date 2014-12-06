@@ -52,14 +52,14 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 
 void GraphicsManager::BeginDraw()
 {
-	testRotate += 0.1f;
+	testRotate += 1.0f;
 	glLoadIdentity();
 	glTranslatef(0, 0, -1500);
 	glRotatef(testRotate, 0, 0, 1);
 	glRotatef(testRotate*0.3f, 0, 1, 0);
 	_TriCount = 0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void GraphicsManager::EndDraw()
@@ -94,8 +94,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glDisable(GL_LIGHTING);
 			glEnable(GL_BLEND);
+			glEnable(GL_CULL_FACE);
 			glMatrixMode(GL_MODELVIEW);
-
+			glCullFace(GL_BACK);
 			break;
 		case WM_CLOSE:
 			PostQuitMessage(0);
@@ -141,7 +142,7 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 
 	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
 
-	for (int i = 0; i <FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i*4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
+	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
 
 
 	//FRONT
@@ -167,13 +168,13 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
 
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
 
 	//Back
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
+	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
 
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;

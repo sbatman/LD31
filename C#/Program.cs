@@ -57,9 +57,9 @@ namespace LD31
                 }
             }
 
-            //GraphicsManager.DrawWorldVoxel(-1, -1, -1, 255, 255, 255, 255);
-            //GraphicsManager.DrawWorldVoxel(0, 0, 0, 255, 255, 255, 255);
-            //GraphicsManager.DrawWorldVoxel(1, 1, 1, 255, 255, 255, 255);
+            //GraphicsManager.DrawWorldVoxel(-1, -1, -1, 255, 255, 255, 90);
+            //GraphicsManager.DrawWorldVoxel(0, 0, 0, 255, 255, 255, 90);
+            //GraphicsManager.DrawWorldVoxel(1, 1, 1, 255, 255, 255, 90);
 
             GraphicsManager.EndDraw();
         }
