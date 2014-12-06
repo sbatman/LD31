@@ -103,7 +103,7 @@ namespace LD31.Graphics
         /// <param name="z"></param>
         public static void SetCameraPosition(Double x, Double y, Double z)
         {
-
+            _PrimaryCamera.SetPosition(x, y, z);
         }
 
         /// <summary>
@@ -113,13 +113,13 @@ namespace LD31.Graphics
         /// <param name="z">Used for looking left and right</param>
         public static void SetCameraRotation(Double x, Double z)
         {
-
+            _PrimaryCamera.Rotatate(z, x);
         }
 
         private static void MouseMovedCallBack(Int32 x, Int32 y)
         {
             _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);
-            Console.WriteLine("Mouse Moved Callback {0}x{1}",x,y);
+            Console.WriteLine("Mouse Moved Callback {0}x{1}", x, y);
         }
 
     }

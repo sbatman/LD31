@@ -40,7 +40,7 @@ namespace LD31.Objects
         /// <summary>
         /// CTOR
         /// </summary>
-        public Combatant(Vector2 position)
+        public Combatant(Vector3 position)
             : base(position)
         {
         }
@@ -62,9 +62,9 @@ namespace LD31.Objects
         /// <param name="ammoCount"></param>
         public void GiveAmmo(Weapon weapon, Int32 ammoCount)
         {
-            if (ammoCount > 0 && _CurrentWeapons.Where(w => w == weapon).SingleOrDefault() != null)
+            if (ammoCount > 0 && _CurrentWeapons.SingleOrDefault(w => w == weapon) != null)
             {
-                _CurrentWeapons.Where(w => w == weapon).Single().IncreaseAmmo(ammoCount);
+                _CurrentWeapons.Single(w => w == weapon).IncreaseAmmo(ammoCount);
             }
         }
 
