@@ -9,22 +9,47 @@ namespace LD31.Math
     /// <summary>
     /// This struct represents a two dimensional vector.
     /// </summary>
-    struct Vector2
+    public struct Vector2
     {
-        public Double X { get; set; }
+        private double x;
 
-        public Double Y { get; set; }
+        private double y;
+
+        public Double X
+        {
+            get
+            {
+                return x;
+            }
+            set
+            {
+                x = value;
+            }
+        }
+
+        public Double Y
+        {
+            get
+            {
+                return y;
+            }
+            set
+            {
+                y = value;
+            }
+        }
+    
 
         public Vector2(Double x, Double y)
         {
-            X = x;
-            Y = y;
+            this.x = x;
+            this.y = y;
         }
 
         public Vector2(Double xAndY)
         {
-            X = xAndY;
-            Y = xAndY;
+            this.x = xAndY;
+            this.y = xAndY;
         }
     }
 }

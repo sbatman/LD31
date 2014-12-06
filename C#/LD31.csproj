@@ -45,6 +45,7 @@
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Math\Vector2.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
+    <Compile Include="Objects\Weapon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
