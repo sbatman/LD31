@@ -13,7 +13,7 @@ namespace LD31.Objects
     public class Weapon : GameObject
     {
         /// <summary>
-        /// This c
+        /// This instance represents a pistol
         /// </summary>
         public static readonly Weapon Pistol = new Weapon(0);
 

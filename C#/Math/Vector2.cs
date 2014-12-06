@@ -50,9 +50,9 @@ namespace LD31.Math
                 y = value;
             }
         }
-    
+
         /// <summary>
-        /// Primary CTOR
+        /// Secondary CTOR
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -63,7 +63,7 @@ namespace LD31.Math
         }
 
         /// <summary>
-        /// Secondary Ctor
+        /// Teritiary Ctor
         /// </summary>
         /// <param name="xAndY"></param>
         public Vector2(Double xAndY)
