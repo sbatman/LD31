@@ -54,7 +54,7 @@ void GraphicsManager::BeginDraw()
 {
 	testRotate += 0.1f;
 	glLoadIdentity();
-	glTranslatef(0, 0, -200);
+	glTranslatef(0, 0, -1500);
 	glRotatef(testRotate, 0, 0, 1);
 	glRotatef(testRotate*0.3f, 0, 1, 0);
 	_TriCount = 0;
@@ -87,7 +87,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			glViewport(0, 0, Width, Height);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			gluPerspective(70, Width / (float) Height, 0.1, 500);
+			gluPerspective(70, Width / (float) Height, 0.1, 5000);
 			glClearColor(255, 0, 0, 255);
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glMatrixMode(GL_MODELVIEW);

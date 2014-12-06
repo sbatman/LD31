@@ -36,7 +36,7 @@ namespace LD31.Graphics
         public static void Init()
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
-            NativeMethods.GraphicsManagerInit(800, 600, handelID);
+            NativeMethods.GraphicsManagerInit(1440, 800, handelID);
         }
 
         public static void Update()
