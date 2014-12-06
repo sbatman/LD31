@@ -116,22 +116,24 @@ void GraphicsManager::Destroy()
 
 }
 
-void GraphicsManager::DrawVoxel(int32_t x, int32_t y, int32_t z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t alpha, uint8_t size)
+void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t alpha, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
 {
 	int vertexArrayStart = _TriCount*3*3;
 	int colourArrayStart = _TriCount*COLOURPERFACE;
 	int verpos = vertexArrayStart;
 
-	uint8_t halfSize = size*0.5f;
+	double halfSizeX = sizeX*0.5f;
+	double halfSizeY = sizeY*0.5f;
+	double halfSizeZ = sizeZ*0.5f;
 
-	double _tlf[3] = { x - halfSize, y - halfSize, z - halfSize };
-	double _trf[3] = { x + halfSize, y - halfSize, z - halfSize };
-	double _blf[3] = { x - halfSize, y + halfSize, z - halfSize };
-	double _brf[3] = { x + halfSize, y + halfSize, z - halfSize };
-	double _tlb[3] = { x - halfSize, y - halfSize, z + halfSize };
-	double _trb[3] = { x + halfSize, y - halfSize, z + halfSize };
-	double _blb[3] = { x - halfSize, y + halfSize, z + halfSize };
-	double _brb[3] = { x + halfSize, y + halfSize, z + halfSize };
+	double _tlf[3] = { x - halfSizeX, y - halfSizeY, z - halfSizeZ };
+	double _trf[3] = { x + halfSizeX, y - halfSizeY, z - halfSizeZ };
+	double _blf[3] = { x - halfSizeX, y + halfSizeY, z - halfSizeZ };
+	double _brf[3] = { x + halfSizeX, y + halfSizeY, z - halfSizeZ };
+	double _tlb[3] = { x - halfSizeX, y - halfSizeY, z + halfSizeZ };
+	double _trb[3] = { x + halfSizeX, y - halfSizeY, z + halfSizeZ };
+	double _blb[3] = { x - halfSizeX, y + halfSizeY, z + halfSizeZ };
+	double _brb[3] = { x + halfSizeX, y + halfSizeY, z + halfSizeZ };
 
 	//FRONT
 	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);
