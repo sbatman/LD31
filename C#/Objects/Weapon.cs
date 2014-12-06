@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace LD31.Objects
 {
+    /// <summary>
+    /// This class represents game weapons. The constructor is private as it is a class enum pattern implementation.
+    /// All types of weapon are existing static instances.
+    /// </summary>
     public class Weapon : GameObject
     {
+        /// <summary>
+        /// This c
+        /// </summary>
         public static readonly Weapon Pistol = new Weapon(0);
-
 
         /// <summary>
         /// backing field

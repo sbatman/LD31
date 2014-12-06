@@ -51,13 +51,21 @@ namespace LD31.Math
             }
         }
     
-
+        /// <summary>
+        /// Primary CTOR
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public Vector2(Double x, Double y)
         {
             this.x = x;
             this.y = y;
         }
 
+        /// <summary>
+        /// Secondary Ctor
+        /// </summary>
+        /// <param name="xAndY"></param>
         public Vector2(Double xAndY)
         {
             this.x = xAndY;
