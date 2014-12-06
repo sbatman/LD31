@@ -2,9 +2,9 @@
 #include <gl/gl.h>
 #include "GraphicsManager.h"
 
-HDC			hDC = NULL;		// Private GDI Device Context
-HGLRC		hRC = NULL;		// Permanent Rendering Context
-HWND		hWnd = NULL;		// Holds Our Window Handle
+HDC			_HDC = NULL;		// Private GDI Device Context
+HGLRC		_HDR = NULL;		// Permanent Rendering Context
+HWND		_HWnd = NULL;		// Holds Our Window Handle
 HINSTANCE	hInstance;		// Holds The Instance Of The Application
 
 int Width;
@@ -36,8 +36,8 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	windowClass.hbrBackground = 0;
 	windowClass.lpszClassName = L"0";
 	RegisterClassEx(&windowClass);
-	hWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, Width, Height, 0, 0, hInstance, 0);
-	ShowWindow(hWnd, SW_SHOW);
+	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, Width, Height, 0, 0, hInstance, 0);
+	ShowWindow(_HWnd, SW_SHOW);
 }
 
 void GraphicsManager::BeginDraw()
@@ -48,7 +48,7 @@ void GraphicsManager::BeginDraw()
 void GraphicsManager::EndDraw()
 {
 	glEnd();
-	SwapBuffers(hDC);
+	SwapBuffers(_HDC);
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -57,13 +57,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 		case WM_CREATE:
-			hDC = GetDC(hwnd);
+			_HDC = GetDC(hwnd);
 			int nPixelFormat;
 			pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
-			nPixelFormat = ChoosePixelFormat(hDC, &pfd);
-			SetPixelFormat(hDC, nPixelFormat, &pfd);
-			hRC = wglCreateContext(hDC);
-			wglMakeCurrent(hDC, hRC);
+			nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
+			SetPixelFormat(_HDC, nPixelFormat, &pfd);
+			_HDR = wglCreateContext(_HDC);
+			wglMakeCurrent(_HDC, _HDR);
 			glViewport(0, 0, Width, Height);
 			glClearColor(255,0,0,255);
 			break;
@@ -83,4 +83,9 @@ void GraphicsManager::Update()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+}
+
+void GraphicsManager::Destroy()
+{
+
 }
