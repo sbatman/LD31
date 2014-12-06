@@ -36,6 +36,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,9 +44,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Input\ButtonConcept.cs" />
+    <Compile Include="Input\InputHandler.cs" />
+    <Compile Include="Objects\Combatant.cs" />
+    <Compile Include="Objects\Enemy.cs" />
     <Compile Include="Objects\GameObject.cs" />
+    <Compile Include="Objects\Mortal.cs" />
+    <Compile Include="Objects\Moveable.cs" />
+    <Compile Include="Objects\Placeable.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Math\Vector2.cs" />
     <Compile Include="Graphics\Block.cs" />

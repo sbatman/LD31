@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 namespace LD31.Objects
 {
     /// <summary>
-    /// This class represents the player
+    /// This class represents an enemy for the player.
     /// </summary>
-    public class Player : Combatant
+    public class Enemy : Combatant
     {
-        /// <summary>
+         /// <summary>
         /// CTOR
         /// </summary>
-        public Player(Vector2 position)
+        public Enemy(Vector2 position)
             : base(position)
         {
         }
