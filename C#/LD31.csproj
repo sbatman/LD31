@@ -48,7 +48,12 @@
   <ItemGroup>
     <Compile Include="Input\ButtonConcept.cs" />
     <Compile Include="Input\InputHandler.cs" />
+    <Compile Include="Objects\Combatant.cs" />
+    <Compile Include="Objects\Enemy.cs" />
     <Compile Include="Objects\GameObject.cs" />
+    <Compile Include="Objects\Mortal.cs" />
+    <Compile Include="Objects\Moveable.cs" />
+    <Compile Include="Objects\Placeable.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Math\Vector2.cs" />
     <Compile Include="Graphics\Block.cs" />
