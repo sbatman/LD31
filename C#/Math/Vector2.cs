@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LD31.Objects
+namespace LD31.Math
 {
     /// <summary>
     /// This struct represents a two dimensional vector.
