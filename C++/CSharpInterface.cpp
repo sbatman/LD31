@@ -39,4 +39,19 @@ extern "C" {
 	{
 		_GMInstance->DrawVoxel(x, y, z, colourR, colourG, colourB, colourA, sizeX, sizeY, sizeZ);
 	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSerCameraPosition(double x, double y, double z)
+	{
+		_GMInstance->SerCameraPosition(x, y, z);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetCameraRotation(double z, double x)
+	{
+		_GMInstance->SetCameraRotation(z, x);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(*callBack)(int32_t, int32_t))
+	{
+		_GMInstance->SetMouseMoveCallback(callBack);
+	}
 }

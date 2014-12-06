@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security.RightsManagement;
 
 namespace LD31.Graphics
 {
     class GraphicsManager
     {
 
-        static class NativeMethods
+        public static class NativeMethods
         {
+            public delegate void MouseMoveCallBack(Int32 x, Int32 y);
+
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
 
@@ -24,7 +27,18 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerDrawVoxel(double x, double y, double z, Byte colourR, Byte colourG, Byte colourB, Byte colourA, UInt16 sizeX, UInt16 sizeY, UInt16 sizeZ);
 
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerSerCameraPosition(Double x, Double y, Double z);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack callback);
+
         }
+
+        private static Camera _PrimaryCamera;
 
         /// <summary>
         /// Used to initalise the graphics engine
@@ -33,6 +47,8 @@ namespace LD31.Graphics
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
+            NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMovedCallBack);
+            _PrimaryCamera = new Camera(); ;
         }
 
         public static void Update()
@@ -67,6 +83,7 @@ namespace LD31.Graphics
         /// </summary>
         public static void EndDraw()
         {
+            _PrimaryCamera.Update();
             NativeMethods.GraphicsManagerEndDraw();
         }
 
@@ -97,6 +114,12 @@ namespace LD31.Graphics
         public static void SetCameraRotation(Double x, Double z)
         {
 
+        }
+
+        private static void MouseMovedCallBack(Int32 x, Int32 y)
+        {
+            _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);
+            Console.WriteLine("Mouse Moved Callback {0}x{1}",x,y);
         }
 
     }

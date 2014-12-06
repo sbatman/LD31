@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D9DCF270-B53C-4706-BF21-FE19D0136B10}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LD31</RootNamespace>
     <AssemblyName>LD31</AssemblyName>
@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Input\ButtonConcept.cs" />
     <Compile Include="Input\InputHandler.cs" />
     <Compile Include="Objects\Combatant.cs" />
@@ -55,9 +56,9 @@
     <Compile Include="Objects\Moveable.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Math\Vector2.cs" />
-    <Compile Include="Graphics\Block.cs" />
-    <Compile Include="Graphics\BlockType.cs" />
-    <Compile Include="Graphics\Level.cs" />
+    <Compile Include="World\Block.cs" />
+    <Compile Include="World\BlockType.cs" />
+    <Compile Include="World\Level.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="Program.cs" />

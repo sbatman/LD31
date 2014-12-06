@@ -7,8 +7,12 @@ HDC			_HDC = nullptr;		// Private GDI Device Context
 HGLRC		_HDR = nullptr;		// Permanent Rendering Context
 HWND		_HWnd = nullptr;		// Holds Our Window Handle
 HINSTANCE	hInstance;		// Holds The Instance Of The Application
+bool _HasFocus;
 
-float testRotate = 0;
+int _LastMouseX;
+int _LastMouseY;
+
+void(*_CallBackMouseMove)(int32_t, int32_t);
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -24,10 +28,15 @@ GraphicsManager::~GraphicsManager()
 	delete [] _ColourList;
 }
 
+void GraphicsManager::SetMouseMoveCallback(void(*callBack)(int32_t, int32_t))
+{
+	_CallBackMouseMove = callBack;
+}
+
 void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 {
-	Width = width;
-	Height = height;
+	_Width = width;
+	_Height = height;
 	WNDCLASSEX windowClass = { 0 };
 	hInstance = (HINSTANCE) handle;
 	windowClass.cbSize = sizeof(WNDCLASSEX);
@@ -39,7 +48,7 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	windowClass.hbrBackground = 0;
 	windowClass.lpszClassName = L"0";
 	RegisterClassEx(&windowClass);
-	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, Width, Height, 0, 0, hInstance, 0);
+	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, 0, 0, hInstance, 0);
 	ShowWindow(_HWnd, SW_SHOW);
 }
 
@@ -47,11 +56,11 @@ void GraphicsManager::BeginDraw()
 {
 	if (!_GLStatesSetup)SetupGLStates();
 
-	testRotate += 1.0f;
 	glLoadIdentity();
-	glTranslatef(0, 0, -1500);
-	glRotatef(testRotate, 0, 0, 1);
-	glRotatef(testRotate*0.3f, 0, 1, 0);
+	glTranslatef(_CameraPosX, _CameraPosY, _CameraPosZ);
+	glRotatef(_CameraRotX, 1, 0, 0);
+	glRotatef(_CameraRotZ, 0, 1, 0);
+
 	_TriCount = 0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -84,6 +93,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 			return 0;
 			break;
+		case WM_SETFOCUS:
+			_HasFocus = true;
+			break;
+		case WM_KILLFOCUS:
+			_HasFocus = false;
+			break;
+		case WM_ACTIVATE:
+			if (LOWORD(message) == WA_ACTIVE)
+				_HasFocus = true;
+			else
+				_HasFocus = false;
+			break;
 	}
 	return (DefWindowProc(hwnd, message, wParam, lParam));
 }
@@ -93,9 +114,29 @@ void GraphicsManager::Update()
 	MSG		msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
+		switch (msg.message)
+		{
+			case WM_MOUSEMOVE:
+			{
+				POINT point = POINT();
+				GetCursorPos(&point);
+
+				int32_t xPos = point.x;
+				int32_t yPos = point.y;
+
+				if (xPos != _LastMouseX || yPos != _LastMouseY)
+				{
+					_LastMouseX = xPos;
+					_LastMouseY = yPos;
+					if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
+				}
+			}
+				break;
+		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+	if (_HasFocus)SetCursorPos(_Width*0.5f, _Height*0.5f);
 }
 
 void GraphicsManager::Destroy()
@@ -105,10 +146,10 @@ void GraphicsManager::Destroy()
 
 void GraphicsManager::SetupGLStates()
 {
-	glViewport(0, 0, Width, Height);
+	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, Width / (float) Height, 0.1, 5000);
+	gluPerspective(70, _Width / (float) _Height, 0.1, 5000);
 	glClearColor(255, 0, 0, 255);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -176,4 +217,16 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 	DrawTri(_blf, _brb, _brf, &verpos);
 
 	_TriCount += 12;
+}
+
+void GraphicsManager::SerCameraPosition(double x, double y, double z)
+{
+	_CameraPosX = x;
+	_CameraPosY = y;
+	_CameraPosZ = z;
+}
+void GraphicsManager::SetCameraRotation(double z, double x)
+{
+	_CameraRotZ = z;
+	_CameraRotX = x;
 }

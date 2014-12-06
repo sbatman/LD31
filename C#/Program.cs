@@ -14,7 +14,7 @@ namespace LD31
         /// <summary>
         /// This value is used to stop the main update loop running too fast.
         /// </summary>
-        private const Int32 UPDATE_DELAY = 16;
+        private const Int32 UPDATE_DELAY = 8;
 
         /// <summary>
         /// This flag shows if the game is still running or not. 
