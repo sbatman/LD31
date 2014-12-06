@@ -5,18 +5,23 @@ namespace LD31.Graphics
     /// <summary>
     /// Represents a single 'Block' in our Game World
     /// </summary>
-    public class Block
+    public class Block : IDisposable
     {
-        private Boolean _active;
+        private Boolean _Active;
 
-        private Boolean _collidable;
+        private Boolean _Collidable;
 
-        private BlockType _blockType;
-        
+        private BlockType _BlockType;
+
         public Block()
         {
-            _blockType = BlockType.Default;
+            _BlockType = BlockType.Default;
+            IsActive = true;
+        }
 
+        public Block(BlockType type)
+        {
+            _BlockType = type;
             IsActive = true;
         }
 
@@ -25,8 +30,8 @@ namespace LD31.Graphics
         /// </summary>
         public Boolean IsCollidable
         {
-            get { return _collidable; }
-            set { _collidable = value; }
+            get { return _Collidable; }
+            set { _Collidable = value; }
         }
 
         /// <summary>
@@ -34,8 +39,18 @@ namespace LD31.Graphics
         /// </summary>
         public Boolean IsActive
         {
-            get { return _active; }
-            set { _active = value; }
+            get { return _Active; }
+            set { _Active = value; }
+        }
+
+        public void Draw(Int32 x, Int32 y, Int32 z)
+        {
+            if (!_Active) return;
+            GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 80);
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

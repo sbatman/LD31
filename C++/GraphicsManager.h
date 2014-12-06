@@ -15,5 +15,15 @@ private:
 	const int TRISPERCUBE = FACESPERCUBE * 2;
 	const int VERTSPERFACE = 6;
 
+	bool _GLStatesSetup = false;
+	double* _VertexList;
+	uint8_t* _ColourList;
+	int _TriCount;
+
+	int Width;
+	int Height;
+	
+
 	void SetupGLStates();
+	void DrawTri(double* p1, double* p2, double* p3, int* arrayPosition);
 };

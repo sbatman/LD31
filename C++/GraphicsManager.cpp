@@ -3,17 +3,11 @@
 #include <gl/glu.h>
 #include "GraphicsManager.h"
 
-HDC			_HDC = NULL;		// Private GDI Device Context
-HGLRC		_HDR = NULL;		// Permanent Rendering Context
-HWND		_HWnd = NULL;		// Holds Our Window Handle
+HDC			_HDC = nullptr;		// Private GDI Device Context
+HGLRC		_HDR = nullptr;		// Permanent Rendering Context
+HWND		_HWnd = nullptr;		// Holds Our Window Handle
 HINSTANCE	hInstance;		// Holds The Instance Of The Application
 
-double* _VertexList;
-uint8_t* _ColourList;
-int _TriCount;
-
-int Width;
-int Height;
 float testRotate = 0;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -23,7 +17,6 @@ GraphicsManager::GraphicsManager()
 	_VertexList = new double[20000000];
 	_ColourList = new uint8_t[20000000];
 }
-
 
 GraphicsManager::~GraphicsManager()
 {
@@ -52,6 +45,8 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 
 void GraphicsManager::BeginDraw()
 {
+	if (!_GLStatesSetup)SetupGLStates();
+
 	testRotate += 1.0f;
 	glLoadIdentity();
 	glTranslatef(0, 0, -1500);
@@ -84,7 +79,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetPixelFormat(_HDC, nPixelFormat, &pfd);
 			_HDR = wglCreateContext(_HDC);
 			wglMakeCurrent(_HDC, _HDR);
-			SetupGLStates();
 			break;
 		case WM_CLOSE:
 			PostQuitMessage(0);
@@ -124,10 +118,10 @@ void GraphicsManager::SetupGLStates()
 	glEnable(GL_CULL_FACE);
 	glMatrixMode(GL_MODELVIEW);
 	glCullFace(GL_BACK);
+	_GLStatesSetup = true;
 }
 
-
-void DrawTri(double* p1, double* p2, double* p3, int* arrayPosition)
+void GraphicsManager::DrawTri(double* p1, double* p2, double* p3, int* arrayPosition)
 {
 	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p1, sizeof(double) * 3);	(*arrayPosition) += 3;
 	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p2, sizeof(double) * 3);	(*arrayPosition) += 3;
@@ -156,7 +150,6 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
 
 	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
-
 
 	//FRONT
 	DrawTri(_tlf, _blf, _trf, &verpos);

@@ -52,14 +52,12 @@
     <Compile Include="Objects\Combatant.cs" />
     <Compile Include="Objects\Enemy.cs" />
     <Compile Include="Objects\GameObject.cs" />
-    <Compile Include="Objects\Mortal.cs" />
     <Compile Include="Objects\Moveable.cs" />
-    <Compile Include="Objects\Placeable.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Math\Vector2.cs" />
     <Compile Include="Graphics\Block.cs" />
     <Compile Include="Graphics\BlockType.cs" />
-    <Compile Include="Graphics\Chunk.cs" />
+    <Compile Include="Graphics\Level.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Objects\Weapon.cs" />
     <Compile Include="Program.cs" />

@@ -10,4 +10,6 @@
         Wall = 2,    //Color '???' by default    (R: ?,  G: ?,    B:   ?)
         Sky = 3      //Color 'Blue' by default   (R: 0,  G: 0,    B: 255)
     }
+
+
 }

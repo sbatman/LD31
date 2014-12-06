@@ -1,13 +1,11 @@
-﻿using LD31.Graphics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using LD31.Graphics;
 using LD31.Input;
 using LD31.Math;
 using LD31.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LD31
 {
@@ -16,17 +14,19 @@ namespace LD31
         /// <summary>
         /// This value is used to stop the main update loop running too fast.
         /// </summary>
-        private const Int32 UpdateDelay = 16;
+        private const Int32 UPDATE_DELAY = 16;
 
         /// <summary>
         /// This flag shows if the game is still running or not. 
         /// </summary>
-        private static Boolean GameRunning = true;
+        private static Boolean _GameRunning = true;
 
         /// <summary>
         /// The player object.
         /// </summary>
-        private static Player player = new Player(new Vector2());
+        private static readonly Player _Player = new Player(new Vector2());
+
+        private static Level _CurrentLevel;
 
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
@@ -34,9 +34,22 @@ namespace LD31
         static void Init()
         {
             //give the player a default weapon!
-            player.GiveWeapon(Weapon.Pistol);
+            _Player.GiveWeapon(Weapon.Pistol);
 
             GraphicsManager.Init();
+
+            _CurrentLevel = new Level(30, 30, 5);
+
+            for (int x = 0; x < 30; x++)
+            {
+                for (int z = 0; z < 30; z++)
+                {
+                    for (int y = 0; y < 5; y++)
+                    {
+                        _CurrentLevel.SetBlock(new Block(), x, y, z);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -46,47 +59,7 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
-            List<Tuple<int,int>>_BlackOnes = new List<Tuple<int, int>>();
-            _BlackOnes.Add(new Tuple<int, int>(0, 0));//nose
-            _BlackOnes.Add(new Tuple<int, int>(-2, 2));//left eye
-            _BlackOnes.Add(new Tuple<int, int>(2, 2));//right eye
-
-            _BlackOnes.Add(new Tuple<int, int>(-2, -1));//mouth
-            _BlackOnes.Add(new Tuple<int, int>(-1, -2));//mouth
-            _BlackOnes.Add(new Tuple<int, int>(0, -2));//mouth
-            _BlackOnes.Add(new Tuple<int, int>(1, -2));//mouth
-            _BlackOnes.Add(new Tuple<int, int>(2, -1));//mouth
-
-            for (int x = -6; x <= 6; x++)
-            {
-                for (int y = -6; y <= 6; y++)
-                {
-                    if (System.Math.Abs(x*y) > 16) continue;
-                    if (_BlackOnes.Any(a => a.Item1 == x && a.Item2 == y))
-                    {
-                        GraphicsManager.DrawWorldVoxel(x, y, 0, 0, 0, 0, 255);
-                    }
-                    else
-                    {
-                        GraphicsManager.DrawWorldVoxel(x, y, 0, 255, 255, 0, 255);
-                    }
-                }
-            }
-
-            //for (int x = -16; x < 16; x++)
-            //{
-            //    for (int y = -16; y < 16; y++)
-            //    {
-            //        for (int z = -8; z < 8; z++)
-            //        {
-            //            GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 10);
-            //        }
-            //    }
-            //}
-
-            //GraphicsManager.DrawWorldVoxel(-1, -1, -1, 255, 255, 255, 90);
-            //GraphicsManager.DrawWorldVoxel(0, 0, 0, 255, 255, 255, 90);
-            //GraphicsManager.DrawWorldVoxel(1, 1, 1, 255, 255, 255, 90);
+            _CurrentLevel.Render();
 
             GraphicsManager.EndDraw();
         }
@@ -102,7 +75,7 @@ namespace LD31
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
             {
-                GameRunning = false;
+                _GameRunning = false;
             }
         }
 
@@ -123,12 +96,12 @@ namespace LD31
         {
             Init();
 
-            while (GameRunning)
+            while (_GameRunning)
             {
                 Draw();
                 Update();
 
-                Thread.Sleep(UpdateDelay);
+                Thread.Sleep(UPDATE_DELAY);
             }
 
             //exit logic
