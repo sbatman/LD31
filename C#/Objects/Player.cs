@@ -15,7 +15,7 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        Weapon currentWeapon;
+        Weapon currentWeapon = null;
 
         /// <summary>
         /// The currently selected weapon of the player.
@@ -86,7 +86,6 @@ namespace LD31.Objects
                 return position;
             }
         }
-
 
 
         /// <summary>

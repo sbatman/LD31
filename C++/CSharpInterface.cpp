@@ -24,4 +24,14 @@ extern "C" {
 	{
 		_GMInstance->EndDraw();
 	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerDestroy()
+	{
+		_GMInstance->Destroy();
+		if (_GMInstance != nullptr)
+		{
+			delete _GMInstance;
+			_GMInstance = nullptr;
+		}
+	}
 }
