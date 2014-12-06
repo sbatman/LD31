@@ -14,4 +14,14 @@ extern "C" {
 	{
 		_GMInstance->Update();
 	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerBeginDraw()
+	{
+		_GMInstance->BeginDraw();
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerEndDraw()
+	{
+		_GMInstance->EndDraw();
+	}
 }

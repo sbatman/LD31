@@ -16,6 +16,15 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
 
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerUpdate();
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerBeginDraw();
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerEndDraw();
+
         }
 
         /// <summary>
@@ -28,7 +37,7 @@ namespace LD31.Graphics
 
         public static void Update()
         {
-            
+            NativeMethods.GraphicsManagerUpdate();
         }
 
         /// <summary>
@@ -36,7 +45,7 @@ namespace LD31.Graphics
         /// </summary>
         public static void StartDraw()
         {
-            
+            NativeMethods.GraphicsManagerBeginDraw();
         }
 
         /// <summary>
@@ -58,7 +67,7 @@ namespace LD31.Graphics
         /// </summary>
         public static void EndDraw()
         {
-
+            NativeMethods.GraphicsManagerEndDraw();
         }
 
         /// <summary>
