@@ -36,7 +36,14 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
-            //MAIN DRAW LOGIC HERE
+            for (int x = -20; x < 20; x++)
+                for (int y = -20; y < 20; y++)
+                    for (int z = -20; z < 20; z++)
+                        GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 255);
+
+            //GraphicsManager.DrawWorldVoxel(-1, -1, -1, 255, 255, 255, 255);
+            //GraphicsManager.DrawWorldVoxel(0, 0, 0, 255, 255, 255, 255);
+            //GraphicsManager.DrawWorldVoxel(1, 1, 1, 255, 255, 255, 255);
 
             GraphicsManager.EndDraw();
         }
@@ -66,7 +73,7 @@ namespace LD31
         {
             Init();
 
-            while(GameRunning)
+            while (GameRunning)
             {
                 Draw();
                 Update();

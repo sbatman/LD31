@@ -25,6 +25,9 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerEndDraw();
 
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerDrawVoxel(Int32 x, Int32 y, Int32 z, Byte colourR, Byte colourG, Byte colourB, Byte alpha = 255,Byte size=32);
+
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace LD31.Graphics
         /// <param name="colourB">Colours blue component</param>
         public static void DrawWorldVoxel(Int32 x, Int32 y, Int32 z, Byte colourR, Byte colourG, Byte colourB, Byte alpha = 255)
         {
-
+            NativeMethods.GraphicsManagerDrawVoxel(x * 32, y * 32, z * 32, colourR, colourG, colourB, alpha,32);
         }
 
         /// <summary>
