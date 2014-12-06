@@ -10,6 +10,15 @@ namespace LD31
 {
     class Program
     {
+        //This value is used to stop the main update loop running too fast.
+        private const Int32 UpdateDelay = 16;
+
+        /// <summary>
+        /// This flag shows if the game is still running or not. 
+        /// </summary>
+        private static Boolean GameRunning = true;
+
+
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
         /// </summary>
@@ -25,6 +34,8 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
+            //MAIN DRAW LOGIC HERE
+
             GraphicsManager.EndDraw();
         }
 
@@ -33,13 +44,16 @@ namespace LD31
         /// </summary>
         static void Update()
         {
-            GraphicsManager.Destroy();
+            //update logic here.
         }
 
         /// <summary>
         /// This function should be called last as it will release memory and cleanup objects.
         /// </summary>
-        static void Destroy();
+        static void Destroy()
+        {
+            GraphicsManager.Destroy();
+        }
 
         /// <summary>
         /// The main entry point for the game. Make sure to release ALL resource before it exits.
@@ -49,14 +63,18 @@ namespace LD31
         {
             Init();
 
-            while(true)//FIX THIS
+            while(GameRunning)//FIX THIS
             {
                 Draw();
                 Update();
 
-                Thread.Sleep(16);
+                Thread.Sleep(UpdateDelay);
             }
 
+            //exit logic
+
+
+            //cleanup logic
             Destroy();
         }
     }
