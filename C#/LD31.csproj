@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Objects\Player.cs" />
-    <Compile Include="Objects\Vector2.cs" />
+    <Compile Include="Math\Vector2.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
