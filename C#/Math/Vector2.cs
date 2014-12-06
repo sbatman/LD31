@@ -11,31 +11,57 @@ namespace LD31.Math
     /// </summary>
     public struct Vector2
     {
-        private Double _X;
-        private Double _Y;
+        /// <summary>
+        /// backing field
+        /// </summary>
+        private Double x;
 
+        /// <summary>
+        /// backing field
+        /// </summary>
+        private Double y;
+
+        /// <summary>
+        /// X value
+        /// </summary>
         public Double X
         {
-            get { return _X;}
-            set { _X = value; }
+            get
+            {
+                return x;
+            }
+            set
+            {
+                x = value;
+            }
         }
 
+        /// <summary>
+        /// Y value
+        /// </summary>
         public Double Y
         {
-            get { return _Y; }
-            set { _Y = value; }
+            get
+            {
+                return y;
+            }
+            set
+            {
+                y = value;
+            }
         }
+    
 
         public Vector2(Double x, Double y)
         {
-           _X = x;
-           _Y = y;
+            this.x = x;
+            this.y = y;
         }
 
         public Vector2(Double xAndY)
         {
-            _X = xAndY;
-            _Y = xAndY;
+            this.x = xAndY;
+            this.y = xAndY;
         }
     }
 }

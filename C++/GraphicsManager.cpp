@@ -36,7 +36,7 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	windowClass.hbrBackground = 0;
 	windowClass.lpszClassName = L"0";
 	RegisterClassEx(&windowClass);
-	hWnd = CreateWindowEx(0, L"0", L"0", WS_OVERLAPPEDWINDOW, 0, 0, Width, Height, 0, 0, hInstance, 0);
+	hWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, Width, Height, 0, 0, hInstance, 0);
 	ShowWindow(hWnd, SW_SHOW);
 }
 
