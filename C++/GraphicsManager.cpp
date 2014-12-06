@@ -7,6 +7,9 @@ HGLRC		_HDR = NULL;		// Permanent Rendering Context
 HWND		_HWnd = NULL;		// Holds Our Window Handle
 HINSTANCE	hInstance;		// Holds The Instance Of The Application
 
+int* _VertexList;
+int8_t* _ColourList;
+
 int Width;
 int Height;
 
@@ -14,11 +17,15 @@ LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 GraphicsManager::GraphicsManager()
 {
+	_VertexList = new int[20000];
+	_ColourList = new int8_t[20000];
 }
 
 
 GraphicsManager::~GraphicsManager()
 {
+	delete [] _VertexList;
+	delete [] _ColourList;
 }
 
 void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
@@ -42,7 +49,7 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 
 void GraphicsManager::BeginDraw()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT		);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void GraphicsManager::EndDraw()
