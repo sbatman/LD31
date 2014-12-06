@@ -3,9 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LD31", "C++\C++.vcxproj", "{61209C48-E290-4300-8B3F-080C3CB653BC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Renderer", "C++\C++.vcxproj", "{61209C48-E290-4300-8B3F-080C3CB653BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LD31", "C#\LD31.csproj", "{D9DCF270-B53C-4706-BF21-FE19D0136B10}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61209C48-E290-4300-8B3F-080C3CB653BC} = {61209C48-E290-4300-8B3F-080C3CB653BC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
