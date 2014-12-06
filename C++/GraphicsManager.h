@@ -15,4 +15,5 @@ private:
 	const int TRISPERCUBE = FACESPERCUBE * 2;
 	const int VERTSPERFACE = 6;
 
+	void SetupGLStates();
 };

@@ -84,19 +84,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetPixelFormat(_HDC, nPixelFormat, &pfd);
 			_HDR = wglCreateContext(_HDC);
 			wglMakeCurrent(_HDC, _HDR);
-			glViewport(0, 0, Width, Height);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			gluPerspective(70, Width / (float) Height, 0.1, 5000);
-			glClearColor(255, 0, 0, 255);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_COLOR_ARRAY);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDisable(GL_LIGHTING);
-			glEnable(GL_BLEND);
-			glEnable(GL_CULL_FACE);
-			glMatrixMode(GL_MODELVIEW);
-			glCullFace(GL_BACK);
+			SetupGLStates();
 			break;
 		case WM_CLOSE:
 			PostQuitMessage(0);
@@ -119,6 +107,31 @@ void GraphicsManager::Update()
 void GraphicsManager::Destroy()
 {
 
+}
+
+void GraphicsManager::SetupGLStates()
+{
+	glViewport(0, 0, Width, Height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(70, Width / (float) Height, 0.1, 5000);
+	glClearColor(255, 0, 0, 255);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+	glMatrixMode(GL_MODELVIEW);
+	glCullFace(GL_BACK);
+}
+
+
+void DrawTri(double* p1, double* p2, double* p3, int* arrayPosition)
+{
+	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p1, sizeof(double) * 3);	(*arrayPosition) += 3;
+	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p2, sizeof(double) * 3);	(*arrayPosition) += 3;
+	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p3, sizeof(double) * 3);	(*arrayPosition) += 3;
 }
 
 void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
@@ -146,58 +159,28 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 
 
 	//FRONT
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
-
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
+	DrawTri(_tlf, _blf, _trf, &verpos);
+	DrawTri(_blf, _brf, _trf, &verpos);
 
 	//LEFT
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
-
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
+	DrawTri(_tlb, _blb, _tlf, &verpos);
+	DrawTri(_blb, _blf, _tlf, &verpos);
 
 	//RIGHT
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
-
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
+	DrawTri(_trb, _trf, _brb, &verpos);
+	DrawTri(_brf, _brb, _trf, &verpos);
 
 	//Back
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
-
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
+	DrawTri(_blb, _tlb, _trb, &verpos);
+	DrawTri(_blb, _trb, _brb, &verpos);
 
 	//Top
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
-
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _tlf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _trb, sizeof(double) * 3);	verpos += 3;
+	DrawTri(_tlb, _tlf, _trb, &verpos);
+	DrawTri(_tlf, _trf, _trb, &verpos);
 
 	//Bottom
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
-
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _blf, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brb, sizeof(double) * 3);	verpos += 3;
-	memcpy_s(_VertexList + verpos, sizeof(double) * 3, _brf, sizeof(double) * 3);	verpos += 3;
+	DrawTri(_blb, _brb, _blf, &verpos);
+	DrawTri(_blf, _brb, _brf, &verpos);
 
 	_TriCount += 12;
 }

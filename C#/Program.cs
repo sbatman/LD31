@@ -46,16 +46,43 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
-            for (int x = -16; x < 16; x++)
+            List<Tuple<int,int>>_BlackOnes = new List<Tuple<int, int>>();
+            _BlackOnes.Add(new Tuple<int, int>(0, 0));//nose
+            _BlackOnes.Add(new Tuple<int, int>(-2, 2));//left eye
+            _BlackOnes.Add(new Tuple<int, int>(2, 2));//right eye
+
+            _BlackOnes.Add(new Tuple<int, int>(-2, -1));//mouth
+            _BlackOnes.Add(new Tuple<int, int>(-1, -2));//mouth
+            _BlackOnes.Add(new Tuple<int, int>(0, -2));//mouth
+            _BlackOnes.Add(new Tuple<int, int>(1, -2));//mouth
+            _BlackOnes.Add(new Tuple<int, int>(2, -1));//mouth
+
+            for (int x = -6; x <= 6; x++)
             {
-                for (int y = -16; y < 16; y++)
+                for (int y = -6; y <= 6; y++)
                 {
-                    for (int z = -8; z < 8; z++)
+                    if (System.Math.Abs(x*y) > 16) continue;
+                    if (_BlackOnes.Any(a => a.Item1 == x && a.Item2 == y))
                     {
-                        GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 10);
+                        GraphicsManager.DrawWorldVoxel(x, y, 0, 0, 0, 0, 255);
+                    }
+                    else
+                    {
+                        GraphicsManager.DrawWorldVoxel(x, y, 0, 255, 255, 0, 255);
                     }
                 }
             }
+
+            //for (int x = -16; x < 16; x++)
+            //{
+            //    for (int y = -16; y < 16; y++)
+            //    {
+            //        for (int z = -8; z < 8; z++)
+            //        {
+            //            GraphicsManager.DrawWorldVoxel(x, y, z, 255, 255, 255, 10);
+            //        }
+            //    }
+            //}
 
             //GraphicsManager.DrawWorldVoxel(-1, -1, -1, 255, 255, 255, 90);
             //GraphicsManager.DrawWorldVoxel(0, 0, 0, 255, 255, 255, 90);
