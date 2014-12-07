@@ -49,7 +49,7 @@ namespace LD31
 
             //give the player a default weapon!
             _Player.GiveWeapon(Weapon.Pistol);
-            _CurrentLevel = new Level(30, 30, 5);
+            _CurrentLevel = new Level(30, 30,10);
 
             for (int x = 0; x < 30; x++)
             {
@@ -61,6 +61,11 @@ namespace LD31
                     }
                 }
             }
+            _CurrentLevel.SetBlock(new Block(), 5, 5, 1);
+            _CurrentLevel.SetBlock(new Block(), 5, 6, 2);
+            _CurrentLevel.SetBlock(new Block(), 5, 7, 3);
+            _CurrentLevel.SetBlock(new Block(), 5, 8, 4);
+            _CurrentLevel.SetBlock(new Block(), 5, 9, 5);
         }
 
         /// <summary>
