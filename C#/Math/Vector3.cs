@@ -67,6 +67,64 @@ namespace LD31.Math
             }
         }
 
+        public Vector2 XY
+        {
+            get { return new Vector2(_X, _Y); }
+            set
+            {
+                _X = value.X;
+                _Y = value.Y;
+            }
+        }
+        public Vector2 XZ
+        {
+            get { return new Vector2(_X, _Z); }
+            set
+            {
+                _X = value.X;
+                _Z = value.Y;
+            }
+        }
+
+        public Vector2 YZ
+        {
+            get { return new Vector2(_Y, _Z); }
+            set
+            {
+                _Y = value.X;
+                _Z = value.Y;
+            }
+        }
+
+        public Vector2 YX
+        {
+            get { return new Vector2(_Y, _X); }
+            set
+            {
+                _Y = value.X;
+                _X = value.Y;
+            }
+        }
+        public Vector2 ZX
+        {
+            get { return new Vector2(_Z, _X); }
+            set
+            {
+                _Z = value.X;
+                _X = value.Y;
+            }
+        }
+
+        public Vector2 ZY
+        {
+            get { return new Vector2(_Z, _Y); }
+            set
+            {
+                _Z = value.X;
+                _Y = value.Y;
+            }
+        }
+
         /// <summary>
         /// Secondary CTOR
         /// </summary>

@@ -10,14 +10,14 @@ namespace LD31.Objects
 {
     public class Projectile : Moveable
     {
-        protected Vector3 _Scale = new Vector3(4);
+        protected Vector3 _Scale = new Vector3(2);
         protected DateTime _CreationTime;
         protected TimeSpan _MaxLifeSpan = TimeSpan.FromMinutes(1);
         protected Boolean _Alive = true;
-        protected Double _RotationZ;
+        protected Vector3 _Velocity;
         protected Colour _Colour;
+        protected Weapon _Owner;
 
-        protected Int32 _CollisionHeight = 30;
         protected Int32 _CollisionRadius = 8;
 
         /// <summary>
@@ -28,19 +28,21 @@ namespace LD31.Objects
             get { return _Alive; }
         }
 
-        public Projectile(Vector3 position, Double rotationZ, Colour colour)
+        public Projectile(Weapon owner, Vector3 position, Vector3 velocity, Colour colour)
             : base(position)
         {
+            _Owner = owner;
             _CreationTime = DateTime.Now;
-            _RotationZ = rotationZ;
+            _Velocity = velocity;
             _Colour = colour;
         }
 
         public override void Update(double msSinceLastUpdate)
         {
-            Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2), _RotationZ);
-            Velocity.X += movement.X;
-            Velocity.Y += movement.Y;
+
+            Velocity.X += _Velocity.X;
+            Velocity.Y += _Velocity.Y;
+            Velocity.Z += _Velocity.Z;
 
             Position += Velocity;
 
@@ -59,7 +61,7 @@ namespace LD31.Objects
             }
 
             //Kill all projectiles if they live longer than their max lifespan, this probably means they somehow escaped the bounds of the world
-            if(DateTime.Now  - _CreationTime > _MaxLifeSpan)
+            if (DateTime.Now - _CreationTime > _MaxLifeSpan)
             {
                 this._Alive = false;
             }
@@ -71,6 +73,12 @@ namespace LD31.Objects
         public override void Draw()
         {
             GraphicsManager.DrawVoxel(Position, _Colour, _Scale);
+        }
+
+        public override void Dispose()
+        {
+            _Owner = null;
+            base.Dispose();
         }
     }
 }

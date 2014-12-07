@@ -74,7 +74,7 @@ namespace LD31
             CurrentLevel.SetBlock(new Block(), 5, 9, 5);
 
             //create a default enemy!
-            Enemy = new Enemy(new Vector3(30, 30, 0), Player);
+            Enemy = new Enemy(new Vector3(800, 800, 60), Player);
         }
 
         /// <summary>

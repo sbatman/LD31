@@ -21,7 +21,7 @@ namespace LD31.Objects
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             Game.GameObjects.Remove(this);
         }

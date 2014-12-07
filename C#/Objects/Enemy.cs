@@ -12,7 +12,7 @@ namespace LD31.Objects
         /// <summary>
         /// The size of the enemy
         /// </summary>
-        protected Vector3 _Scale = new Vector3(40);
+        protected Vector3 _Scale = new Vector3(8, 24, 8);
 
         /// <summary>
         /// The player this enemy targets.
@@ -22,9 +22,11 @@ namespace LD31.Objects
         /// <summary>
         /// How fast the enemy can move.
         /// </summary>
-        protected Double _MovementSpeed = 0.005;
+        protected Double _MovementSpeed = 0.1;
 
-         /// <summary>
+        protected Vector3 _DrawOffset = new Vector3(0, 0, 10);
+
+        /// <summary>
         /// CTOR
         /// </summary>
         public Enemy(Vector3 position, Player target)
@@ -39,7 +41,7 @@ namespace LD31.Objects
         /// </summary>
         public override void Draw()
         {
-            GraphicsManager.DrawVoxel(Position, Colour.Green, _Scale);
+            GraphicsManager.DrawVoxel(Position - _DrawOffset, Colour.Green, _Scale);
         }
 
         /// <summary>
@@ -50,8 +52,18 @@ namespace LD31.Objects
             //// heroPos is the position of the hero.
             Vector3 direction = Position - _Target.Position;
 
+            if (direction.Z < -5 && IsOnFloor() && _JumpCoolDown <= 0)
+            {
+                Velocity.Z += 2;
+                _JumpCoolDown = 120;
+            }
+
+            direction.Z = 0;
             ////assuming here that velocity is a length and not a vector.
-            Position -= direction * _MovementSpeed;
+            Velocity.X += direction.X > 0 ? -_MovementSpeed : _MovementSpeed;
+            Velocity.Y += direction.Y > 0 ? -_MovementSpeed : _MovementSpeed;
+
+            base.Update(msSinceLastUpdate);
         }
 
         public override void Kill()

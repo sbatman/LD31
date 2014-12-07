@@ -21,6 +21,8 @@ namespace LD31.Objects
         protected Int32 _CollisionHeight = 30;
         protected Int32 _CollisionRadius = 8;
 
+        protected Double _JumpCoolDown = 0;
+
         
 
         /// <summary>
@@ -121,6 +123,7 @@ namespace LD31.Objects
 
         public override void Update(Double msSinceLastUpdate)
         {
+            _JumpCoolDown -= msSinceLastUpdate;
             if (!IsOnFloor())
             {
                 Velocity.Z -= Level.GRAVITY * (msSinceLastUpdate / 1000);
