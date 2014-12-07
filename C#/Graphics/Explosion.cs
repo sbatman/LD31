@@ -81,7 +81,7 @@ namespace LD31.Graphics
                 }
                 p.Colour.A = (byte)System.Math.Min(255, 512 * p.Life);
 
-                if (!Game._CurrentLevel.IsSolid(p.Position.X, p.Position.Y, p.Position.Z - p.Size))
+                if (!Game.CurrentLevel.IsSolid(p.Position.X, p.Position.Y, p.Position.Z - p.Size))
                 {
                     p.Velocity.Z -= Level.GRAVITY * (msSinceLastUpdate / 1000);
                 }
@@ -94,7 +94,7 @@ namespace LD31.Graphics
                     }
                 }
 
-                if (p.Velocity.Z > 0 && Game._CurrentLevel.IsSolid(p.Position.X, p.Position.Y, p.Position.Z + 10))
+                if (p.Velocity.Z > 0 && Game.CurrentLevel.IsSolid(p.Position.X, p.Position.Y, p.Position.Z + 10))
                 {
                     p.Velocity.Z = 0;
                 }
@@ -102,12 +102,12 @@ namespace LD31.Graphics
                 Double xRadius = p.Velocity.X > 0 ? p.Size : -p.Size;
                 Double yRadius = p.Velocity.Y > 0 ? p.Size : -p.Size;
 
-                if (Game._CurrentLevel.IsSolid(p.Position.X + p.Velocity.X + xRadius, p.Position.Y, p.Position.Z))
+                if (Game.CurrentLevel.IsSolid(p.Position.X + p.Velocity.X + xRadius, p.Position.Y, p.Position.Z))
                 {
                     p.Velocity.X = 0;
                 }
 
-                if (Game._CurrentLevel.IsSolid(p.Position.X, p.Position.Y + p.Velocity.Y + yRadius, p.Position.Z))
+                if (Game.CurrentLevel.IsSolid(p.Position.X, p.Position.Y + p.Velocity.Y + yRadius, p.Position.Z))
                 {
                     p.Velocity.Y = 0;
                 }

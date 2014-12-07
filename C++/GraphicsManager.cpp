@@ -23,12 +23,21 @@ GraphicsManager::GraphicsManager()
 	_VertexList = new double[20000000];
 	_NormalList = new double[20000000];
 	_ColourList = new uint8_t[20000000];
+
+	_UIVertexList = new double[20000];
+	_UINormalList = new double[20000];
+	_UIColourList = new uint8_t[20000];
 }
 
 GraphicsManager::~GraphicsManager()
 {
 	delete [] _VertexList;
 	delete [] _ColourList;
+	delete [] _NormalList;
+
+	delete [] _UIVertexList;
+	delete [] _UIColourList;
+	delete [] _UINormalList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -85,6 +94,14 @@ void GraphicsManager::EndDraw()
 	glColorPointer(4, GL_UNSIGNED_BYTE, 0, _ColourList);
 	glNormalPointer(GL_DOUBLE, 0, _NormalList);
 	glDrawArrays(GL_TRIANGLES, 0, _TriCount * 3);
+
+	if (_UITriCount > 0)
+	{
+		glVertexPointer(3, GL_DOUBLE, 0, _UIVertexList);
+		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _UIColourList);
+		glNormalPointer(GL_DOUBLE, 0, _UINormalList);
+		glDrawArrays(GL_TRIANGLES, 0, _UITriCount * 3);
+	}
 	glEnd();
 	SwapBuffers(_HDC);
 }
@@ -259,7 +276,7 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 
 	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
 
-	
+
 	double _FrontNormals[9] = { 0, 0, -1, 0, 0, -1, 0, 0, -1 };
 	double _LeftNormals[9] = { -1, 0, 0, -1, 0, 0, -1, 0, 0 };
 	double _RightNormals[9] = { 1, 0, 0, 1, 0, 0, 1, 0, 0 };
