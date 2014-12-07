@@ -62,7 +62,14 @@ namespace LD31.Objects
         /// </summary>
         public void Fire()
         {
-            if (_Ammunition > 0) _Ammunition -= 1;
+            if (_Ammunition > 0)
+            {
+                _Ammunition -= 1;
+
+
+            }
+
+
         }
 
         public override void Update(Double msSinceLastUpdate)
