@@ -48,7 +48,7 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-            Player = new Player(new Vector3(400, 400, 400));
+            Player = new Player(new Vector3(450, 450, 700));
             //give the player a default weapon and some ammo!
             Weapon defaultWeapon = new Weapon(new Colour(255, 255), Player);
             Player.GiveWeapon(defaultWeapon);
@@ -56,26 +56,8 @@ namespace LD31
 
             CurrentLevel = new Level("GameLevel.txt");
 
-            //CurrentLevel = new Level(30, 30, 10);
-
-            //for (int x = 0; x < 30; x++)
-            //{
-            //    for (int y = 0; y < 30; y++)
-            //    {
-            //        for (int z = 0; z < 5; z++)
-            //        {
-            //            if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) CurrentLevel.SetBlock(new Block(), x, y, z);
-            //        }
-            //    }
-            //}
-            //CurrentLevel.SetBlock(new Block(), 5, 5, 1);
-            //CurrentLevel.SetBlock(new Block(), 5, 6, 2);
-            //CurrentLevel.SetBlock(new Block(), 5, 7, 3);
-            //CurrentLevel.SetBlock(new Block(), 5, 8, 4);
-            //CurrentLevel.SetBlock(new Block(), 5, 9, 5);
-
             //create a default enemy!
-            Enemy = new Enemy(new Vector3(800, 800, 60), Player);
+           
         }
 
         /// <summary>
@@ -101,6 +83,8 @@ namespace LD31
         /// </summary>
         void Update(Double msSinceLastUpdate)
         {
+            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(new Vector3(700, 400, 500), Player);
+
             InputHandler.Update();
             GraphicsManager.Update();
             //call update for all game objects.

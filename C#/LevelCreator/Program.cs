@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace LevelCreator
@@ -33,6 +33,11 @@ namespace LevelCreator
 
             FileStream fStream = new FileStream(processedLevelFile, FileMode.Create, FileAccess.Write, FileShare.None);
             StreamWriter sWriter = new StreamWriter(fStream);
+
+            while (blockList.Any(a => a.X < 0)) foreach (Block block in blockList) block.X++;
+            while (blockList.Any(a => a.Y < 0)) foreach (Block block in blockList) block.Y++;
+            while (blockList.Any(a => a.Z < 0)) foreach (Block block in blockList) block.Z++;
+
 
             foreach (Block b in blockList)
             {

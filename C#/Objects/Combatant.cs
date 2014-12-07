@@ -24,7 +24,7 @@ namespace LD31.Objects
 
         protected Double _JumpCoolDown = 0;
 
-        
+
 
         /// <summary>
         /// The currently selected weapon of the Combatant.
@@ -130,7 +130,7 @@ namespace LD31.Objects
                 }
             }
 
-            if (Velocity.Z>0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z+ 10))
+            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + 10))
             {
                 Velocity.Z = 0;
             }
@@ -167,7 +167,7 @@ namespace LD31.Objects
         /// </summary>
         public virtual void Kill()
         {
-             new Explosion(Colour.Red, Position, 1);
+            new Explosion(Colour.Red, Position, 1);
             _Health = 0;
             Dispose();
         }

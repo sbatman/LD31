@@ -2,13 +2,14 @@
 using System.IO;
 using System.Linq;
 using LD31.Graphics;
+using LD31.Math;
 
 namespace LD31.World
 {
     public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
-        public const Double GRAVITY = 0; //0.98 * 6;
+        public const Double GRAVITY = 0.98 * 6;
 
         private Block[, ,] _Blocks;
 
@@ -27,13 +28,31 @@ namespace LD31.World
         public Level(String levelFile)
         {
             int worldSize = File.ReadLines(levelFile).Count();
-            _Blocks = new Block[worldSize, worldSize, worldSize];
+            _Blocks = new Block[64, 64, 32];
+
+
+            _SizeX = 64;
+            _SizeY = 64;
+            _SizeZ = 32;
 
             using (StreamReader sReader = new StreamReader(levelFile))
             {
                 while (!sReader.EndOfStream)
                 {
                     String[] vertexData = sReader.ReadLine().Split(' ');
+                    Int32 x = int.Parse(vertexData[0]);
+                    Int32 z = int.Parse(vertexData[1]);
+                    Int32 y = int.Parse(vertexData[2]);
+                    Int32 t = int.Parse(vertexData[3]);
+
+                    _Blocks[x,y,z] = new Block();
+                    switch (t)
+                    {
+                        case 9: _Blocks[x, y, z].Colour = new Colour(30, 30, 30, 255); break;
+                        case 8: _Blocks[x, y, z].Colour = new Colour(40, 40, 60, 255); break;
+                        case 0: _Blocks[x, y, z].Colour = new Colour(255, 0, 0, 255); break;
+                        case 3: _Blocks[x, y, z].Colour = new Colour(255, 255, 0, 255); break;
+                    }
 
                     //TODO: Populate the array with the data
                 }

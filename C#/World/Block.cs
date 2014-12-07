@@ -62,6 +62,12 @@ namespace LD31.Graphics
             set { _BlockType = value; }
         }
 
+        public Colour Colour
+        {
+            get { return _Colour; }
+            set { _Colour = value; }
+        }
+
         public void Draw(Int32 x, Int32 y, Int32 z)
         {
             if (!_Active) return;

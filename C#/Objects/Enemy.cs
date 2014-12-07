@@ -22,7 +22,7 @@ namespace LD31.Objects
         /// <summary>
         /// How fast the enemy can move.
         /// </summary>
-        protected readonly Double _MovementSpeed = 0.05;
+        protected readonly Double _MovementSpeed = 0.07;
 
         protected readonly Vector3 _DrawOffset = new Vector3(0, 0, 10);
 
