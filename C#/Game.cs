@@ -96,6 +96,7 @@ namespace LD31
 
             if (InputHandler.IsButtonDown(ButtonConcept.Fire))
             {
+                Console.WriteLine("Bang");
                 Camera camera = GraphicsManager.GetCamera();
                 Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
                 Projectile bullet = new Projectile(position);
