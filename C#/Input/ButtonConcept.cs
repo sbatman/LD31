@@ -13,5 +13,6 @@
         Right,
         Fire,
         Activate,
+        TestButton1
     }
 }

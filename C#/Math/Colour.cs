@@ -9,8 +9,13 @@ namespace LD31.Math
     /// <summary>
     /// This value type represents a colour.
     /// </summary>
-    struct Colour
+    public struct Colour
     {
+        public static readonly Colour White = new Colour(255, 255, 255, 255);
+        public static readonly Colour Red = new Colour(255, 0, 0, 255);
+        public static readonly Colour Green = new Colour(0, 255, 0, 255);
+        public static readonly Colour Blue = new Colour(0, 0, 255, 255);
+
         /// <summary>
         /// backing field
         /// </summary>

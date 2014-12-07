@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Threading;
 using LD31.Graphics;
 using LD31.Input;
@@ -25,17 +26,19 @@ namespace LD31
         /// <summary>
         /// The player object.
         /// </summary>
-        public static Player _Player;
+        public static Player Player;
 
         /// <summary>
         /// The current level
         /// </summary>
-        public static Level _CurrentLevel;
+        public static Level CurrentLevel;
 
         /// <summary>
         /// A collection of all gameobjects currently available
         /// </summary>
-        public static List<GameObject> _GameObjects = new List<GameObject>();
+        public static List<GameObject> GameObjects = new List<GameObject>();
+
+        public static Graphics.Explosion LastExplosion;
 
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
@@ -44,13 +47,14 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-           
 
-            _Player = new Player(new Vector3(200, 200, 200));
+            Player = new Player(new Vector3(400,400,400));
+            //give the player a default weapon and some ammo!
+            Weapon defaultWeapon = Weapon.Shotgun;
+            Player.GiveWeapon(defaultWeapon);
+            Player.GiveAmmo(defaultWeapon, 10);
 
-            //give the player a default weapon!
-            _Player.GiveWeapon(Weapon.Pistol);
-            _CurrentLevel = new Level(30, 30,10);
+            CurrentLevel = new Level(30, 30,10);
 
             for (int x = 0; x < 30; x++)
             {
@@ -58,15 +62,15 @@ namespace LD31
                 {
                     for (int z = 0; z < 5; z++)
                     {
-                        if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) _CurrentLevel.SetBlock(new Block(), x, y, z);
+                        if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) CurrentLevel.SetBlock(new Block(), x, y, z);
                     }
                 }
             }
-            _CurrentLevel.SetBlock(new Block(), 5, 5, 1);
-            _CurrentLevel.SetBlock(new Block(), 5, 6, 2);
-            _CurrentLevel.SetBlock(new Block(), 5, 7, 3);
-            _CurrentLevel.SetBlock(new Block(), 5, 8, 4);
-            _CurrentLevel.SetBlock(new Block(), 5, 9, 5);
+            CurrentLevel.SetBlock(new Block(), 5, 5, 1);
+            CurrentLevel.SetBlock(new Block(), 5, 6, 2);
+            CurrentLevel.SetBlock(new Block(), 5, 7, 3);
+            CurrentLevel.SetBlock(new Block(), 5, 8, 4);
+            CurrentLevel.SetBlock(new Block(), 5, 9, 5);
         }
 
         /// <summary>
@@ -76,7 +80,11 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
-            _CurrentLevel.Render();
+            //call draw for all game objects.
+            if (LastExplosion != null) LastExplosion.Draw();
+            foreach (GameObject o in GameObjects) o.Draw();
+
+            CurrentLevel.Render();
 
             GraphicsManager.EndDraw();
         }
@@ -88,20 +96,17 @@ namespace LD31
         {
             InputHandler.Update();
             GraphicsManager.Update();
-            
+            //call update for all game objects.
+            foreach (GameObject o in new List<GameObject>(GameObjects)) o.Update(msSinceLastUpdate);
 
-            foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
+            //Clear out dead game objects
+            GameObjects = GameObjects.Where(o => o.Alive).ToList();
 
-            if (InputHandler.WasButtonPressed(ButtonConcept.Fire))
+
+            if (InputHandler.WasButtonPressed(ButtonConcept.TestButton1))
             {
-                Console.WriteLine("Bang");
-                Camera camera = GraphicsManager.GetCamera();
-                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
-                Projectile bullet = new Projectile(position);
+                LastExplosion = new Explosion(new Colour(255, 0, 0, 255), new Vector3(160, 200, 25), 1);
             }
-
-
-
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
             {
@@ -134,11 +139,11 @@ namespace LD31
         /// </summary>
         public void Dispose()
         {
-            foreach (GameObject o in new List<GameObject>(_GameObjects)) o.Dispose();
-            _GameObjects.Clear();
-            _GameObjects = null;
-            _Player = null;
-            _CurrentLevel.Dispose();
+            foreach (GameObject o in new List<GameObject>(GameObjects)) o.Dispose();
+            GameObjects.Clear();
+            GameObjects = null;
+            Player = null;
+            CurrentLevel.Dispose();
             GraphicsManager.Destroy();
         }
     }

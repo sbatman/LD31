@@ -25,7 +25,14 @@ private:
 	double* _VertexList;
 	uint8_t* _ColourList;
 	double* _NormalList;
+
+	double* _UIVertexList;
+	uint8_t* _UIColourList;
+	double* _UINormalList;
+
+
 	int _TriCount;
+	int _UITriCount;
 
 
 	int _Width;
