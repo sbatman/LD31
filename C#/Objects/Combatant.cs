@@ -50,9 +50,9 @@ namespace LD31.Objects
         /// <summary>
         /// This boolean states if the player is dead or not.
         /// </summary>
-        public virtual Boolean Alive
+        public override Boolean Alive
         {
-            get { return _Health <= 0; }
+            get { return _Health > 0; }
         }
 
         /// <summary>

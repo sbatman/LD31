@@ -29,5 +29,13 @@ namespace LD31.Objects
         {
 
         }
+
+        /// <summary>
+        /// This boolean states if the gameobject is alive or not.
+        /// </summary>
+        public virtual Boolean Alive
+        {
+            get { return true; }
+        }
     }
 }

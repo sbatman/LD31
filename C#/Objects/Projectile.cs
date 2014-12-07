@@ -13,26 +13,38 @@ namespace LD31.Objects
         private Colour _Colour = new Colour(255, 255);
         private Vector3 _Scale = new Vector3(4);
         private DateTime _CreationTime;
-        private TimeSpan _LifeSpan = TimeSpan.FromSeconds(2);
+        private TimeSpan _LifeSpan = TimeSpan.FromSeconds(0.5);
+        private Boolean _Alive = true;
+        private Double _RotationZ;
 
-        public Projectile(Vector3 position)
+
+        /// <summary>
+        /// This boolean states if the projectile is dead or not.
+        /// </summary>
+        public override Boolean Alive
+        {
+            get { return _Alive; }
+        }
+
+        public Projectile(Vector3 position, Double rotationZ)
             : base(position)
         {
             _CreationTime = DateTime.Now;
+            _RotationZ = rotationZ;
         }
 
         public override void Update(double msSinceLastUpdate)
         {
-            Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2), Graphics.GraphicsManager.GetCamera().RotationZ);
+            Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2), _RotationZ);
             Velocity.X += movement.X;
             Velocity.Y += movement.Y;
 
             Position += Velocity;
 
-            //Make sure all projectiles die after a given period of time.
+            ////Make sure all projectiles die after a given period of time.
             if(DateTime.Now - _CreationTime > _LifeSpan)
             {
-                this.Dispose();
+                this._Alive = false;
             }
         }
 

@@ -91,15 +91,18 @@ namespace LD31
             InputHandler.Update();
             GraphicsManager.Update();
             
-
+            //call update for all game objects.
             foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
+
+            //Clear out dead game objects
+            _GameObjects = _GameObjects.Where(o => o.Alive).ToList();
 
             if (InputHandler.WasButtonReleased(ButtonConcept.Fire))
             {
                 Console.WriteLine("Bang");
                 Camera camera = GraphicsManager.GetCamera();
                 Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
-                Projectile bullet = new Projectile(position);
+                Projectile bullet = new Projectile(position, camera.RotationZ);
             }
 
             //Allow user to quit the game.
