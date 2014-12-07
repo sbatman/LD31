@@ -38,7 +38,7 @@ namespace LD31.Objects
             _JumpCoolDown -= msSinceLastUpdate;
             if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor() && _JumpCoolDown <= 0)
             {
-                Velocity.Z += 4;
+                Velocity.Z += 4 ;
                 _JumpCoolDown = 60;
             }
 

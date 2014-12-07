@@ -24,6 +24,7 @@ private:
 	bool _GLStatesSetup = false;
 	double* _VertexList;
 	uint8_t* _ColourList;
+	double* _NormalList;
 	int _TriCount;
 
 
