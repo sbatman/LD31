@@ -12,9 +12,9 @@ bool _HasFocus;
 int _LastMouseX;
 int _LastMouseY;
 
-void(*_CallBackMouseMove)(int32_t, int32_t);
-void(*_CallBackKeyDown)(int32_t);
-void(*_CallBackKeyUp)(int32_t);
+void(*_CallBackMouseMove)(int32_t, int32_t) = nullptr;
+void(*_CallBackKeyDown)(int32_t) = nullptr;
+void(*_CallBackKeyUp)(int32_t) = nullptr;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -146,12 +146,14 @@ void GraphicsManager::Update()
 				break;
 			case WM_KEYDOWN:
 			{
-				if (_HasFocus) _CallBackKeyDown(msg.wParam);
+				int a = (int) msg.wParam;
+				if (_HasFocus) _CallBackKeyDown(a);
 			}
 				break;
 			case WM_KEYUP:
 			{
-				if (_HasFocus) _CallBackKeyUp(msg.wParam);
+				int a = (int) msg.wParam;
+				if (_HasFocus) _CallBackKeyUp(a);
 			}
 				break;
 		}
