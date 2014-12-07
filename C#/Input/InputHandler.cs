@@ -65,8 +65,7 @@ namespace LD31.Input
         /// </summary>
         public static void Update()
         {
-            _PastKeyStates = _KeyStates;
-            _KeyStates = new Boolean[255];
+            Array.Copy(_KeyStates, _PastKeyStates,255);
         }
 
         /// <summary>
