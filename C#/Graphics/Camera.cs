@@ -21,7 +21,7 @@ namespace LD31.Graphics
         {
             if (_Dirty)
             {
-                GraphicsManager.NativeMethods.GraphicsManagerSerCameraPosition(_PositionX, _PositionY, _PositionZ);
+                GraphicsManager.NativeMethods.GraphicsManagerSerCameraPosition(_PositionX, _PositionZ,_PositionY );
                 GraphicsManager.NativeMethods.GraphicsManagerSetCameraRotation(_RotationZ, _RotationX);
             }
         }

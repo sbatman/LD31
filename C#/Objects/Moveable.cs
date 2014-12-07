@@ -23,6 +23,7 @@ namespace LD31.Objects
             _Position = position;
             _Velocity = new Vector3(0);
         }
+
         /// <summary>
         /// This value represents the position of the object.
         /// </summary>
@@ -33,30 +34,12 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// backing field
+        /// This value represents the position of the object.
         /// </summary>
-        private Int32 _Health = 100;
-
-        /// <summary>
-        /// This value represents the health of the player. Starts at 100, player dies at 0.
-        /// </summary>
-        public virtual Int32 Health
+        public virtual Vector3 Velocity
         {
-            get
-            {
-                return _Health;
-            }
-        }
-
-        /// <summary>
-        /// This boolean states if the player is dead or not.
-        /// </summary>
-        public virtual Boolean IsDead
-        {
-            get
-            {
-                return _Health <= 0;
-            }
+            get { return _Velocity; }
+            set { _Velocity = value; }
         }
 
         /// <summary>
@@ -69,24 +52,14 @@ namespace LD31.Objects
             _Position.Y += movement.Y;
         }
 
-
-
         /// <summary>
-        /// This function damages the mortal.
+        /// Adds to the moveables velocity
         /// </summary>
-        /// <param name="damage"></param>
-        public virtual void Damage(Int32 damage)
+        /// <param name="impulse"></param>
+        public virtual void ApplyImpulse(Vector3 impulse)
         {
-            if (damage > 0) _Health -= damage;
-        }
-
-        /// <summary>
-        /// This function heals the mortal.
-        /// </summary>
-        /// <param name="healAmount"></param>
-        public virtual void Heal(Int32 healAmount)
-        {
-            if (healAmount > 0) _Health += healAmount;
+            _Velocity.X += impulse.X;
+            _Velocity.Y += impulse.Y;
         }
     }
 }

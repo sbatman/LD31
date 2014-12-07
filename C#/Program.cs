@@ -24,9 +24,11 @@ namespace LD31
         /// <summary>
         /// The player object.
         /// </summary>
-        private static Player _Player;
+        public static Player _Player;
 
-        private static Level _CurrentLevel;
+        public static Level _CurrentLevel;
+
+        public static List<GameObject> _GameObjects = new List<GameObject>();
 
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
@@ -38,7 +40,7 @@ namespace LD31
             GraphicsManager.Init();
 
             _Player = new Player(new Vector3(200, 200, 200));
-           
+
 
             //give the player a default weapon!
             _Player.GiveWeapon(Weapon.Pistol);
@@ -46,11 +48,11 @@ namespace LD31
 
             for (int x = 0; x < 30; x++)
             {
-                for (int z = 0; z < 30; z++)
+                for (int y = 0; y < 30; y++)
                 {
-                    for (int y = 0; y < 5; y++)
+                    for (int z = 0; z < 5; z++)
                     {
-                        if(((x==0||x==29)||(z==0||z==29))|| y==0)_CurrentLevel.SetBlock(new Block(), x, y, z);
+                        if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) _CurrentLevel.SetBlock(new Block(), x, y, z);
                     }
                 }
             }
@@ -75,6 +77,11 @@ namespace LD31
         {
             GraphicsManager.Update();
             //update logic here.
+
+            foreach (GameObject o in _GameObjects)
+            {
+                o.Update();
+            }
 
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))

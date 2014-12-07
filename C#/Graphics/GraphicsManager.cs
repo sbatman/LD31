@@ -74,7 +74,7 @@ namespace LD31.Graphics
         /// <param name="colour">Colours used when drawing this voxel</param>
         public static void DrawWorldVoxel(Int32 x, Int32 y, Int32 z, Colour colour)
         {
-            NativeMethods.GraphicsManagerDrawVoxel(x * Level.WORLD_BLOCK_SIZE, y * Level.WORLD_BLOCK_SIZE, z * Level.WORLD_BLOCK_SIZE, colour.R, colour.G, colour.B, colour.A, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE);
+            NativeMethods.GraphicsManagerDrawVoxel(x * Level.WORLD_BLOCK_SIZE, z * Level.WORLD_BLOCK_SIZE, y * Level.WORLD_BLOCK_SIZE, colour.R, colour.G, colour.B, colour.A, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace LD31.Graphics
         /// <param name="colour">Colours used when drawing this voxel</param>
         public static void DrawVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
-            NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Y, position.Z, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
+            NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
         }
 
 

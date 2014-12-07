@@ -17,6 +17,8 @@ namespace LD31.Objects
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
+        protected int _Height = 24;
+
         /// <summary>
         /// The currently selected weapon of the Combatant.
         /// </summary>
@@ -110,6 +112,20 @@ namespace LD31.Objects
         public virtual void Heal(Int32 healAmount)
         {
             if (healAmount > 0) _Health += healAmount;
+        }
+
+        public override void Update()
+        {
+            if (!Program._CurrentLevel.IsSolid(Position.X, +Position.Y ,Position.Z - _Height))
+            {
+                Velocity.Z -= 0.98;
+            }
+            else
+            {
+                Velocity.Z = 0;
+            }
+
+            Position += Velocity;
         }
     }
 }
