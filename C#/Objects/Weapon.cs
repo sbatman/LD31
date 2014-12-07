@@ -13,7 +13,22 @@ namespace LD31.Objects
         /// <summary>
         /// This instance represents a pistol
         /// </summary>
-        public static readonly Weapon Pistol = new Weapon(0);
+        public static readonly Weapon Pistol = new Weapon(Colour.Green);
+
+        /// <summary>
+        /// This instance represents a shotgun
+        /// </summary>
+        public static readonly Weapon Shotgun = new Weapon(Colour.White);
+
+        /// <summary>
+        /// This instance represents a mega death laser of doom
+        /// </summary>
+        public static readonly Weapon DeathLaser = new Weapon(Colour.Blue);
+
+        /// <summary>
+        /// The color of the projectiles for this weapon
+        /// </summary>
+        Colour _ProjectileColor;
 
         /// <summary>
         /// backing field
@@ -29,13 +44,13 @@ namespace LD31.Objects
         }
 
 
+
         /// <summary>
         /// CTOR
         /// </summary>
-        /// <param name="ammunition"></param>
-        private Weapon(Int32 ammunition)
+        private Weapon(Colour projectileColour)
         {
-            _Ammunition = ammunition;
+            _ProjectileColor = projectileColour;
         }
 
 
@@ -70,7 +85,7 @@ namespace LD31.Objects
 
                 Camera camera = GraphicsManager.GetCamera();
                 Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
-                Projectile bullet = new Projectile(position, camera.RotationZ);
+                Projectile bullet = new Projectile(position, camera.RotationZ, this._ProjectileColor);
             }
             else
             {

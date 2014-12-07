@@ -10,12 +10,12 @@ namespace LD31.Objects
 {
     public class Projectile : Moveable
     {
-        protected Colour _Colour = new Colour(255, 255);
         protected Vector3 _Scale = new Vector3(4);
         protected DateTime _CreationTime;
         protected TimeSpan _MaxLifeSpan = TimeSpan.FromMinutes(1);
         protected Boolean _Alive = true;
         protected Double _RotationZ;
+        protected Colour _Colour;
 
         protected Int32 _CollisionHeight = 30;
         protected Int32 _CollisionRadius = 8;
@@ -28,11 +28,12 @@ namespace LD31.Objects
             get { return _Alive; }
         }
 
-        public Projectile(Vector3 position, Double rotationZ)
+        public Projectile(Vector3 position, Double rotationZ, Colour colour)
             : base(position)
         {
             _CreationTime = DateTime.Now;
             _RotationZ = rotationZ;
+            _Colour = colour;
         }
 
         public override void Update(double msSinceLastUpdate)
