@@ -33,7 +33,7 @@ namespace LD31.Graphics
             _Colour = colour;
             _Positon = position;
             _Strength = strength;
-            _ParticleToProduce = (int)(100 * strength);
+            _ParticleToProduce = (int)(220 * strength);
         }
 
         public void CreateParticle()
@@ -41,9 +41,9 @@ namespace LD31.Graphics
             Particle p = new Particle()
             {
                 Colour = _Colour,
-                Life = _RND.Next(80, 100)/100.0,
+                Life = _RND.Next(80, 100) / 100.0,
                 Position = _Positon,
-                Size = _RND.Next(2, 6),
+                Size = _RND.Next(1, 2 + (int)(4 * _Strength)),
                 Velocity = new Vector3(_RND.Next(-30, 30) / 10.0, _RND.Next(-30, 30) / 10.0, _RND.Next(-30, 30) / 10.0),
             };
             _ActiveParticles.Add(p);
@@ -57,9 +57,9 @@ namespace LD31.Graphics
 
         public void Draw()
         {
-            foreach (Particle p in new List<Particle>(_ActiveParticles).Where(a=> a.Life >=0))
+            foreach (Particle p in new List<Particle>(_ActiveParticles).Where(a => a.Life >= 0))
             {
-                GraphicsManager.DrawVoxel(p.Position,p.Colour,new Vector3(p.Size));
+                GraphicsManager.DrawVoxel(p.Position, p.Colour, new Vector3(p.Size));
             }
         }
 
@@ -79,7 +79,7 @@ namespace LD31.Graphics
                     _ActiveParticles.Remove(p);
                     continue;
                 }
-                p.Colour.A = (byte)(255 * p.Life);
+                p.Colour.A = (byte)System.Math.Min(255, 512 * p.Life);
 
                 if (!Game._CurrentLevel.IsSolid(p.Position.X, p.Position.Y, p.Position.Z - p.Size))
                 {
@@ -92,6 +92,11 @@ namespace LD31.Graphics
                     {
                         p.Velocity.Z = 0;
                     }
+                }
+
+                if (p.Velocity.Z > 0 && Game._CurrentLevel.IsSolid(p.Position.X, p.Position.Y, p.Position.Z + 10))
+                {
+                    p.Velocity.Z = 0;
                 }
 
                 Double xRadius = p.Velocity.X > 0 ? p.Size : -p.Size;
