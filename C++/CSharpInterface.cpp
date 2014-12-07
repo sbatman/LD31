@@ -50,17 +50,17 @@ extern "C" {
 		_GMInstance->SetCameraRotation(z, x);		
 	}
 
-	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(*callBack)(int32_t, int32_t))
+	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 	{
 		_GMInstance->SetMouseMoveCallback(callBack);
 	}
 
-	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardDownCallback(void(*callBack)(int32_t))
+	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardDownCallback(void(_stdcall *callBack)(int32_t))
 	{
 		_GMInstance->SetKeyDownCallback(callBack);
 	}
 
-	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardUpCallback(void(*callBack)(int32_t))
+	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardUpCallback(void(_stdcall *callBack)(int32_t))
 	{
 		_GMInstance->SetKeyUpCallback(callBack);
 	}

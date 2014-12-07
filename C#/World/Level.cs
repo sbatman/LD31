@@ -55,9 +55,9 @@ namespace LD31.Graphics
 
         public bool IsSolid(Double x, Double y, Double z)
         {
-            int testPosX = (int)(x / 32);
-            int testPosY = (int)(y / 32);
-            int testPosZ = (int)(z / 32);
+            int testPosX = (int)System.Math.Round(x / 32);
+            int testPosY = (int)System.Math.Round(y / 32);
+            int testPosZ = (int)System.Math.Round(z / 32);
 
             if (testPosX >= _Blocks.GetLength(0) || testPosX < 0) return false;
             if (testPosY >= _Blocks.GetLength(1) || testPosY < 0) return false;

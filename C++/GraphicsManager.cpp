@@ -12,9 +12,9 @@ bool _HasFocus;
 int _LastMouseX;
 int _LastMouseY;
 
-void(*_CallBackMouseMove)(int32_t, int32_t);
-void(*_CallBackKeyDown)(int32_t);
-void(*_CallBackKeyUp)(int32_t);
+void(_stdcall *_CallBackMouseMove)(int32_t, int32_t) = nullptr;
+void(_stdcall *_CallBackKeyDown)(int32_t) = nullptr;
+void(_stdcall *_CallBackKeyUp)(int32_t) = nullptr;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -30,17 +30,17 @@ GraphicsManager::~GraphicsManager()
 	delete [] _ColourList;
 }
 
-void GraphicsManager::SetMouseMoveCallback(void(*callBack)(int32_t, int32_t))
+void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 {
 	_CallBackMouseMove = callBack;
 }
 
-void GraphicsManager::SetKeyDownCallback(void(*callBack)(int32_t))
+void GraphicsManager::SetKeyDownCallback(void(_stdcall *callBack)(int32_t))
 {
 	_CallBackKeyDown = callBack;
 }
 
-void GraphicsManager::SetKeyUpCallback(void(*callBack)(int32_t))
+void GraphicsManager::SetKeyUpCallback(void(_stdcall *callBack)(int32_t))
 {
 	_CallBackKeyUp = callBack;
 }
@@ -146,19 +146,21 @@ void GraphicsManager::Update()
 				break;
 			case WM_KEYDOWN:
 			{
-				if (_HasFocus) _CallBackKeyDown(msg.wParam);
+				int a = (int) msg.wParam;
+				if (_HasFocus) _CallBackKeyDown(a);
 			}
 				break;
 			case WM_KEYUP:
 			{
-				if (_HasFocus) _CallBackKeyUp(msg.wParam);
+				int a = (int) msg.wParam;
+				if (_HasFocus) _CallBackKeyUp(a);
 			}
 				break;
 		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	if (_HasFocus)SetCursorPos(_Width*0.5f, _Height*0.5f);
+	if (_HasFocus)SetCursorPos(static_cast<int>(_Width*0.5f), static_cast<int>(_Height*0.5f));
 }
 
 void GraphicsManager::Destroy()
