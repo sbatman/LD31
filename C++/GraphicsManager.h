@@ -12,9 +12,9 @@ public:
 	void DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ);
 	void SerCameraPosition(double x, double y, double z);
 	void SetCameraRotation(double z, double x);
-	void SetMouseMoveCallback(void(*callBack)(int32_t, int32_t));
-	void SetKeyDownCallback(void(*callBack)(int32_t));
-	void SetKeyUpCallback(void(*callBack)(int32_t));
+	void SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t));
+	void SetKeyDownCallback(void(_stdcall *callBack)(int32_t));
+	void SetKeyUpCallback(void(_stdcall *callBack)(int32_t));
 
 private:
 	const int FACESPERCUBE = 6;
