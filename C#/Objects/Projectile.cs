@@ -22,7 +22,7 @@ namespace LD31.Objects
         public override void Update(double msSinceLastUpdate)
         {
 
-            Velocity *= 0.9;
+            Velocity = new Vector3(0);
             if (Velocity.Z <= 0)
             {
                 Velocity.Z = 0;
@@ -39,7 +39,7 @@ namespace LD31.Objects
         /// <summary>
         /// allow all moveable types to implement their own draw calls.
         /// </summary>
-        public virtual void Draw()
+        public override void Draw()
         {
             GraphicsManager.DrawVoxel(Position, _Colour, _Scale);
         }

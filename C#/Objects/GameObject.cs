@@ -21,5 +21,13 @@ namespace LD31.Objects
         {
             Game._GameObjects.Remove(this);
         }
+
+        /// <summary>
+        /// allow all gameobject types to implement their own draw calls.
+        /// </summary>
+        public virtual void Draw()
+        {
+
+        }
     }
 }

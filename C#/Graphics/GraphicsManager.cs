@@ -54,7 +54,7 @@ namespace LD31.Graphics
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
             NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMovedCallBack);
-            _PrimaryCamera = new Camera(); ;
+            _PrimaryCamera = new Camera();
         }
 
         /// <summary>

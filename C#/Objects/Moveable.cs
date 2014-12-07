@@ -62,14 +62,5 @@ namespace LD31.Objects
             _Velocity.X += impulse.X;
             _Velocity.Y += impulse.Y;
         }
-
-        /// <summary>
-        /// allow all moveable types to implement their own draw calls.
-        /// </summary>
-        public virtual void Draw()
-        {
-            //if (!_Active) return;
-           // GraphicsManager.DrawWorldVoxel(x, y, z, _Colour);
-        }
     }
 }

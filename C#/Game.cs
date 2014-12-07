@@ -76,6 +76,8 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
+            foreach (GameObject o in _GameObjects) o.Draw();
+
             _CurrentLevel.Render();
 
             GraphicsManager.EndDraw();
@@ -92,14 +94,12 @@ namespace LD31
 
             foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
 
-            if (InputHandler.WasButtonPressed(ButtonConcept.Fire))
+            if (InputHandler.IsButtonDown(ButtonConcept.Fire))
             {
                 Camera camera = GraphicsManager.GetCamera();
                 Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
                 Projectile bullet = new Projectile(position);
             }
-
-
 
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
