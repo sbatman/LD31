@@ -180,6 +180,11 @@ namespace LD31.Math
             return new Vector3(c1.X * c2.X, c1.Y * c2.Y, c1.Z * c2.Z);
         }
 
+        public static Double DistanceSquared(Vector3 c1, Vector3 c2)
+        {
+            return System.Math.Pow(c1.X - c2.X, 2) + System.Math.Pow(c1.Y - c2.Y, 2) + System.Math.Pow(c1.Z - c2.Z, 2);
+        }
+
         /// <summary>
         /// Allow people to make copies of this vector.
         /// </summary>

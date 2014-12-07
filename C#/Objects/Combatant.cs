@@ -44,17 +44,9 @@ namespace LD31.Objects
         /// <summary>
         /// This value represents the health of the player. Starts at 100, player dies at 0.
         /// </summary>
-        public virtual Int32 Health
+        public virtual Double Health
         {
             get { return _Health; }
-        }
-
-        /// <summary>
-        /// This boolean states if the player is dead or not.
-        /// </summary>
-        public override Boolean Alive
-        {
-            get { return _Health > 0; }
         }
 
         /// <summary>
@@ -101,13 +93,13 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        private Int32 _Health = 100;
+        private Double _Health = 100;
 
         /// <summary>
         /// This function damages the mortal.
         /// </summary>
         /// <param name="damage"></param>
-        public virtual void Damage(Int32 damage)
+        public virtual void Damage(Double damage)
         {
             if (damage > 0) _Health -= damage;
         }
@@ -155,6 +147,8 @@ namespace LD31.Objects
                 Velocity.Y = 0;
             }
 
+            if (_Health <= 0) Kill();
+
             Position += Velocity;
         }
 
@@ -172,7 +166,26 @@ namespace LD31.Objects
         /// </summary>
         public virtual void Kill()
         {
+             new Explosion(Colour.Red, Position, 1);
             _Health = 0;
+            Dispose();
+        }
+
+        public virtual void AttemptToHit(Projectile bullet)
+        {
+            if (bullet.Position.X + bullet.Size > Position.X - _CollisionRadius && bullet.Position.X - bullet.Size < Position.X + _CollisionRadius)
+            {
+                if (bullet.Position.Y + bullet.Size > Position.Y - _CollisionRadius &&
+                    bullet.Position.Y - bullet.Size < Position.Y + _CollisionRadius)
+                {
+                    if (bullet.Position.Z + bullet.Size > Position.Z - _CollisionHeight &&
+                        bullet.Position.Z - bullet.Size < Position.Z + _CollisionHeight)
+                    {
+                        Damage(bullet.Damage);
+                        bullet.Dispose();
+                    }
+                }
+            }
         }
     }
 }

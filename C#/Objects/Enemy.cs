@@ -12,19 +12,19 @@ namespace LD31.Objects
         /// <summary>
         /// The size of the enemy
         /// </summary>
-        protected Vector3 _Scale = new Vector3(8, 24, 8);
+        protected readonly Vector3 _Scale = new Vector3(8, 24, 8);
 
         /// <summary>
         /// The player this enemy targets.
         /// </summary>
-        protected Player _Target;
+        protected readonly Player _Target;
 
         /// <summary>
         /// How fast the enemy can move.
         /// </summary>
-        protected Double _MovementSpeed = 0.1;
+        protected readonly Double _MovementSpeed = 0.05;
 
-        protected Vector3 _DrawOffset = new Vector3(0, 0, 10);
+        protected readonly Vector3 _DrawOffset = new Vector3(0, 0, 10);
 
         /// <summary>
         /// CTOR

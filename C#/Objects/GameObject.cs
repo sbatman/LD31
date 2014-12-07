@@ -10,6 +10,7 @@ namespace LD31.Objects
     /// </summary>
     public abstract class GameObject : IDisposable
     {
+        private bool _Disposed = false;
         /// <summary>
         /// Ctor of the gameobject object. Adds the new instance to the global game objects list.
         /// </summary>
@@ -23,7 +24,7 @@ namespace LD31.Objects
         /// </summary>
         public virtual void Dispose()
         {
-            Game.GameObjects.Remove(this);
+            _Disposed = true;
         }
 
         /// <summary>
@@ -45,9 +46,10 @@ namespace LD31.Objects
         /// <summary>
         /// This boolean states if the gameobject is alive or not.
         /// </summary>
-        public virtual Boolean Alive
+        public virtual Boolean Disposed
         {
-            get { return true; }
+            get { return _Disposed; }
+            protected set { _Disposed = value; }
         }
     }
 }

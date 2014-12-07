@@ -10,22 +10,24 @@ namespace LD31.Objects
 {
     public class Projectile : Moveable
     {
-        protected Vector3 _Scale = new Vector3(2);
+        protected Int32 _Size = 2;
+        protected Vector3 _Scale;
         protected DateTime _CreationTime;
         protected TimeSpan _MaxLifeSpan = TimeSpan.FromMinutes(1);
-        protected Boolean _Alive = true;
         protected Vector3 _Velocity;
         protected Colour _Colour;
         protected Weapon _Owner;
 
-        protected Int32 _CollisionRadius = 8;
+        protected Int32 _CollisionRadius = 4;
 
-        /// <summary>
-        /// This boolean states if the projectile is dead or not.
-        /// </summary>
-        public override Boolean Alive
+        public int Size
         {
-            get { return _Alive; }
+            get { return _Size; }
+        }
+
+        public Double Damage
+        {
+            get { return _Owner.DamagePerShot; }
         }
 
         public Projectile(Weapon owner, Vector3 position, Vector3 velocity, Colour colour)
@@ -35,11 +37,11 @@ namespace LD31.Objects
             _CreationTime = DateTime.Now;
             _Velocity = velocity;
             _Colour = colour;
+            _Scale = new Vector3(_Size);
         }
 
         public override void Update(double msSinceLastUpdate)
         {
-
             Velocity.X += _Velocity.X;
             Velocity.Y += _Velocity.Y;
             Velocity.Z += _Velocity.Z;
@@ -52,18 +54,18 @@ namespace LD31.Objects
 
             if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
             {
-                this._Alive = false;
+               Dispose();
             }
 
             if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
             {
-                this._Alive = false;
+                Dispose();
             }
 
             //Kill all projectiles if they live longer than their max lifespan, this probably means they somehow escaped the bounds of the world
             if (DateTime.Now - _CreationTime > _MaxLifeSpan)
             {
-                this._Alive = false;
+                Dispose();
             }
         }
 
@@ -77,8 +79,16 @@ namespace LD31.Objects
 
         public override void Dispose()
         {
-            _Owner = null;
             base.Dispose();
+            _Owner = null;
+           
+        }
+
+        public void AttemptToHit(Combatant combatant)
+        {
+            if (Disposed) return;
+            if (combatant == _Owner.Owner) return;
+            combatant.AttemptToHit(this);
         }
     }
 }

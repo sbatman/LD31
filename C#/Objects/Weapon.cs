@@ -10,20 +10,6 @@ namespace LD31.Objects
     /// </summary>
     public class Weapon : GameObject
     {
-        /// <summary>
-        /// This instance represents a pistol
-        /// </summary>
-        public static readonly Weapon Pistol = new Weapon(Colour.Green);
-
-        /// <summary>
-        /// This instance represents a shotgun
-        /// </summary>
-        public static readonly Weapon Shotgun = new Weapon(Colour.White);
-
-        /// <summary>
-        /// This instance represents a mega death laser of doom
-        /// </summary>
-        public static readonly Weapon DeathLaser = new Weapon(Colour.Blue);
 
         /// <summary>
         /// The color of the projectiles for this weapon
@@ -35,6 +21,10 @@ namespace LD31.Objects
         /// </summary>
         Int32 _Ammunition;
 
+        private Combatant _Owner;
+
+        private Double _DamagePerShot = 30;
+
         /// <summary>
         /// How much ammunition this weapon has.
         /// </summary>
@@ -43,11 +33,23 @@ namespace LD31.Objects
             get { return _Ammunition; }
         }
 
+        public double DamagePerShot
+        {
+            get { return _DamagePerShot; }
+            set { _DamagePerShot = value; }
+        }
+
+        public Combatant Owner
+        {
+            get { return _Owner; }
+        }
+
         /// <summary>
         /// CTOR
         /// </summary>
-        private Weapon(Colour projectileColour)
+        public Weapon(Colour projectileColour, Combatant owner)
         {
+            _Owner = owner;
             _ProjectileColor = projectileColour;
         }
 
@@ -83,7 +85,7 @@ namespace LD31.Objects
 
 
                 Camera camera = GraphicsManager.GetCamera();
-                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ-5);
+                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ - 5);
 
                 Vector3 fireDirection = new Vector3(0)
                 {
@@ -92,24 +94,24 @@ namespace LD31.Objects
                 };
 
                 //different guns have different projectiles when they fire!
-                if (this == Weapon.Pistol)
-                {
-                    Projectile bullet = new Projectile(this,position, fireDirection, this._ProjectileColor);
-                }
-                if (this == Weapon.Shotgun)
-                {
-                    Projectile bullet1 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                    Projectile bullet2 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                    Projectile bullet3 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                }
-                if (this == Weapon.DeathLaser)
-                {
-                    Projectile bullet1 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                    Projectile bullet2 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                    Projectile bullet3 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                    Projectile bullet4 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                    Projectile bullet5 = new Projectile(this, position, fireDirection, this._ProjectileColor);
-                }
+                //if (this == Weapon.Pistol)
+                //{
+                    Projectile bullet = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //}
+                //if (this == Weapon.Shotgun)
+                //{
+                //    Projectile bullet1 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //    Projectile bullet2 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //    Projectile bullet3 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //}
+                //if (this == Weapon.DeathLaser)
+                //{
+                //    Projectile bullet1 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //    Projectile bullet2 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //    Projectile bullet3 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //    Projectile bullet4 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //    Projectile bullet5 = new Projectile(this, position, fireDirection, _ProjectileColor);
+                //}
 
             }
             //   else

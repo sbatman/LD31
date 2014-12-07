@@ -55,7 +55,7 @@ namespace LD31.Graphics
             set { _Positon = value; }
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (Particle p in new List<Particle>(_ActiveParticles).Where(a => a.Life >= 0))
             {
@@ -63,12 +63,19 @@ namespace LD31.Graphics
             }
         }
 
+
         public override void Update(double msSinceLastUpdate)
         {
             while (_ParticleToProduce > 0)
             {
                 _ParticleToProduce--;
                 CreateParticle();
+            }
+
+            if (!_ActiveParticles.Any(a => a.Life > 0))
+            {
+                Dispose();
+                return;
             }
 
             foreach (Particle p in new List<Particle>(_ActiveParticles))
