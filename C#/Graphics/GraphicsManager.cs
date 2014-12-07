@@ -7,12 +7,17 @@ using LD31.World;
 
 namespace LD31.Graphics
 {
+    /// <summary>
+    /// This class is a wrapper around the native rendered written in CPP.
+    /// </summary>
     class GraphicsManager
     {
-
+        /// <summary>
+        /// Native interop methods. Should not be accessed outside of the GraphicsManager class!
+        /// </summary>
         public static class NativeMethods
         {
-            public delegate void MouseMoveCallBack(Int32 x, Int32 y);
+        
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
@@ -30,13 +35,15 @@ namespace LD31.Graphics
             public static extern void GraphicsManagerDrawVoxel(double x, double y, double z, Byte colourR, Byte colourG, Byte colourB, Byte colourA, UInt16 sizeX, UInt16 sizeY, UInt16 sizeZ);
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerDrawUIVoxel(double x, double y, double z, Byte colourR, Byte colourG, Byte colourB, Byte colourA, UInt16 sizeX, UInt16 sizeY, UInt16 sizeZ);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSerCameraPosition(Double x, Double y, Double z);
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
-            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-            public static extern void GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack callback);
+
 
         }
 
@@ -49,10 +56,13 @@ namespace LD31.Graphics
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
-            NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMovedCallBack);
+
             _PrimaryCamera = new Camera(); ;
         }
 
+        /// <summary>
+        /// The update method of the graphics manager.
+        /// </summary>
         public static void Update()
         {
             NativeMethods.GraphicsManagerUpdate();
@@ -88,6 +98,18 @@ namespace LD31.Graphics
         public static void DrawVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
             NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
+        }
+
+        /// <summary>
+        /// Draws a voxel for the UI
+        /// </summary>
+        /// <param name="x">X Position in world space cord</param>
+        /// <param name="y">Y Position in world space cord</param>
+        /// <param name="z">Z Position in world space cord</param>
+        /// <param name="colour">Colours used when drawing this voxel</param>
+        public static void DrawUIVoxel(Vector3 position, Colour colour, Vector3 scale)
+        {
+            NativeMethods.GraphicsManagerDrawUIVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
         }
 
 
@@ -129,16 +151,13 @@ namespace LD31.Graphics
             _PrimaryCamera.Rotatate(z, x);
         }
 
+        /// <summary>
+        /// This method will get the camera instance
+        /// </summary>
+        /// <returns></returns>
         public static Camera GetCamera()
         {
             return _PrimaryCamera;
         }
-
-        private static void MouseMovedCallBack(Int32 x, Int32 y)
-        {
-            _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);
-            Console.WriteLine("Mouse Moved Callback {0}x{1}", x, y);
-        }
-
     }
 }

@@ -33,12 +33,16 @@ namespace LD31.Objects
             }
         }
 
+        /// <summary>
+        /// The update method of the player class.
+        /// </summary>
+        /// <param name="msSinceLastUpdate"></param>
         public override void Update(Double msSinceLastUpdate)
         {
             _JumpCoolDown -= msSinceLastUpdate;
             if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor() && _JumpCoolDown <= 0)
             {
-                Velocity.Z += 4;
+                Velocity.Z += 4 ;
                 _JumpCoolDown = 60;
             }
 
@@ -69,6 +73,18 @@ namespace LD31.Objects
                 Velocity.X += movement.X;
                 Velocity.Y += movement.Y;
             }
+
+            if (InputHandler.WasButtonReleased(ButtonConcept.Fire))
+            {
+                Console.WriteLine("Bang");
+
+                CurrentWeapon.Fire();
+
+                //Camera camera = GraphicsManager.GetCamera();
+                //Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
+                //Projectile bullet = new Projectile(position, camera.RotationZ);
+            }
+
             base.Update(msSinceLastUpdate);
         }
     }

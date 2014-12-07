@@ -12,15 +12,15 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        protected readonly Weapon _CurrentWeapon = null;
+        protected Weapon _CurrentWeapon = null;
 
         /// <summary>
         /// backing field
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
-        protected int _CollisionHeight = 30;
-        protected int _CollisionRadius = 8;
+        protected Int32 _CollisionHeight = 30;
+        protected Int32 _CollisionRadius = 8;
 
         
 
@@ -51,9 +51,9 @@ namespace LD31.Objects
         /// <summary>
         /// This boolean states if the player is dead or not.
         /// </summary>
-        public virtual Boolean Alive
+        public override Boolean Alive
         {
-            get { return _Health <= 0; }
+            get { return _Health > 0; }
         }
 
         /// <summary>
@@ -71,6 +71,7 @@ namespace LD31.Objects
         public void GiveWeapon(Weapon weapon)
         {
             _CurrentWeapons.Add(weapon);
+            _CurrentWeapon = weapon;
         }
 
 
@@ -134,27 +135,30 @@ namespace LD31.Objects
                 }
             }
 
+            if (Velocity.Z>0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z+ 10))
+            {
+                Velocity.Z = 0;
+            }
+
             float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
             float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
 
-            if (Game._CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
             {
                 Velocity.X = 0;
             }
 
-            if (Game._CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
             {
                 Velocity.Y = 0;
             }
 
             Position += Velocity;
-
-
         }
 
         public virtual bool IsOnFloor()
         {
-            return Game._CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
+            return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
         }
     }
 }

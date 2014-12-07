@@ -1,5 +1,6 @@
 ﻿using System;
 using LD31.Math;
+using LD31.Graphics;
 
 namespace LD31.Objects
 {
@@ -13,6 +14,9 @@ namespace LD31.Objects
         /// </summary>
         private Vector3 _Position;
 
+        /// <summary>
+        /// Backing field for velocity
+        /// </summary>
         private Vector3 _Velocity;
 
         /// <summary>
