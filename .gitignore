@@ -3,3 +3,7 @@ obj
 *.sdf
 *.suo
 *.opensdf
+ipch
+/C++/Release
+/Release
+*.user

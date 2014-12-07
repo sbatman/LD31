@@ -1,0 +1,36 @@
+#pragma once
+class GraphicsManager
+{
+public:
+	GraphicsManager();
+	~GraphicsManager();
+	void Init(int32_t width, int32_t height, int32_t handle);
+	void BeginDraw();
+	void EndDraw();
+	void Update();
+	void Destroy();
+	void DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ);
+	void SerCameraPosition(double x, double y, double z);
+	void SetCameraRotation(double z, double x);
+	void SetMouseMoveCallback(void(*callBack)(int32_t, int32_t));
+	void SetKeyDownCallback(void(*callBack)(int32_t));
+	void SetKeyUpCallback(void(*callBack)(int32_t));
+
+private:
+	const int FACESPERCUBE = 6;
+	const int TRISPERCUBE = FACESPERCUBE * 2;
+	const int VERTSPERFACE = 6;
+
+	bool _GLStatesSetup = false;
+	double* _VertexList;
+	uint8_t* _ColourList;
+	int _TriCount;
+
+
+	int _Width;
+	int _Height;
+	double _CameraPosX = 0, _CameraPosY = 0, _CameraPosZ = 0, _CameraRotZ = 0, _CameraRotX = 0;
+
+	void SetupGLStates();
+	void DrawTri(double* p1, double* p2, double* p3, int* arrayPosition);
+};
