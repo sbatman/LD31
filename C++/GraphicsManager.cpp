@@ -158,7 +158,7 @@ void GraphicsManager::Update()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	if (_HasFocus)SetCursorPos(_Width*0.5f, _Height*0.5f);
+	if (_HasFocus)SetCursorPos(static_cast<int>(_Width*0.5f), static_cast<int>(_Height*0.5f));
 }
 
 void GraphicsManager::Destroy()
