@@ -66,6 +66,7 @@ namespace LD31.Input
         public static void Update()
         {
             _PastKeyStates = _KeyStates;
+            _KeyStates = new Boolean[255];
         }
 
         /// <summary>
@@ -93,8 +94,18 @@ namespace LD31.Input
         {
             switch (buttonConcept)
             {
+                case ButtonConcept.Fire: return (_KeyStates[0x11] && !_PastKeyStates[0x11]); break;
+            }
 
-                case ButtonConcept.Fire: return (_PastKeyStates[0x11] && !_KeyStates[0x11]); break;
+            return false;
+
+        }
+
+        public static Boolean WasButtonReleased(ButtonConcept buttonConcept)
+        {
+            switch (buttonConcept)
+            {
+                case ButtonConcept.Fire: return (!_KeyStates[0x11] && _PastKeyStates[0x11]); break;
             }
 
             return false;
