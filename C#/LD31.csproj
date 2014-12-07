@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\Explosion.cs" />
     <Compile Include="Input\ButtonConcept.cs" />
     <Compile Include="Input\InputHandler.cs" />
     <Compile Include="Math\Colour.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Threading;
 using LD31.Graphics;
 using LD31.Input;
@@ -37,6 +38,8 @@ namespace LD31
         /// </summary>
         public static List<GameObject> _GameObjects = new List<GameObject>();
 
+        public static Graphics.Explosion _lastExplosion;
+
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
         /// </summary>
@@ -44,13 +47,13 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-           
+
 
             _Player = new Player(new Vector3(200, 200, 200));
 
             //give the player a default weapon!
             _Player.GiveWeapon(Weapon.Pistol);
-            _CurrentLevel = new Level(30, 30,10);
+            _CurrentLevel = new Level(30, 30, 10);
 
             for (int x = 0; x < 30; x++)
             {
@@ -77,6 +80,7 @@ namespace LD31
             GraphicsManager.StartDraw();
 
             _CurrentLevel.Render();
+            if (_lastExplosion != null) _lastExplosion.Draw();
 
             GraphicsManager.EndDraw();
         }
@@ -88,9 +92,14 @@ namespace LD31
         {
             InputHandler.Update();
             GraphicsManager.Update();
-            
+
 
             foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
+
+            if (InputHandler.WasButtonPressed(ButtonConcept.TestButton1))
+            {
+                _lastExplosion = new Graphics.Explosion(new Colour(255, 0, 0, 255), new Vector3(200, 200, 60), 1);
+            }
 
             if (InputHandler.WasButtonPressed(ButtonConcept.Fire))
             {
