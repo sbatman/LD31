@@ -10,13 +10,15 @@ namespace LD31.Objects
 {
     public class Projectile : Moveable
     {
-        private Colour _Colour = new Colour(255, 255);
-        private Vector3 _Scale = new Vector3(4);
-        private DateTime _CreationTime;
-        private TimeSpan _LifeSpan = TimeSpan.FromSeconds(0.5);
-        private Boolean _Alive = true;
-        private Double _RotationZ;
+        protected Colour _Colour = new Colour(255, 255);
+        protected Vector3 _Scale = new Vector3(4);
+        protected DateTime _CreationTime;
+        protected TimeSpan _MaxLifeSpan = TimeSpan.FromMinutes(1);
+        protected Boolean _Alive = true;
+        protected Double _RotationZ;
 
+        protected Int32 _CollisionHeight = 30;
+        protected Int32 _CollisionRadius = 8;
 
         /// <summary>
         /// This boolean states if the projectile is dead or not.
@@ -41,8 +43,22 @@ namespace LD31.Objects
 
             Position += Velocity;
 
-            ////Make sure all projectiles die after a given period of time.
-            if(DateTime.Now - _CreationTime > _LifeSpan)
+            ////Make sure all projectiles die after they hit things/walls.
+            float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
+            float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
+
+            if (Game._CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
+            {
+                this._Alive = false;
+            }
+
+            if (Game._CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
+            {
+                this._Alive = false;
+            }
+
+            //Kill all projectiles if they live longer than their max lifespan, this probably means they somehow escaped the bounds of the world
+            if(DateTime.Now  - _CreationTime > _MaxLifeSpan)
             {
                 this._Alive = false;
             }

@@ -18,8 +18,8 @@ namespace LD31.Objects
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
-        protected int _CollisionHeight = 30;
-        protected int _CollisionRadius = 8;
+        protected Int32 _CollisionHeight = 30;
+        protected Int32 _CollisionRadius = 8;
 
         
 

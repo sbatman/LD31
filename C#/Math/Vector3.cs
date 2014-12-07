@@ -5,7 +5,7 @@ namespace LD31.Math
     /// <summary>
     /// This struct represents a two dimensional vector.
     /// </summary>
-    public class Vector3
+    public class Vector3 : ICloneable
     {
         /// <summary>
         /// backing field
@@ -98,6 +98,15 @@ namespace LD31.Math
         public static Vector3 operator *(Vector3 c1, double c2)
         {
             return new Vector3(c1.X * c2, c1.Y * c2, c1.Z * c2);
+        }
+
+        /// <summary>
+        /// Allow people to make copies of this vector.
+        /// </summary>
+        /// <returns></returns>
+        public Object Clone()
+        {
+            return new Vector3(this.X, this.Y, this.Z);
         }
     }
 }

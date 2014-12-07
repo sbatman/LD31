@@ -9,7 +9,7 @@ namespace LD31.Math
     /// <summary>
     /// This value type represents a colour.
     /// </summary>
-    struct Colour
+    public struct Colour
     {
         /// <summary>
         /// backing field
