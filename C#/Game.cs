@@ -48,13 +48,13 @@ namespace LD31
             InputHandler.Init();
             GraphicsManager.Init();
 
-
+            Player = new Player(new Vector3(400,400,400));
             //give the player a default weapon and some ammo!
-            Weapon defaultWeapon = Weapon.DeathLaser;
-            _Player.GiveWeapon(defaultWeapon);
-            _Player.GiveAmmo(defaultWeapon, 10);
+            Weapon defaultWeapon = Weapon.Shotgun;
+            Player.GiveWeapon(defaultWeapon);
+            Player.GiveAmmo(defaultWeapon, 10);
 
-            _CurrentLevel = new Level(30, 30,10);
+            CurrentLevel = new Level(30, 30,10);
 
             for (int x = 0; x < 30; x++)
             {
@@ -82,9 +82,9 @@ namespace LD31
 
             //call draw for all game objects.
             if (LastExplosion != null) LastExplosion.Draw();
-            foreach (GameObject o in _GameObjects) o.Draw();
+            foreach (GameObject o in GameObjects) o.Draw();
 
-            _CurrentLevel.Render();
+            CurrentLevel.Render();
 
             GraphicsManager.EndDraw();
         }
@@ -97,12 +97,11 @@ namespace LD31
             InputHandler.Update();
             GraphicsManager.Update();
             //call update for all game objects.
-            foreach (GameObject o in new List<GameObject>(_GameObjects)) o.Update(msSinceLastUpdate);
+            foreach (GameObject o in new List<GameObject>(GameObjects)) o.Update(msSinceLastUpdate);
 
             //Clear out dead game objects
-            _GameObjects = _GameObjects.Where(o => o.Alive).ToList();
+            GameObjects = GameObjects.Where(o => o.Alive).ToList();
 
-            foreach (GameObject o in GameObjects) o.Update(msSinceLastUpdate);
 
             if (InputHandler.WasButtonPressed(ButtonConcept.TestButton1))
             {
