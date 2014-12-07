@@ -34,4 +34,34 @@ extern "C" {
 			_GMInstance = nullptr;
 		}
 	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerDrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
+	{
+		_GMInstance->DrawVoxel(x, y, z, colourR, colourG, colourB, colourA, sizeX, sizeY, sizeZ);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSerCameraPosition(double x, double y, double z)
+	{
+		_GMInstance->SerCameraPosition(x, y, z);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetCameraRotation(double z, double x)
+	{
+		_GMInstance->SetCameraRotation(z, x);		
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
+	{
+		_GMInstance->SetMouseMoveCallback(callBack);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardDownCallback(void(_stdcall *callBack)(int32_t))
+	{
+		_GMInstance->SetKeyDownCallback(callBack);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardUpCallback(void(_stdcall *callBack)(int32_t))
+	{
+		_GMInstance->SetKeyUpCallback(callBack);
+	}
 }

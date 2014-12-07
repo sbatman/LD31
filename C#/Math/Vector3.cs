@@ -5,7 +5,7 @@ namespace LD31.Math
     /// <summary>
     /// This struct represents a two dimensional vector.
     /// </summary>
-    public class Vector2
+    public class Vector3
     {
         /// <summary>
         /// backing field
@@ -16,6 +16,11 @@ namespace LD31.Math
         /// backing field
         /// </summary>
         private Double _Y;
+
+        /// <summary>
+        /// backing field
+        /// </summary>
+        private Double _Z;
 
         /// <summary>
         /// X value
@@ -48,34 +53,51 @@ namespace LD31.Math
         }
 
         /// <summary>
+        /// Z value
+        /// </summary>
+        public Double Z
+        {
+            get
+            {
+                return _Z;
+            }
+            set
+            {
+                _Z = value;
+            }
+        }
+
+        /// <summary>
         /// Secondary CTOR
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public Vector2(Double x, Double y)
+        public Vector3(Double x, Double y, Double z)
         {
             _X = x;
             _Y = y;
+            _Z = z;
         }
 
         /// <summary>
         /// Teritiary Ctor
         /// </summary>
-        /// <param name="xAndY"></param>
-        public Vector2(Double xAndY)
+        /// <param name="xyz"></param>
+        public Vector3(Double xyz)
         {
-            _X = xAndY;
-            _Y = xAndY;
+            _X = xyz;
+            _Y = xyz;
+            _Z = xyz;
         }
 
-        public static Vector2 Rotate(Vector2 vec, Double degrees)
+        public static Vector3 operator +(Vector3 c1, Vector3 c2)
         {
-            double angle = (degrees * System.Math.PI) / 180.0f;
-            return new Vector2(0)
-            {
-                X = vec.X * System.Math.Cos(angle) - vec.Y * System.Math.Sin(angle),
-                Y = vec.X * System.Math.Sin(angle) + vec.Y * System.Math.Cos(angle)
-            };
+            return new Vector3(c1.X + c2.X, c1.Y + c2.Y, c1.Z + c2.Z);
+        }
+
+        public static Vector3 operator *(Vector3 c1, double c2)
+        {
+            return new Vector3(c1.X * c2, c1.Y * c2, c1.Z * c2);
         }
     }
 }

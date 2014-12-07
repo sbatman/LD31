@@ -6,3 +6,4 @@ obj
 ipch
 /C++/Release
 /Release
+*.user
