@@ -100,8 +100,6 @@ namespace LD31
                 Projectile bullet = new Projectile(position);
             }
 
-
-
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
             {
