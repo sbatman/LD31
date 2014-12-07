@@ -14,6 +14,9 @@ namespace LD31.Objects
         /// </summary>
         private Vector3 _Position;
 
+        /// <summary>
+        /// Backing field for velocity
+        /// </summary>
         private Vector3 _Velocity;
 
         /// <summary>

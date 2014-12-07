@@ -49,7 +49,7 @@ namespace LD31
             _Player = new Player(new Vector3(200, 200, 200));
 
             //give the player a default weapon and some ammo!
-            Weapon defaultWeapon = Weapon.DeathCanon;
+            Weapon defaultWeapon = Weapon.DeathLaser;
             _Player.GiveWeapon(defaultWeapon);
             _Player.GiveAmmo(defaultWeapon, 10);
 
@@ -96,7 +96,7 @@ namespace LD31
             GraphicsManager.Update();
             
             //call update for all game objects.
-            foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
+            foreach (GameObject o in new List<GameObject>(_GameObjects)) o.Update(msSinceLastUpdate);
 
             //Clear out dead game objects
             _GameObjects = _GameObjects.Where(o => o.Alive).ToList();

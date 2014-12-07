@@ -15,10 +15,7 @@ namespace LD31.Objects
         /// </summary>
         public GameObject()
         {
-            List<GameObject> newObjects = Game._GameObjects.Select(o => o).ToList();
-            newObjects.Add(this);
-
-            Game._GameObjects = newObjects.Select(o => o).ToList();
+            Game._GameObjects.Add(this);
         }
 
         /// <summary>

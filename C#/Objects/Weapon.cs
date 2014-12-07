@@ -23,7 +23,7 @@ namespace LD31.Objects
         /// <summary>
         /// This instance represents a mega death laser of doom
         /// </summary>
-        public static readonly Weapon DeathCanon = new Weapon(Colour.Blue);
+        public static readonly Weapon DeathLaser = new Weapon(Colour.Blue);
 
         /// <summary>
         /// The color of the projectiles for this weapon
@@ -98,7 +98,7 @@ namespace LD31.Objects
                     Projectile bullet2 = new Projectile(position, camera.RotationZ +10, this._ProjectileColor);
                     Projectile bullet3 = new Projectile(position, camera.RotationZ -10, this._ProjectileColor);
                 }
-                if (this == Weapon.DeathCanon)
+                if (this == Weapon.DeathLaser)
                 {
                     Projectile bullet1 = new Projectile(position, camera.RotationZ, this._ProjectileColor);
                     Projectile bullet2 = new Projectile(position, camera.RotationZ +5, this._ProjectileColor);
