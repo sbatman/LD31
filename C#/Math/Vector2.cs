@@ -67,5 +67,15 @@ namespace LD31.Math
             _X = xAndY;
             _Y = xAndY;
         }
+
+        public static Vector2 Rotate(Vector2 vec, Double degrees)
+        {
+            double angle = (degrees * System.Math.PI) / 180.0f;
+            return new Vector2(0)
+            {
+                X = vec.X * System.Math.Cos(angle) - vec.Y * System.Math.Sin(angle),
+                Y = vec.X * System.Math.Sin(angle) + vec.Y * System.Math.Cos(angle)
+            };
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LD31.Graphics;
 using LD31.Math;
 
 namespace LD31.Objects
@@ -62,7 +63,7 @@ namespace LD31.Objects
         /// <summary>
         /// This function gives a weapon to the Combatant IF they don't already have it.
         /// </summary>
-        /// <param name="weaponType"></param>
+        /// <param name="weapon"></param>
         public void GiveWeapon(Weapon weapon)
         {
             _CurrentWeapons.Add(weapon);
@@ -114,18 +115,26 @@ namespace LD31.Objects
             if (healAmount > 0) _Health += healAmount;
         }
 
-        public override void Update()
+        public override void Update(Double msSinceLastUpdate)
         {
-            if (!Game._CurrentLevel.IsSolid(Position.X, +Position.Y ,Position.Z - _Height))
+            if (!IsOnFloor())
             {
-                Velocity.Z -= 0.98;
+                Velocity.Z -= Level.GRAVITY * (msSinceLastUpdate/1000);
             }
             else
             {
-                Velocity.Z = 0;
+                Velocity *= 0.9;
+                if(Velocity.Z<0)Velocity.Z = 0;
             }
 
             Position += Velocity;
+
+            
+        }
+
+        public virtual bool IsOnFloor()
+        {
+            return Game._CurrentLevel.IsSolid(Position.X, +Position.Y, Position.Z - _Height);
         }
     }
 }

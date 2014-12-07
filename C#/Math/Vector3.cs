@@ -94,5 +94,10 @@ namespace LD31.Math
         {
             return new Vector3(c1.X + c2.X, c1.Y + c2.Y, c1.Z + c2.Z);
         }
+
+        public static Vector3 operator *(Vector3 c1, double c2)
+        {
+            return new Vector3(c1.X * c2, c1.Y * c2, c1.Z * c2);
+        }
     }
 }

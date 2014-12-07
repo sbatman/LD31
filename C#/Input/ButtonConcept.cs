@@ -6,6 +6,7 @@
     enum ButtonConcept
     {
         Quit,
+        Jump,
         Forward,
         Backward,
         Left,

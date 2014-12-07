@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using LD31.Graphics;
@@ -36,6 +37,8 @@ namespace LD31
         void Init()
         {
             GraphicsManager.Init();
+            InputHandler.Init();
+
             _Player = new Player(new Vector3(200, 200, 200));
 
             //give the player a default weapon!
@@ -69,11 +72,12 @@ namespace LD31
         /// <summary>
         /// This function handles all logic updates
         /// </summary>
-        void Update()
+        void Update(Double msSinceLastUpdate)
         {
             GraphicsManager.Update();
+            InputHandler.Update();
 
-            foreach (GameObject o in _GameObjects) o.Update();
+            foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
 
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
@@ -85,11 +89,13 @@ namespace LD31
         public void Run()
         {
             Init();
-
+            Stopwatch updateTime = new Stopwatch();
+            updateTime.Start();
             while (_GameRunning)
             {
                 Draw();
-                Update();
+                Update(updateTime.ElapsedMilliseconds);
+                updateTime.Restart();
 
                 Thread.Sleep(UPDATE_DELAY);
             }

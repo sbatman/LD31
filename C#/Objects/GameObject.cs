@@ -12,7 +12,7 @@ namespace LD31.Objects
             Game._GameObjects.Add(this);
         }
 
-        public abstract void Update();
+        public abstract void Update(Double msSinceLastUpdate);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

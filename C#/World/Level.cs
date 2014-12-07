@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.RightsManagement;
 
 namespace LD31.Graphics
 {
@@ -10,6 +11,7 @@ namespace LD31.Graphics
     public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
+        public const Double GRAVITY = 0.98*6;
 
         private Block[, ,] _Blocks;
 

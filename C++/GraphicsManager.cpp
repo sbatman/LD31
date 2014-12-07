@@ -13,6 +13,8 @@ int _LastMouseX;
 int _LastMouseY;
 
 void(*_CallBackMouseMove)(int32_t, int32_t);
+void(*_CallBackKeyDown)(int32_t);
+void(*_CallBackKeyUp)(int32_t);
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -31,6 +33,16 @@ GraphicsManager::~GraphicsManager()
 void GraphicsManager::SetMouseMoveCallback(void(*callBack)(int32_t, int32_t))
 {
 	_CallBackMouseMove = callBack;
+}
+
+void GraphicsManager::SetKeyDownCallback(void(*callBack)(int32_t))
+{
+	_CallBackKeyDown = callBack;
+}
+
+void GraphicsManager::SetKeyUpCallback(void(*callBack)(int32_t))
+{
+	_CallBackKeyUp = callBack;
 }
 
 void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
@@ -130,6 +142,16 @@ void GraphicsManager::Update()
 					_LastMouseY = yPos;
 					if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
 				}
+			}
+				break;
+			case WM_KEYDOWN:
+			{
+				if (_HasFocus) _CallBackKeyDown(msg.wParam);
+			}
+				break;
+			case WM_KEYUP:
+			{
+				if (_HasFocus) _CallBackKeyUp(msg.wParam);
 			}
 				break;
 		}

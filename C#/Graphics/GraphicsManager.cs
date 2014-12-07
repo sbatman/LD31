@@ -128,6 +128,11 @@ namespace LD31.Graphics
             _PrimaryCamera.Rotatate(z, x);
         }
 
+        public static Camera GetCamera()
+        {
+            return _PrimaryCamera;
+        }
+
         private static void MouseMovedCallBack(Int32 x, Int32 y)
         {
             _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);
