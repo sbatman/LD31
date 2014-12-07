@@ -12,32 +12,32 @@ namespace LD31.Objects
     {
         private Colour _Colour = new Colour(255, 255);
         private Vector3 _Scale = new Vector3(4);
+        private DateTime _CreationTime;
+        private TimeSpan _LifeSpan = TimeSpan.FromSeconds(2);
 
         public Projectile(Vector3 position)
             : base(position)
         {
-
+            _CreationTime = DateTime.Now;
         }
 
         public override void Update(double msSinceLastUpdate)
         {
-
-            Velocity = new Vector3(0);
-            if (Velocity.Z <= 0)
-            {
-                Velocity.Z = 0;
-            }
-            
-
-            //float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
-            //float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
-
+            Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2), Graphics.GraphicsManager.GetCamera().RotationZ);
+            Velocity.X += movement.X;
+            Velocity.Y += movement.Y;
 
             Position += Velocity;
+
+            //Make sure all projectiles die after a given period of time.
+            if(DateTime.Now - _CreationTime > _LifeSpan)
+            {
+                this.Dispose();
+            }
         }
 
         /// <summary>
-        /// allow all moveable types to implement their own draw calls.
+        /// Make sure we can draw projectiles.
         /// </summary>
         public override void Draw()
         {

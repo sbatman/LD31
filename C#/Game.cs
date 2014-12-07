@@ -94,7 +94,7 @@ namespace LD31
 
             foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
 
-            if (InputHandler.IsButtonDown(ButtonConcept.Fire))
+            if (InputHandler.WasButtonReleased(ButtonConcept.Fire))
             {
                 Console.WriteLine("Bang");
                 Camera camera = GraphicsManager.GetCamera();
