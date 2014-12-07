@@ -6,12 +6,17 @@ using LD31.Math;
 
 namespace LD31.Graphics
 {
+    /// <summary>
+    /// This class is a wrapper around the native rendered written in CPP.
+    /// </summary>
     class GraphicsManager
     {
-
+        /// <summary>
+        /// Native interop methods. Should not be accessed outside of the GraphicsManager class!
+        /// </summary>
         public static class NativeMethods
         {
-            public delegate void MouseMoveCallBack(Int32 x, Int32 y);
+        
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
@@ -34,8 +39,7 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
-            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-            public static extern void GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack callback);
+
 
         }
 
@@ -48,10 +52,13 @@ namespace LD31.Graphics
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
-            NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMovedCallBack);
+
             _PrimaryCamera = new Camera(); ;
         }
 
+        /// <summary>
+        /// The update method of the graphics manager.
+        /// </summary>
         public static void Update()
         {
             NativeMethods.GraphicsManagerUpdate();
@@ -128,16 +135,13 @@ namespace LD31.Graphics
             _PrimaryCamera.Rotatate(z, x);
         }
 
+        /// <summary>
+        /// This method will get the camera instance
+        /// </summary>
+        /// <returns></returns>
         public static Camera GetCamera()
         {
             return _PrimaryCamera;
         }
-
-        private static void MouseMovedCallBack(Int32 x, Int32 y)
-        {
-            _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);
-            Console.WriteLine("Mouse Moved Callback {0}x{1}", x, y);
-        }
-
     }
 }

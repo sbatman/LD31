@@ -21,13 +21,23 @@ LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 GraphicsManager::GraphicsManager()
 {
 	_VertexList = new double[20000000];
+	_NormalList = new double[20000000];
 	_ColourList = new uint8_t[20000000];
+
+	_UIVertexList = new double[20000];
+	_UINormalList = new double[20000];
+	_UIColourList = new uint8_t[20000];
 }
 
 GraphicsManager::~GraphicsManager()
 {
 	delete [] _VertexList;
 	delete [] _ColourList;
+	delete [] _NormalList;
+
+	delete [] _UIVertexList;
+	delete [] _UIColourList;
+	delete [] _UINormalList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -82,7 +92,16 @@ void GraphicsManager::EndDraw()
 {
 	glVertexPointer(3, GL_DOUBLE, 0, _VertexList);
 	glColorPointer(4, GL_UNSIGNED_BYTE, 0, _ColourList);
+	glNormalPointer(GL_DOUBLE, 0, _NormalList);
 	glDrawArrays(GL_TRIANGLES, 0, _TriCount * 3);
+
+	if (_UITriCount > 0)
+	{
+		glVertexPointer(3, GL_DOUBLE, 0, _UIVertexList);
+		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _UIColourList);
+		glNormalPointer(GL_DOUBLE, 0, _UINormalList);
+		glDrawArrays(GL_TRIANGLES, 0, _UITriCount * 3);
+	}
 	glEnd();
 	SwapBuffers(_HDC);
 }
@@ -170,21 +189,60 @@ void GraphicsManager::Destroy()
 
 void GraphicsManager::SetupGLStates()
 {
+	glShadeModel(GL_SMOOTH);
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float) _Height, 20, 2500);
-	glClearColor(0, 0, 0, 1);
+	gluPerspective(70, _Width / (float) _Height, 1, 2500);
+	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_LIGHTING);
+
+	// Somewhere in the initialization part of your program…
+	glEnable(GL_LIGHTING);
+
+	// Create light components
+	GLfloat ambientLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat diffuseLight [] = { 0.8f, 0.8f, 0.8, 1.0f };
+	GLfloat specularLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat position [] = { 0, 1, 0.5, 0 };
+
+	// Assign created components to GL_LIGHT0
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+	glLightfv(GL_LIGHT0, GL_POSITION, position);
+	glEnable(GL_LIGHT0);
+
+
+	GLfloat fogColor[4] = { 0.3, 0.7, 0.9, 1.0f };      // Fog Color
+
+
+	glFogi(GL_FOG_MODE, GL_EXP);        // Fog Mode
+	glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
+	glFogf(GL_FOG_DENSITY, 0.004f);              // How Dense Will The Fog Be
+	glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
+	glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
+	glFogf(GL_FOG_END, 2500);               // Fog End Depth
+	glEnable(GL_FOG);                   // Enables GL_FOG
+
+	// enable color tracking
+	glEnable(GL_COLOR_MATERIAL);
+	// set material properties which will be assigned by glColor
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+	float specReflection [] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
+	glMateriali(GL_FRONT, GL_SHININESS, 96);
+
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glDepthFunc(GL_LEQUAL);
 	glMatrixMode(GL_MODELVIEW);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	_GLStatesSetup = true;
 }
 
@@ -218,28 +276,48 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 
 	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
 
+
+	double _FrontNormals[9] = { 0, 0, -1, 0, 0, -1, 0, 0, -1 };
+	double _LeftNormals[9] = { -1, 0, 0, -1, 0, 0, -1, 0, 0 };
+	double _RightNormals[9] = { 1, 0, 0, 1, 0, 0, 1, 0, 0 };
+	double _BackNormals[9] = { 0, 0, 1, 0, 0, 1, 0, 0, 1 };
+	double _TopNormals[9] = { 0, -1, 0, 0, -1, 0, 0, -1, 0 };
+	double _BottomNormals[9] = { 0, 1, 0, 0, 1, 0, 0, 1, 0 };
+
 	//FRONT
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
 	DrawTri(_tlf, _blf, _trf, &verpos);
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
 	DrawTri(_blf, _brf, _trf, &verpos);
 
-	//LEFT
+	//LEFT	
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
 	DrawTri(_tlb, _blb, _tlf, &verpos);
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
 	DrawTri(_blb, _blf, _tlf, &verpos);
 
-	//RIGHT
+	//RIGHT	
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
 	DrawTri(_trb, _trf, _brb, &verpos);
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
 	DrawTri(_brf, _brb, _trf, &verpos);
 
-	//Back
+	//Back	
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
 	DrawTri(_blb, _tlb, _trb, &verpos);
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
 	DrawTri(_blb, _trb, _brb, &verpos);
 
-	//Top
+	//Top	
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
 	DrawTri(_tlb, _tlf, _trb, &verpos);
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
 	DrawTri(_tlf, _trf, _trb, &verpos);
 
-	//Bottom
+	//Bottom	
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
 	DrawTri(_blb, _brb, _blf, &verpos);
+	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
 	DrawTri(_blf, _brb, _brf, &verpos);
 
 	_TriCount += 12;

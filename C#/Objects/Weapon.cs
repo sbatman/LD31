@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LD31.Graphics;
+using LD31.Math;
+using System;
 
 namespace LD31.Objects
 {
@@ -11,7 +13,22 @@ namespace LD31.Objects
         /// <summary>
         /// This instance represents a pistol
         /// </summary>
-        public static readonly Weapon Pistol = new Weapon(0);
+        public static readonly Weapon Pistol = new Weapon(Colour.Green);
+
+        /// <summary>
+        /// This instance represents a shotgun
+        /// </summary>
+        public static readonly Weapon Shotgun = new Weapon(Colour.White);
+
+        /// <summary>
+        /// This instance represents a mega death laser of doom
+        /// </summary>
+        public static readonly Weapon DeathLaser = new Weapon(Colour.Blue);
+
+        /// <summary>
+        /// The color of the projectiles for this weapon
+        /// </summary>
+        Colour _ProjectileColor;
 
         /// <summary>
         /// backing field
@@ -27,13 +44,13 @@ namespace LD31.Objects
         }
 
 
+
         /// <summary>
         /// CTOR
         /// </summary>
-        /// <param name="ammunition"></param>
-        private Weapon(Int32 ammunition)
+        private Weapon(Colour projectileColour)
         {
-            _Ammunition = ammunition;
+            _ProjectileColor = projectileColour;
         }
 
 
@@ -62,12 +79,43 @@ namespace LD31.Objects
         /// </summary>
         public void Fire()
         {
-            if (_Ammunition > 0) _Ammunition -= 1;
+            if (_Ammunition > 0)
+            {
+                _Ammunition -= 1;
+
+                
+                Camera camera = GraphicsManager.GetCamera();
+                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
+
+                //different guns have different projectiles when they fire!
+                if (this == Weapon.Pistol)
+                {
+                    Projectile bullet = new Projectile(position, camera.RotationZ, this._ProjectileColor);
+                }
+                if (this == Weapon.Shotgun)
+                {
+                    Projectile bullet1 = new Projectile(position, camera.RotationZ, this._ProjectileColor);
+                    Projectile bullet2 = new Projectile(position, camera.RotationZ +10, this._ProjectileColor);
+                    Projectile bullet3 = new Projectile(position, camera.RotationZ -10, this._ProjectileColor);
+                }
+                if (this == Weapon.DeathLaser)
+                {
+                    Projectile bullet1 = new Projectile(position, camera.RotationZ, this._ProjectileColor);
+                    Projectile bullet2 = new Projectile(position, camera.RotationZ +5, this._ProjectileColor);
+                    Projectile bullet3 = new Projectile(position, camera.RotationZ +10, this._ProjectileColor);
+                    Projectile bullet4 = new Projectile(position, camera.RotationZ -5, this._ProjectileColor);
+                    Projectile bullet5 = new Projectile(position, camera.RotationZ -10, this._ProjectileColor);
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Out of ammo for current weapon - no Bang :(");
+            }
+
+
         }
 
-        public override void Update(Double msSinceLastUpdate)
-        {
-            
-        }
+       
     }
 }

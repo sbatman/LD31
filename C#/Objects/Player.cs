@@ -10,6 +10,7 @@ namespace LD31.Objects
     /// </summary>
     public class Player : Combatant
     {
+        protected Double _JumpCoolDown = 0;
         /// <summary>
         /// CTOR
         /// </summary>
@@ -32,11 +33,17 @@ namespace LD31.Objects
             }
         }
 
+        /// <summary>
+        /// The update method of the player class.
+        /// </summary>
+        /// <param name="msSinceLastUpdate"></param>
         public override void Update(Double msSinceLastUpdate)
         {
-            if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor())
+            _JumpCoolDown -= msSinceLastUpdate;
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor() && _JumpCoolDown <= 0)
             {
-                Velocity.Z += 1;
+                Velocity.Z += 4 ;
+                _JumpCoolDown = 60;
             }
 
             if (Input.InputHandler.IsButtonDown(ButtonConcept.Forward) && IsOnFloor())
@@ -66,6 +73,18 @@ namespace LD31.Objects
                 Velocity.X += movement.X;
                 Velocity.Y += movement.Y;
             }
+
+            if (InputHandler.WasButtonReleased(ButtonConcept.Fire))
+            {
+                Console.WriteLine("Bang");
+
+                CurrentWeapon.Fire();
+
+                //Camera camera = GraphicsManager.GetCamera();
+                //Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
+                //Projectile bullet = new Projectile(position, camera.RotationZ);
+            }
+
             base.Update(msSinceLastUpdate);
         }
     }
