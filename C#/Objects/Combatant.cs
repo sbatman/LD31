@@ -116,7 +116,7 @@ namespace LD31.Objects
 
         public override void Update()
         {
-            if (!Program._CurrentLevel.IsSolid(Position.X, +Position.Y ,Position.Z - _Height))
+            if (!Game._CurrentLevel.IsSolid(Position.X, +Position.Y ,Position.Z - _Height))
             {
                 Velocity.Z -= 0.98;
             }

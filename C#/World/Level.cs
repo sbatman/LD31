@@ -7,11 +7,11 @@ namespace LD31.Graphics
     /// 
     /// This single Mesh is then passed to the GraphicsManager for rendering.
     /// </summary>
-    public class Level
+    public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
 
-        private readonly Block[, ,] _Blocks;
+        private Block[, ,] _Blocks;
 
         private readonly int _SizeX;
         private readonly int _SizeY;
@@ -64,6 +64,27 @@ namespace LD31.Graphics
 
             if (_Blocks[testPosX, testPosY, testPosZ] == null) return false;
             return (_Blocks[testPosX, testPosY, testPosZ].IsCollidable);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            for (Int32 x = 0; x < _SizeX; x++)
+            {
+                for (Int32 y = 0; y < _SizeY; y++)
+                {
+                    for (Int32 z = 0; z < _SizeZ; z++)
+                    {
+                        if (_Blocks[x, y, z] != null)
+                        {
+                            _Blocks[x, y, z].Dispose();
+                        }
+                    }
+                }
+            }
+            _Blocks = null;
         }
     }
 }

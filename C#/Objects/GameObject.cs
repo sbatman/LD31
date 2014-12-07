@@ -9,7 +9,7 @@ namespace LD31.Objects
     {
         public GameObject()
         {
-            Program._GameObjects.Add(this);
+            Game._GameObjects.Add(this);
         }
 
         public abstract void Update();
@@ -19,7 +19,7 @@ namespace LD31.Objects
         /// </summary>
         public void Dispose()
         {
-            Program._GameObjects.Remove(this);
+            Game._GameObjects.Remove(this);
         }
     }
 }

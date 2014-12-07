@@ -58,12 +58,13 @@
     <Compile Include="Objects\Moveable.cs" />
     <Compile Include="Objects\Player.cs" />
     <Compile Include="Math\Vector2.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="World\Block.cs" />
     <Compile Include="World\BlockType.cs" />
     <Compile Include="World\Level.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Objects\Weapon.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
