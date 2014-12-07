@@ -10,6 +10,9 @@ namespace LD31.Objects
     /// </summary>
     public abstract class GameObject : IDisposable
     {
+        /// <summary>
+        /// Ctor of the gameobject object. Adds the new instance to the global game objects list.
+        /// </summary>
         public GameObject()
         {
             List<GameObject> newObjects = Game._GameObjects.Select(o => o).ToList();
@@ -18,14 +21,20 @@ namespace LD31.Objects
             Game._GameObjects = newObjects.Select(o => o).ToList();
         }
 
-        public abstract void Update(Double msSinceLastUpdate);
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
             Game._GameObjects.Remove(this);
+        }
+
+        /// <summary>
+        /// allow all gameobject types to implement their own update calls.
+        /// </summary>
+        public virtual void Update(Double msSinceLastUpdate)
+        {
+
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace LD31
             _Player = new Player(new Vector3(200, 200, 200));
 
             //give the player a default weapon and some ammo!
-            Weapon defaultWeapon = Weapon.Shotgun;
+            Weapon defaultWeapon = Weapon.DeathCanon;
             _Player.GiveWeapon(defaultWeapon);
             _Player.GiveAmmo(defaultWeapon, 10);
 
