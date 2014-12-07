@@ -155,9 +155,21 @@ namespace LD31.Objects
             Position += Velocity;
         }
 
+        /// <summary>
+        /// This bool will tell the user if the combatant is on the floor or not.
+        /// </summary>
+        /// <returns></returns>
         public virtual bool IsOnFloor()
         {
             return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
+        }
+
+        /// <summary>
+        /// This method will kill/set the combatant health to 0;
+        /// </summary>
+        public virtual void Kill()
+        {
+            _Health = 0;
         }
     }
 }

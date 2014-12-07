@@ -99,11 +99,27 @@ namespace LD31.Math
         }
 
         /// <summary>
+        /// Overload of '-' operator
+        /// </summary>
+        public static Vector3 operator -(Vector3 c1, Vector3 c2)
+        {
+            return new Vector3(c1.X - c2.X, c1.Y - c2.Y, c1.Z - c2.Z);
+        }
+
+        /// <summary>
         /// Overload of '*' operator
         /// </summary>
         public static Vector3 operator *(Vector3 c1, double c2)
         {
             return new Vector3(c1.X * c2, c1.Y * c2, c1.Z * c2);
+        }
+
+        /// <summary>
+        /// Overload of '*' operator
+        /// </summary>
+        public static Vector3 operator *(Vector3 c1, Vector3 c2)
+        {
+            return new Vector3(c1.X * c2.X, c1.Y * c2.Y, c1.Z * c2.Z);
         }
 
         /// <summary>
