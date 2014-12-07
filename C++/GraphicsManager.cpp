@@ -185,13 +185,12 @@ void GraphicsManager::SetupGLStates()
 
 	// Somewhere in the initialization part of your program…
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
 
 	// Create light components
 	GLfloat ambientLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
 	GLfloat diffuseLight [] = { 0.8f, 0.8f, 0.8, 1.0f };
 	GLfloat specularLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat position [] = { 100, 100, 600, 1.0f };
+	GLfloat position [] = { 0, 1, 0.5, 0 };
 
 	// Assign created components to GL_LIGHT0
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -199,6 +198,18 @@ void GraphicsManager::SetupGLStates()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 	glEnable(GL_LIGHT0);
+
+
+	GLfloat fogColor[4] = { 0.3, 0.7, 0.9, 1.0f };      // Fog Color
+
+
+	glFogi(GL_FOG_MODE, GL_EXP);        // Fog Mode
+	glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
+	glFogf(GL_FOG_DENSITY, 0.004f);              // How Dense Will The Fog Be
+	glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
+	glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
+	glFogf(GL_FOG_END, 2500);               // Fog End Depth
+	glEnable(GL_FOG);                   // Enables GL_FOG
 
 	// enable color tracking
 	glEnable(GL_COLOR_MATERIAL);
