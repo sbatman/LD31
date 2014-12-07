@@ -11,7 +11,7 @@ namespace LD31.Graphics
     public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
-        public const Double GRAVITY = 0.98*6;
+        public const Double GRAVITY = 0.98 * 6;
 
         private Block[, ,] _Blocks;
 
@@ -51,6 +51,14 @@ namespace LD31.Graphics
         {
             if (_Blocks[x, y, z] != null) _Blocks[x, y, z].Dispose();
             _Blocks[x, y, z] = block;
+        }
+
+        public Block GetBlock(Double x, Double y, Double z)
+        {
+            int testPosX = (int)System.Math.Round(x / 32.0);
+            int testPosY = (int)System.Math.Round(y / 32.0);
+            int testPosZ = (int)System.Math.Round(z / 32.0);
+            return _Blocks[testPosX, testPosY, testPosZ];
         }
 
         public bool IsSolid(Double x, Double y, Double z)

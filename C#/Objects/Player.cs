@@ -10,6 +10,7 @@ namespace LD31.Objects
     /// </summary>
     public class Player : Combatant
     {
+        protected Double _JumpCoolDown = 0;
         /// <summary>
         /// CTOR
         /// </summary>
@@ -34,9 +35,11 @@ namespace LD31.Objects
 
         public override void Update(Double msSinceLastUpdate)
         {
-            if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor())
+            _JumpCoolDown -= msSinceLastUpdate;
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor() && _JumpCoolDown <= 0)
             {
-                Velocity.Z += 1;
+                Velocity.Z += 4;
+                _JumpCoolDown = 60;
             }
 
             if (Input.InputHandler.IsButtonDown(ButtonConcept.Forward) && IsOnFloor())
