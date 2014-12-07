@@ -133,6 +133,11 @@ namespace LD31.Objects
                 }
             }
 
+            if (Velocity.Z>0 && Game._CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z+ 10))
+            {
+                Velocity.Z = 0;
+            }
+
             float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
             float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
 
