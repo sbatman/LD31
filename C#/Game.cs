@@ -27,8 +27,14 @@ namespace LD31
         /// </summary>
         public static Player _Player;
 
+        /// <summary>
+        /// The current level
+        /// </summary>
         public static Level _CurrentLevel;
 
+        /// <summary>
+        /// A collection of all gameobjects currently available
+        /// </summary>
         public static List<GameObject> _GameObjects = new List<GameObject>();
 
         /// <summary>
@@ -86,6 +92,9 @@ namespace LD31
             }
         }
 
+        /// <summary>
+        /// The main game run function.
+        /// </summary>
         public void Run()
         {
             Init();
