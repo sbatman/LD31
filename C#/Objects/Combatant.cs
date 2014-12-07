@@ -11,7 +11,7 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        protected readonly Weapon _CurrentWeapon = null;
+        protected Weapon _CurrentWeapon = null;
 
         /// <summary>
         /// backing field
@@ -70,6 +70,7 @@ namespace LD31.Objects
         public void GiveWeapon(Weapon weapon)
         {
             _CurrentWeapons.Add(weapon);
+            _CurrentWeapon = weapon;
         }
 
 

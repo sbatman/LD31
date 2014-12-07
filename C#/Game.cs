@@ -48,8 +48,10 @@ namespace LD31
 
             _Player = new Player(new Vector3(200, 200, 200));
 
-            //give the player a default weapon!
+            //give the player a default weapon and some ammo!
             _Player.GiveWeapon(Weapon.Pistol);
+            _Player.GiveAmmo(Weapon.Pistol, 10);
+
             _CurrentLevel = new Level(30, 30,10);
 
             for (int x = 0; x < 30; x++)
@@ -76,6 +78,7 @@ namespace LD31
         {
             GraphicsManager.StartDraw();
 
+            //call draw for all game objects.
             foreach (GameObject o in _GameObjects) o.Draw();
 
             _CurrentLevel.Render();
@@ -96,14 +99,6 @@ namespace LD31
 
             //Clear out dead game objects
             _GameObjects = _GameObjects.Where(o => o.Alive).ToList();
-
-            if (InputHandler.WasButtonReleased(ButtonConcept.Fire))
-            {
-                Console.WriteLine("Bang");
-                Camera camera = GraphicsManager.GetCamera();
-                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
-                Projectile bullet = new Projectile(position, camera.RotationZ);
-            }
 
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))

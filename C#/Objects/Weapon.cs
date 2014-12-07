@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LD31.Graphics;
+using LD31.Math;
+using System;
 
 namespace LD31.Objects
 {
@@ -66,7 +68,13 @@ namespace LD31.Objects
             {
                 _Ammunition -= 1;
 
-
+                Camera camera = GraphicsManager.GetCamera();
+                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
+                Projectile bullet = new Projectile(position, camera.RotationZ);
+            }
+            else
+            {
+                Console.WriteLine("Out of ammo for current weapon - no Bang :(");
             }
 
 

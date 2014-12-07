@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace LD31.Objects
 {
@@ -9,7 +12,10 @@ namespace LD31.Objects
     {
         public GameObject()
         {
-            Game._GameObjects.Add(this);
+            List<GameObject> newObjects = Game._GameObjects.Select(o => o).ToList();
+            newObjects.Add(this);
+
+            Game._GameObjects = newObjects.Select(o => o).ToList();
         }
 
         public abstract void Update(Double msSinceLastUpdate);
