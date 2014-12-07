@@ -83,9 +83,22 @@ namespace LD31.Objects
             {
                 _Ammunition -= 1;
 
+                
                 Camera camera = GraphicsManager.GetCamera();
                 Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
-                Projectile bullet = new Projectile(position, camera.RotationZ, this._ProjectileColor);
+
+                //different guns have different projectiles when they fire!
+                if (this == Weapon.Pistol)
+                {
+                    Projectile bullet = new Projectile(position, camera.RotationZ, this._ProjectileColor);
+                }
+                if (this == Weapon.Shotgun)
+                {
+                    Projectile bullet1 = new Projectile(position, camera.RotationZ, this._ProjectileColor);
+                    Projectile bullet2 = new Projectile(position, camera.RotationZ +10, this._ProjectileColor);
+                    Projectile bullet3 = new Projectile(position, camera.RotationZ -10, this._ProjectileColor);
+                }
+
             }
             else
             {
