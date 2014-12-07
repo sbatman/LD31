@@ -61,13 +61,19 @@ namespace LD31.Math
         /// <summary>
         /// Teritiary Ctor
         /// </summary>
-        /// <param name="xAndY"></param>
-        public Vector2(Double xAndY)
+        /// <param name="xy"></param>
+        public Vector2(Double xy)
         {
-            _X = xAndY;
-            _Y = xAndY;
+            _X = xy;
+            _Y = xy;
         }
 
+        /// <summary>
+        /// Rotational logic function.
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <param name="degrees"></param>
+        /// <returns></returns>
         public static Vector2 Rotate(Vector2 vec, Double degrees)
         {
             double angle = (degrees * System.Math.PI) / 180.0f;

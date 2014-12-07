@@ -6,9 +6,14 @@ using LD31.Math;
 
 namespace LD31.Graphics
 {
+    /// <summary>
+    /// This class is a wrapper around the native rendered written in CPP.
+    /// </summary>
     class GraphicsManager
     {
-
+        /// <summary>
+        /// Native interop methods. Should not be accessed outside of the GraphicsManager class!
+        /// </summary>
         public static class NativeMethods
         {
             public delegate void MouseMoveCallBack(Int32 x, Int32 y);
@@ -52,6 +57,9 @@ namespace LD31.Graphics
             _PrimaryCamera = new Camera(); ;
         }
 
+        /// <summary>
+        /// The update method of the graphics manager.
+        /// </summary>
         public static void Update()
         {
             NativeMethods.GraphicsManagerUpdate();
@@ -128,11 +136,20 @@ namespace LD31.Graphics
             _PrimaryCamera.Rotatate(z, x);
         }
 
+        /// <summary>
+        /// This method will get the camera instance
+        /// </summary>
+        /// <returns></returns>
         public static Camera GetCamera()
         {
             return _PrimaryCamera;
         }
 
+        /// <summary>
+        /// This method is the callback used to handle mouse movement.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private static void MouseMovedCallBack(Int32 x, Int32 y)
         {
             _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);

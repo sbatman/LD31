@@ -33,6 +33,10 @@ namespace LD31.Objects
             }
         }
 
+        /// <summary>
+        /// The update method of the player class.
+        /// </summary>
+        /// <param name="msSinceLastUpdate"></param>
         public override void Update(Double msSinceLastUpdate)
         {
             _JumpCoolDown -= msSinceLastUpdate;
@@ -69,6 +73,7 @@ namespace LD31.Objects
                 Velocity.X += movement.X;
                 Velocity.Y += movement.Y;
             }
+
             base.Update(msSinceLastUpdate);
         }
     }
