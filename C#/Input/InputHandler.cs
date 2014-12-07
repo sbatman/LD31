@@ -8,6 +8,9 @@ namespace LD31.Input
     /// </summary>
     static class InputHandler
     {
+        /// <summary>
+        /// Native interop methods. Should not be accessed outside of InputHandler!
+        /// </summary>
         static class NativeMethods
         {
             public delegate void KeyboardCallBack(Int32 key);
@@ -20,28 +23,50 @@ namespace LD31.Input
 
         }
 
-        private static bool[] _KeyStates = new bool[255];
-        private static bool[] _PastKeyStates = new bool[255];
+        /// <summary>
+        /// This array of bools holds all the current key states
+        /// </summary>
+        private static Boolean[] _KeyStates = new Boolean[255];
 
+        /// <summary>
+        /// This array of bools holds all the previous keystates
+        /// </summary>
+        private static Boolean[] _PastKeyStates = new Boolean[255];
+
+        /// <summary>
+        /// Input handle initialization. Must be called before the input handler is used!
+        /// </summary>
         public static void Init()
         {
-            NativeMethods.GraphicsManagerSetKeyboardDownCallback(HandelKeyDown);
-            NativeMethods.GraphicsManagerSetKeyboardUpCallback(HandelKeyUp);
+            NativeMethods.GraphicsManagerSetKeyboardDownCallback(HandleKeyDown);
+            NativeMethods.GraphicsManagerSetKeyboardUpCallback(HandleKeyUp);
         }
 
-        private static void HandelKeyDown(Int32 key)
+        /// <summary>
+        /// This callback handles when a key is pressed down
+        /// </summary>
+        /// <param name="key"></param>
+        private static void HandleKeyDown(Int32 key)
         {
             _KeyStates[key] = true;
         }
 
-        private static void HandelKeyUp(Int32 key)
+        /// <summary>
+        /// This callback handles when a key is release.
+        /// </summary>
+        /// <param name="key"></param>
+        private static void HandleKeyUp(Int32 key)
         {
             _KeyStates[key] = false;
         }
 
+        /// <summary>
+        /// This method updates the keystate collections.
+        /// </summary>
         public static void Update()
         {
             _PastKeyStates = _KeyStates;
+            _KeyStates = new Boolean[255];
         }
 
         /// <summary>
@@ -59,9 +84,32 @@ namespace LD31.Input
                 case ButtonConcept.Backward: return (_KeyStates[0x28] || _KeyStates[0x53]); break;
                 case ButtonConcept.Left: return (_KeyStates[0x25] || _KeyStates[0x41]); break;
                 case ButtonConcept.Right: return (_KeyStates[0x27] || _KeyStates[0x44]); break;
+                case ButtonConcept.Fire: return (_KeyStates[0x11]); break;
             }
 
             return false;
+        }
+
+        public static Boolean WasButtonPressed(ButtonConcept buttonConcept)
+        {
+            switch (buttonConcept)
+            {
+                case ButtonConcept.Fire: return (_KeyStates[0x11] && !_PastKeyStates[0x11]); break;
+            }
+
+            return false;
+
+        }
+
+        public static Boolean WasButtonReleased(ButtonConcept buttonConcept)
+        {
+            switch (buttonConcept)
+            {
+                case ButtonConcept.Fire: return (!_KeyStates[0x11] && _PastKeyStates[0x11]); break;
+            }
+
+            return false;
+
         }
     }
 }

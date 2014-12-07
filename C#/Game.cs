@@ -27,8 +27,14 @@ namespace LD31
         /// </summary>
         public static Player _Player;
 
+        /// <summary>
+        /// The current level
+        /// </summary>
         public static Level _CurrentLevel;
 
+        /// <summary>
+        /// A collection of all gameobjects currently available
+        /// </summary>
         public static List<GameObject> _GameObjects = new List<GameObject>();
 
         /// <summary>
@@ -36,8 +42,9 @@ namespace LD31
         /// </summary>
         void Init()
         {
-            GraphicsManager.Init();
             InputHandler.Init();
+            GraphicsManager.Init();
+           
 
             _Player = new Player(new Vector3(200, 200, 200));
 
@@ -79,10 +86,20 @@ namespace LD31
         /// </summary>
         void Update(Double msSinceLastUpdate)
         {
-            GraphicsManager.Update();
             InputHandler.Update();
+            GraphicsManager.Update();
+            
 
             foreach (GameObject o in _GameObjects) o.Update(msSinceLastUpdate);
+
+            if (InputHandler.WasButtonPressed(ButtonConcept.Fire))
+            {
+                Camera camera = GraphicsManager.GetCamera();
+                Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
+                Projectile bullet = new Projectile(position);
+            }
+
+
 
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
@@ -91,6 +108,9 @@ namespace LD31
             }
         }
 
+        /// <summary>
+        /// The main game run function.
+        /// </summary>
         public void Run()
         {
             Init();
