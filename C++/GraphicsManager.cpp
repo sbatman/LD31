@@ -174,7 +174,7 @@ void GraphicsManager::SetupGLStates()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(70, _Width / (float) _Height, 20, 2500);
-	glClearColor(0, 0, 0, 1);
+	glClearColor(0.2, 0.5, 0.9, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
