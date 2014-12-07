@@ -48,13 +48,13 @@ namespace LD31
             InputHandler.Init();
             GraphicsManager.Init();
 
-            Player = new Player(new Vector3(400,400,400));
+            Player = new Player(new Vector3(400, 400, 400));
             //give the player a default weapon and some ammo!
             Weapon defaultWeapon = Weapon.Shotgun;
             Player.GiveWeapon(defaultWeapon);
             Player.GiveAmmo(defaultWeapon, 10);
 
-            CurrentLevel = new Level(30, 30,10);
+            CurrentLevel = new Level(30, 30, 10);
 
             for (int x = 0; x < 30; x++)
             {
@@ -84,7 +84,9 @@ namespace LD31
             if (LastExplosion != null) LastExplosion.Draw();
             foreach (GameObject o in GameObjects) o.Draw();
 
-            CurrentLevel.Render();
+           CurrentLevel.Render();
+
+            UI.Draw();
 
             GraphicsManager.EndDraw();
         }
