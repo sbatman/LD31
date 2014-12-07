@@ -16,7 +16,7 @@ namespace LD31.Graphics
         /// </summary>
         public static class NativeMethods
         {
-            public delegate void MouseMoveCallBack(Int32 x, Int32 y);
+        
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
@@ -39,8 +39,7 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
-            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
-            public static extern void GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack callback);
+
 
         }
 
@@ -53,8 +52,8 @@ namespace LD31.Graphics
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
-            NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMovedCallBack);
-            _PrimaryCamera = new Camera();
+
+            _PrimaryCamera = new Camera(); ;
         }
 
         /// <summary>
@@ -144,17 +143,5 @@ namespace LD31.Graphics
         {
             return _PrimaryCamera;
         }
-
-        /// <summary>
-        /// This method is the callback used to handle mouse movement.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        private static void MouseMovedCallBack(Int32 x, Int32 y)
-        {
-            _PrimaryCamera.Rotatate(x * 0.2f, y * 0.2f);
-            Console.WriteLine("Mouse Moved Callback {0}x{1}", x, y);
-        }
-
     }
 }

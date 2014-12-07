@@ -14,6 +14,7 @@ namespace LD31.Input
         static class NativeMethods
         {
             public delegate void KeyboardCallBack(Int32 key);
+            public delegate void MouseMoveCallBack(Int32 x, Int32 y);
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetKeyboardDownCallback(KeyboardCallBack callback);
@@ -21,7 +22,14 @@ namespace LD31.Input
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetKeyboardUpCallback(KeyboardCallBack callback);
 
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack callback);
+
         }
+
+        static NativeMethods.KeyboardCallBack KeyboardDownCallBack;
+        static NativeMethods.KeyboardCallBack KeyboardUpCallBack;
+        static NativeMethods.MouseMoveCallBack MouseMoveCallBack;
 
         /// <summary>
         /// This array of bools holds all the current key states
@@ -38,8 +46,27 @@ namespace LD31.Input
         /// </summary>
         public static void Init()
         {
-            NativeMethods.GraphicsManagerSetKeyboardDownCallback(HandleKeyDown);
-            NativeMethods.GraphicsManagerSetKeyboardUpCallback(HandleKeyUp);
+            KeyboardDownCallBack = HandleKeyDown;
+            KeyboardUpCallBack = HandleKeyUp;
+            MouseMoveCallBack = HandleMouseMove;
+            GC.KeepAlive(KeyboardDownCallBack);
+            GC.KeepAlive(KeyboardUpCallBack);
+            GC.KeepAlive(MouseMoveCallBack);
+            NativeMethods.GraphicsManagerSetKeyboardDownCallback(KeyboardDownCallBack);
+            NativeMethods.GraphicsManagerSetKeyboardUpCallback(KeyboardUpCallBack);
+            NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack);
+        }
+
+
+        /// <summary>
+        /// This method is the callback used to handle mouse movement.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        private static void HandleMouseMove(Int32 x, Int32 y)
+        {
+            Graphics.GraphicsManager.GetCamera().Rotatate(x * 0.2f, y * 0.2f);
+            Console.WriteLine("Mouse Moved Callback {0}x{1}", x, y);
         }
 
         /// <summary>
@@ -84,6 +111,7 @@ namespace LD31.Input
                 case ButtonConcept.Left: return (_KeyStates[0x25] || _KeyStates[0x41]); break;
                 case ButtonConcept.Right: return (_KeyStates[0x27] || _KeyStates[0x44]); break;
                 case ButtonConcept.Fire: return (_KeyStates[0x11]); break;
+                case ButtonConcept.TestButton1: return (_KeyStates[0x24]); break;
             }
 
             return false;
@@ -94,6 +122,7 @@ namespace LD31.Input
             switch (buttonConcept)
             {
                 case ButtonConcept.Fire: return (_KeyStates[0x11] && !_PastKeyStates[0x11]); break;
+                case ButtonConcept.TestButton1: return (_KeyStates[0x24] && !_PastKeyStates[0x24]); break;
             }
 
             return false;
@@ -105,6 +134,7 @@ namespace LD31.Input
             switch (buttonConcept)
             {
                 case ButtonConcept.Fire: return (!_KeyStates[0x11] && _PastKeyStates[0x11]); break;
+                case ButtonConcept.TestButton1: return (!_KeyStates[0x24] && _PastKeyStates[0x24]); break;
             }
 
             return false;

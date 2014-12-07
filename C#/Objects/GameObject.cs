@@ -15,7 +15,7 @@ namespace LD31.Objects
         /// </summary>
         public GameObject()
         {
-            Game._GameObjects.Add(this);
+            Game.GameObjects.Add(this);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace LD31.Objects
         /// </summary>
         public void Dispose()
         {
-            Game._GameObjects.Remove(this);
+            Game.GameObjects.Remove(this);
         }
 
         /// <summary>

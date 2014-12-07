@@ -134,15 +134,20 @@ namespace LD31.Objects
                 }
             }
 
+            if (Velocity.Z>0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z+ 10))
+            {
+                Velocity.Z = 0;
+            }
+
             float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
             float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
 
-            if (Game._CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
             {
                 Velocity.X = 0;
             }
 
-            if (Game._CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
             {
                 Velocity.Y = 0;
             }
@@ -152,7 +157,7 @@ namespace LD31.Objects
 
         public virtual bool IsOnFloor()
         {
-            return Game._CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
+            return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
         }
     }
 }
