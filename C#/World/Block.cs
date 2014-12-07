@@ -16,6 +16,12 @@ namespace LD31.Graphics
 
         private Colour _Colour;
 
+        private int _x;
+
+        private int _y;
+
+        private int _z;
+
         private static Random rnd = new Random();
 
         public Block()
@@ -54,6 +60,12 @@ namespace LD31.Graphics
         {
             get { return _BlockType; }
             set { _BlockType = value; }
+        }
+
+        public Colour Colour
+        {
+            get { return _Colour; }
+            set { _Colour = value; }
         }
 
         public void Draw(Int32 x, Int32 y, Int32 z)

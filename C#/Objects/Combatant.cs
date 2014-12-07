@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LD31.Graphics;
 using LD31.Math;
+using LD31.World;
 
 namespace LD31.Objects
 {
@@ -21,7 +22,9 @@ namespace LD31.Objects
         protected Int32 _CollisionHeight = 30;
         protected Int32 _CollisionRadius = 8;
 
-        
+        protected Double _JumpCoolDown = 0;
+
+
 
         /// <summary>
         /// The currently selected weapon of the Combatant.
@@ -42,17 +45,9 @@ namespace LD31.Objects
         /// <summary>
         /// This value represents the health of the player. Starts at 100, player dies at 0.
         /// </summary>
-        public virtual Int32 Health
+        public virtual Double Health
         {
             get { return _Health; }
-        }
-
-        /// <summary>
-        /// This boolean states if the player is dead or not.
-        /// </summary>
-        public override Boolean Alive
-        {
-            get { return _Health > 0; }
         }
 
         /// <summary>
@@ -99,13 +94,13 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        private Int32 _Health = 100;
+        private Double _Health = 100;
 
         /// <summary>
         /// This function damages the mortal.
         /// </summary>
         /// <param name="damage"></param>
-        public virtual void Damage(Int32 damage)
+        public virtual void Damage(Double damage)
         {
             if (damage > 0) _Health -= damage;
         }
@@ -121,6 +116,7 @@ namespace LD31.Objects
 
         public override void Update(Double msSinceLastUpdate)
         {
+            _JumpCoolDown -= msSinceLastUpdate;
             if (!IsOnFloor())
             {
                 Velocity.Z -= Level.GRAVITY * (msSinceLastUpdate / 1000);
@@ -134,7 +130,7 @@ namespace LD31.Objects
                 }
             }
 
-            if (Velocity.Z>0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z+ 10))
+            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + 10))
             {
                 Velocity.Z = 0;
             }
@@ -152,12 +148,45 @@ namespace LD31.Objects
                 Velocity.Y = 0;
             }
 
+            if (_Health <= 0) Kill();
+
             Position += Velocity;
         }
 
+        /// <summary>
+        /// This bool will tell the user if the combatant is on the floor or not.
+        /// </summary>
+        /// <returns></returns>
         public virtual bool IsOnFloor()
         {
             return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
+        }
+
+        /// <summary>
+        /// This method will kill/set the combatant health to 0;
+        /// </summary>
+        public virtual void Kill()
+        {
+            new Explosion(Colour.Red, Position, 1);
+            _Health = 0;
+            Dispose();
+        }
+
+        public virtual void AttemptToHit(Projectile bullet)
+        {
+            if (bullet.Position.X + bullet.Size > Position.X - _CollisionRadius && bullet.Position.X - bullet.Size < Position.X + _CollisionRadius)
+            {
+                if (bullet.Position.Y + bullet.Size > Position.Y - _CollisionRadius &&
+                    bullet.Position.Y - bullet.Size < Position.Y + _CollisionRadius)
+                {
+                    if (bullet.Position.Z + bullet.Size > Position.Z - _CollisionHeight &&
+                        bullet.Position.Z - bullet.Size < Position.Z + _CollisionHeight)
+                    {
+                        Damage(bullet.Damage);
+                        bullet.Dispose();
+                    }
+                }
+            }
         }
     }
 }

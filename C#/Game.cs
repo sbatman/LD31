@@ -8,6 +8,7 @@ using LD31.Graphics;
 using LD31.Input;
 using LD31.Math;
 using LD31.Objects;
+using LD31.World;
 
 namespace LD31
 {
@@ -28,6 +29,8 @@ namespace LD31
         /// </summary>
         public static Player Player;
 
+        public static Enemy Enemy;
+
         /// <summary>
         /// The current level
         /// </summary>
@@ -38,8 +41,6 @@ namespace LD31
         /// </summary>
         public static List<GameObject> GameObjects = new List<GameObject>();
 
-        public static Graphics.Explosion LastExplosion;
-
         /// <summary>
         /// This function should be called first as it will initialize the renderer and other critical game objects.
         /// </summary>
@@ -47,30 +48,16 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-
-            Player = new Player(new Vector3(400, 400, 400));
+            Player = new Player(new Vector3(450, 450, 700));
             //give the player a default weapon and some ammo!
-            Weapon defaultWeapon = Weapon.Shotgun;
+            Weapon defaultWeapon = new Weapon(new Colour(255, 255), Player);
             Player.GiveWeapon(defaultWeapon);
             Player.GiveAmmo(defaultWeapon, 10);
 
-            CurrentLevel = new Level(30, 30, 10);
+            CurrentLevel = new Level("GameLevel.txt");
 
-            for (int x = 0; x < 30; x++)
-            {
-                for (int y = 0; y < 30; y++)
-                {
-                    for (int z = 0; z < 5; z++)
-                    {
-                        if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) CurrentLevel.SetBlock(new Block(), x, y, z);
-                    }
-                }
-            }
-            CurrentLevel.SetBlock(new Block(), 5, 5, 1);
-            CurrentLevel.SetBlock(new Block(), 5, 6, 2);
-            CurrentLevel.SetBlock(new Block(), 5, 7, 3);
-            CurrentLevel.SetBlock(new Block(), 5, 8, 4);
-            CurrentLevel.SetBlock(new Block(), 5, 9, 5);
+            //create a default enemy!
+           
         }
 
         /// <summary>
@@ -81,10 +68,10 @@ namespace LD31
             GraphicsManager.StartDraw();
 
             //call draw for all game objects.
-            if (LastExplosion != null) LastExplosion.Draw();
+
             foreach (GameObject o in GameObjects) o.Draw();
 
-           CurrentLevel.Render();
+            CurrentLevel.Render();
 
             UI.Draw();
 
@@ -96,19 +83,27 @@ namespace LD31
         /// </summary>
         void Update(Double msSinceLastUpdate)
         {
+            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(new Vector3(700, 400, 500), Player);
+
             InputHandler.Update();
             GraphicsManager.Update();
             //call update for all game objects.
-            foreach (GameObject o in new List<GameObject>(GameObjects)) o.Update(msSinceLastUpdate);
+            List<GameObject> currentObjects = new List<GameObject>(GameObjects);
+            foreach (GameObject o in currentObjects)
+            {
+                o.Update(msSinceLastUpdate);
+                if (o is Projectile)
+                {
+                    foreach (Combatant obj in currentObjects.OfType<Combatant>())
+                    {
+                        ((Projectile)o).AttemptToHit(obj);
+                    }
+                }
+            }
 
             //Clear out dead game objects
-            GameObjects = GameObjects.Where(o => o.Alive).ToList();
+            GameObjects = GameObjects.Where(o => !o.Disposed).ToList();
 
-
-            if (InputHandler.WasButtonPressed(ButtonConcept.TestButton1))
-            {
-                LastExplosion = new Explosion(new Colour(255, 0, 0, 255), new Vector3(160, 200, 25), 1);
-            }
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
             {
@@ -123,14 +118,18 @@ namespace LD31
         {
             Init();
             Stopwatch updateTime = new Stopwatch();
+            Stopwatch drawTime = new Stopwatch();
+
+            Double lastUpdateMS = 0;
+
             updateTime.Start();
             while (_GameRunning)
             {
                 Draw();
-                Update(updateTime.ElapsedMilliseconds);
-                updateTime.Restart();
-
-                Thread.Sleep(UPDATE_DELAY);
+                double currentUpdateMS = updateTime.ElapsedMilliseconds;
+                Update(currentUpdateMS - lastUpdateMS);
+                lastUpdateMS = currentUpdateMS;
+                Thread.Sleep(0);
             }
 
             //exit logic

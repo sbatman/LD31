@@ -83,5 +83,14 @@ namespace LD31.Math
                 Y = vec.X * System.Math.Sin(angle) + vec.Y * System.Math.Cos(angle)
             };
         }
+
+        /// <summary>
+        /// Overload of '+' operator
+        /// </summary>
+        public static Vector2 operator +(Vector2 c1, Vector2 c2)
+        {
+            return new Vector2(c1.X + c2.X, c1.Y + c2.Y);
+        }
+
     }
 }
