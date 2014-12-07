@@ -13,6 +13,8 @@ public:
 	void SerCameraPosition(double x, double y, double z);
 	void SetCameraRotation(double z, double x);
 	void SetMouseMoveCallback(void(*callBack)(int32_t, int32_t));
+	void SetKeyDownCallback(void(*callBack)(int32_t));
+	void SetKeyUpCallback(void(*callBack)(int32_t));
 
 private:
 	const int FACESPERCUBE = 6;

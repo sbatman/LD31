@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.RightsManagement;
 
 namespace LD31.Graphics
 {
@@ -7,40 +8,38 @@ namespace LD31.Graphics
     /// 
     /// This single Mesh is then passed to the GraphicsManager for rendering.
     /// </summary>
-    public class Level
+    public class Level : IDisposable
     {
-        private readonly Block[, ,] _Blocks;
+        public const int WORLD_BLOCK_SIZE = 32;
+        public const Double GRAVITY = 0.98*6;
 
-        private readonly Int32 _ChunkSize;
+        private Block[, ,] _Blocks;
 
         private readonly int _SizeX;
         private readonly int _SizeY;
         private readonly int _SizeZ;
 
-
         //private Mesh _chunkMesh
 
-        public Level(Int32 sizeX, Int32 sizeZ, Int32 sizeY)
+        public Level(Int32 sizeX, Int32 sizeY, Int32 sizeZ)
         {
             _SizeX = sizeX;
-            _SizeZ = sizeZ;
             _SizeY = sizeY;
-            _Blocks = new Block[sizeX, sizeZ, sizeY];
-
+            _SizeZ = sizeZ;
+            _Blocks = new Block[sizeX, sizeY, sizeZ];
         }
 
         public void Render()
         {
-
             for (Int32 x = 0; x < _SizeX; x++)
             {
-                for (Int32 z = 0; z < _SizeZ; z++)
+                for (Int32 y = 0; y < _SizeY; y++)
                 {
-                    for (Int32 y = 0; y < _SizeY; y++)
+                    for (Int32 z = 0; z < _SizeZ; z++)
                     {
-                        if (_Blocks[x, z, y] != null)
+                        if (_Blocks[x, y, z] != null)
                         {
-                            _Blocks[x, z, y].Draw(x, y, z);
+                            _Blocks[x, y, z].Draw(x, y, z);
                         }
                     }
                 }
@@ -50,8 +49,44 @@ namespace LD31.Graphics
 
         public void SetBlock(Block block, Int32 x, Int32 y, Int32 z)
         {
-            if (_Blocks[x, z, y] != null) _Blocks[x, z, y].Dispose();
-            _Blocks[x, z, y] = block;
+            if (_Blocks[x, y, z] != null) _Blocks[x, y, z].Dispose();
+            _Blocks[x, y, z] = block;
+        }
+
+        public bool IsSolid(Double x, Double y, Double z)
+        {
+            int testPosX = (int)(x / 32);
+            int testPosY = (int)(y / 32);
+            int testPosZ = (int)(z / 32);
+
+            if (testPosX >= _Blocks.GetLength(0) || testPosX < 0) return false;
+            if (testPosY >= _Blocks.GetLength(1) || testPosY < 0) return false;
+            if (testPosZ >= _Blocks.GetLength(2) || testPosZ < 0) return false;
+
+
+            if (_Blocks[testPosX, testPosY, testPosZ] == null) return false;
+            return (_Blocks[testPosX, testPosY, testPosZ].IsCollidable);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            for (Int32 x = 0; x < _SizeX; x++)
+            {
+                for (Int32 y = 0; y < _SizeY; y++)
+                {
+                    for (Int32 z = 0; z < _SizeZ; z++)
+                    {
+                        if (_Blocks[x, y, z] != null)
+                        {
+                            _Blocks[x, y, z].Dispose();
+                        }
+                    }
+                }
+            }
+            _Blocks = null;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using LD31.Math;
+﻿using System;
+using System.Windows.Input;
+using LD31.Input;
+using LD31.Math;
 
 namespace LD31.Objects
 {
@@ -25,8 +28,45 @@ namespace LD31.Objects
             set
             {
                 base.Position = value;
-                Graphics.GraphicsManager.SetCameraPosition(value.X, value.Y,value.Z);
+                Graphics.GraphicsManager.SetCameraPosition(value.X, value.Y, value.Z);
             }
+        }
+
+        public override void Update(Double msSinceLastUpdate)
+        {
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor())
+            {
+                Velocity.Z += 1;
+            }
+
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Forward) && IsOnFloor())
+            {
+                Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2), Graphics.GraphicsManager.GetCamera().RotationZ);
+                Velocity.X += movement.X;
+                Velocity.Y += movement.Y;
+            }
+
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Backward) && IsOnFloor())
+            {
+                Vector2 movement = Vector2.Rotate(new Vector2(0, 0.2), Graphics.GraphicsManager.GetCamera().RotationZ);
+                Velocity.X += movement.X;
+                Velocity.Y += movement.Y;
+            }
+
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Left) && IsOnFloor())
+            {
+                Vector2 movement = Vector2.Rotate(new Vector2(-0.2, 0), Graphics.GraphicsManager.GetCamera().RotationZ);
+                Velocity.X += movement.X;
+                Velocity.Y += movement.Y;
+            }
+
+            if (Input.InputHandler.IsButtonDown(ButtonConcept.Right) && IsOnFloor())
+            {
+                Vector2 movement = Vector2.Rotate(new Vector2(0.2, 0), Graphics.GraphicsManager.GetCamera().RotationZ);
+                Velocity.X += movement.X;
+                Velocity.Y += movement.Y;
+            }
+            base.Update(msSinceLastUpdate);
         }
     }
 }

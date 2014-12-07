@@ -5,22 +5,22 @@ namespace LD31.Math
     /// <summary>
     /// This struct represents a two dimensional vector.
     /// </summary>
-    public struct Vector3
+    public class Vector3
     {
         /// <summary>
         /// backing field
         /// </summary>
-        private Double x;
+        private Double _X;
 
         /// <summary>
         /// backing field
         /// </summary>
-        private Double y;
+        private Double _Y;
 
         /// <summary>
         /// backing field
         /// </summary>
-        private Double z;
+        private Double _Z;
 
         /// <summary>
         /// X value
@@ -29,11 +29,11 @@ namespace LD31.Math
         {
             get
             {
-                return x;
+                return _X;
             }
             set
             {
-                x = value;
+                _X = value;
             }
         }
 
@@ -44,11 +44,11 @@ namespace LD31.Math
         {
             get
             {
-                return y;
+                return _Y;
             }
             set
             {
-                y = value;
+                _Y = value;
             }
         }
 
@@ -59,11 +59,11 @@ namespace LD31.Math
         {
             get
             {
-                return z;
+                return _Z;
             }
             set
             {
-                z = value;
+                _Z = value;
             }
         }
 
@@ -74,9 +74,9 @@ namespace LD31.Math
         /// <param name="y"></param>
         public Vector3(Double x, Double y, Double z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            _X = x;
+            _Y = y;
+            _Z = z;
         }
 
         /// <summary>
@@ -85,9 +85,19 @@ namespace LD31.Math
         /// <param name="xyz"></param>
         public Vector3(Double xyz)
         {
-            this.x = xyz;
-            this.y = xyz;
-            this.z = xyz;
+            _X = xyz;
+            _Y = xyz;
+            _Z = xyz;
+        }
+
+        public static Vector3 operator +(Vector3 c1, Vector3 c2)
+        {
+            return new Vector3(c1.X + c2.X, c1.Y + c2.Y, c1.Z + c2.Z);
+        }
+
+        public static Vector3 operator *(Vector3 c1, double c2)
+        {
+            return new Vector3(c1.X * c2, c1.Y * c2, c1.Z * c2);
         }
     }
 }

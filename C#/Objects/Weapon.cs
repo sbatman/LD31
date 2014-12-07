@@ -64,5 +64,10 @@ namespace LD31.Objects
         {
             if (_Ammunition > 0) _Ammunition -= 1;
         }
+
+        public override void Update(Double msSinceLastUpdate)
+        {
+            
+        }
     }
 }

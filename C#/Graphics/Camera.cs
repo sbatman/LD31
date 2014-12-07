@@ -17,11 +17,36 @@ namespace LD31.Graphics
 
         private bool _Dirty = false;
 
+        public double RotationX
+        {
+            get { return _RotationX; }
+        }
+
+        public double RotationZ
+        {
+            get { return _RotationZ; }
+        }
+
+        public double PositionZ
+        {
+            get { return _PositionZ; }
+        }
+
+        public double PositionY
+        {
+            get { return _PositionY; }
+        }
+
+        public double PositionX
+        {
+            get { return _PositionX; }
+        }
+
         public void Update()
         {
             if (_Dirty)
             {
-                GraphicsManager.NativeMethods.GraphicsManagerSerCameraPosition(_PositionX, _PositionY, _PositionZ);
+                GraphicsManager.NativeMethods.GraphicsManagerSerCameraPosition(_PositionX, _PositionZ,_PositionY );
                 GraphicsManager.NativeMethods.GraphicsManagerSetCameraRotation(_RotationZ, _RotationX);
             }
         }
@@ -57,5 +82,6 @@ namespace LD31.Graphics
             _RotationZ += z;
             _Dirty = true;
         }
+
     }
 }
