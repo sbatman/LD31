@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Security.RightsManagement;
+using System.IO;
+using LD31.Graphics;
 
-namespace LD31.Graphics
+namespace LD31.World
 {
-    /// <summary>
-    /// Creates a single OpenGL Mesh out of a chunk of Blocks.
-    /// 
-    /// This single Mesh is then passed to the GraphicsManager for rendering.
-    /// </summary>
     public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
@@ -19,14 +15,17 @@ namespace LD31.Graphics
         private readonly int _SizeY;
         private readonly int _SizeZ;
 
-        //private Mesh _chunkMesh
-
         public Level(Int32 sizeX, Int32 sizeY, Int32 sizeZ)
         {
             _SizeX = sizeX;
             _SizeY = sizeY;
             _SizeZ = sizeZ;
             _Blocks = new Block[sizeX, sizeY, sizeZ];
+        }
+
+        public Level(String levelFile)
+        {
+            //TODO: Read level data from file.
         }
 
         public void Render()

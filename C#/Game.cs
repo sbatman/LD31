@@ -7,6 +7,7 @@ using LD31.Graphics;
 using LD31.Input;
 using LD31.Math;
 using LD31.Objects;
+using LD31.World;
 
 namespace LD31
 {

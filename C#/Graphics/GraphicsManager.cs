@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.RightsManagement;
 using LD31.Math;
+using LD31.World;
 
 namespace LD31.Graphics
 {
