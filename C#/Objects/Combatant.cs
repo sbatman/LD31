@@ -13,6 +13,11 @@ namespace LD31.Objects
         protected readonly Weapon _CurrentWeapon = null;
 
         /// <summary>
+        /// backing field
+        /// </summary>
+        protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
+
+        /// <summary>
         /// The currently selected weapon of the Combatant.
         /// </summary>
         public Weapon CurrentWeapon
@@ -21,21 +26,28 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// backing field
-        /// </summary>
-        protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
-
-        /// <summary>
         /// This collection represents all the weapons a Combatant currently has.
         /// </summary>
-        public IEnumerable<Weapon> CurrentWeapons
+        public IEnumerable<Weapon> Weapons
         {
-            get
-            {
-                return _CurrentWeapons;
-            }
+            get { return _CurrentWeapons; }
         }
 
+        /// <summary>
+        /// This value represents the health of the player. Starts at 100, player dies at 0.
+        /// </summary>
+        public virtual Int32 Health
+        {
+            get { return _Health; }
+        }
+
+        /// <summary>
+        /// This boolean states if the player is dead or not.
+        /// </summary>
+        public virtual Boolean Alive
+        {
+            get { return _Health <= 0; }
+        }
 
         /// <summary>
         /// CTOR
@@ -75,6 +87,29 @@ namespace LD31.Objects
         public void FireCurrentWeapon()
         {
             _CurrentWeapon.Fire();
+        }
+
+        /// <summary>
+        /// backing field
+        /// </summary>
+        private Int32 _Health = 100;
+
+        /// <summary>
+        /// This function damages the mortal.
+        /// </summary>
+        /// <param name="damage"></param>
+        public virtual void Damage(Int32 damage)
+        {
+            if (damage > 0) _Health -= damage;
+        }
+
+        /// <summary>
+        /// This function heals the mortal.
+        /// </summary>
+        /// <param name="healAmount"></param>
+        public virtual void Heal(Int32 healAmount)
+        {
+            if (healAmount > 0) _Health += healAmount;
         }
     }
 }

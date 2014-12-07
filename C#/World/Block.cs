@@ -1,4 +1,5 @@
 ﻿using System;
+using LD31.Math;
 
 namespace LD31.Graphics
 {
@@ -13,15 +14,16 @@ namespace LD31.Graphics
 
         private BlockType _BlockType;
 
-        private Tuple<Byte, Byte, Byte, Byte> _Colour;
+        private Colour _Colour;
 
-        private static Random rnd =new Random();
+        private static Random rnd = new Random();
 
         public Block()
         {
             _BlockType = BlockType.Default;
             IsActive = true;
-            _Colour = new Tuple<byte, byte, byte, byte>((byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255),255);
+            IsCollidable = true;
+            _Colour = new Colour((byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), 255);
         }
 
         public Block(BlockType type)
@@ -48,10 +50,16 @@ namespace LD31.Graphics
             set { _Active = value; }
         }
 
+        public BlockType Type
+        {
+            get { return _BlockType; }
+            set { _BlockType = value; }
+        }
+
         public void Draw(Int32 x, Int32 y, Int32 z)
         {
             if (!_Active) return;
-            GraphicsManager.DrawWorldVoxel(x, y, z, _Colour.Item1, _Colour.Item2, _Colour.Item3, _Colour.Item4);
+            GraphicsManager.DrawWorldVoxel(x, y, z, _Colour);
         }
 
         public void Dispose()

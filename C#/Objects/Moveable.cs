@@ -13,12 +13,15 @@ namespace LD31.Objects
         /// </summary>
         private Vector3 _Position;
 
+        private Vector3 _Velocity;
+
         /// <summary>
         /// CTOR
         /// </summary>
         public Moveable(Vector3 position)
         {
             _Position = position;
+            _Velocity = new Vector3(0);
         }
         /// <summary>
         /// This value represents the position of the object.

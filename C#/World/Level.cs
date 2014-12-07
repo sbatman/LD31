@@ -9,6 +9,8 @@ namespace LD31.Graphics
     /// </summary>
     public class Level
     {
+        public const int WORLD_BLOCK_SIZE = 32;
+
         private readonly Block[, ,] _Blocks;
 
         private readonly Int32 _ChunkSize;
@@ -52,6 +54,15 @@ namespace LD31.Graphics
         {
             if (_Blocks[x, z, y] != null) _Blocks[x, z, y].Dispose();
             _Blocks[x, z, y] = block;
+        }
+
+        public bool IsSolid(Double x, Double y, Double z)
+        {
+            int testPosX = (int)(x / 32);
+            int testPosy = (int)(y / 32);
+            int testPosz = (int)(z / 32);
+            if (_Blocks[testPosX, testPosz, testPosy] == null) return false;
+            return (_Blocks[testPosX, testPosz, testPosy].IsCollidable);
         }
     }
 }
