@@ -18,7 +18,8 @@ namespace LD31.Objects
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
-        protected int _Height = 24;
+        protected int _CollisionHeight = 30;
+        protected int _CollisionRadius = 20;
 
         /// <summary>
         /// The currently selected weapon of the Combatant.
@@ -123,8 +124,21 @@ namespace LD31.Objects
             }
             else
             {
-                Velocity *= 0.9;
+                Velocity *= (0.9 * (1-(msSinceLastUpdate / 1000)));
                 if(Velocity.Z<0)Velocity.Z = 0;
+            }
+
+            float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
+            float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
+
+            if (Game._CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
+            {
+                Velocity.X = 0;
+            }
+
+            if (Game._CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
+            {
+                Velocity.Y = 0;
             }
 
             Position += Velocity;
@@ -134,7 +148,7 @@ namespace LD31.Objects
 
         public virtual bool IsOnFloor()
         {
-            return Game._CurrentLevel.IsSolid(Position.X, +Position.Y, Position.Z - _Height);
+            return Game._CurrentLevel.IsSolid(Position.X, +Position.Y, Position.Z - _CollisionHeight);
         }
     }
 }
