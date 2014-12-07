@@ -147,8 +147,6 @@ namespace LD31.Objects
             }
 
             Position += Velocity;
-
-
         }
 
         public virtual bool IsOnFloor()

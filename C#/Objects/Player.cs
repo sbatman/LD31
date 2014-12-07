@@ -73,6 +73,7 @@ namespace LD31.Objects
                 Velocity.X += movement.X;
                 Velocity.Y += movement.Y;
             }
+
             base.Update(msSinceLastUpdate);
         }
     }

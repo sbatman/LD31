@@ -83,9 +83,22 @@ namespace LD31.Input
                 case ButtonConcept.Backward: return (_KeyStates[0x28] || _KeyStates[0x53]); break;
                 case ButtonConcept.Left: return (_KeyStates[0x25] || _KeyStates[0x41]); break;
                 case ButtonConcept.Right: return (_KeyStates[0x27] || _KeyStates[0x44]); break;
+                case ButtonConcept.Fire: return (_KeyStates[0x11]); break;
             }
 
             return false;
+        }
+
+        public static Boolean WasButtonPressed(ButtonConcept buttonConcept)
+        {
+            switch (buttonConcept)
+            {
+
+                case ButtonConcept.Fire: return (_PastKeyStates[0x11] && !_KeyStates[0x11]); break;
+            }
+
+            return false;
+
         }
     }
 }
