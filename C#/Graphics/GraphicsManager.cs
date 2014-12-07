@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.RightsManagement;
 using LD31.Math;
+using LD31.World;
 
 namespace LD31.Graphics
 {
@@ -32,6 +33,9 @@ namespace LD31.Graphics
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerDrawVoxel(double x, double y, double z, Byte colourR, Byte colourG, Byte colourB, Byte colourA, UInt16 sizeX, UInt16 sizeY, UInt16 sizeZ);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerDrawUIVoxel(double x, double y, double z, Byte colourR, Byte colourG, Byte colourB, Byte colourA, UInt16 sizeX, UInt16 sizeY, UInt16 sizeZ);
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSerCameraPosition(Double x, Double y, Double z);
@@ -94,6 +98,18 @@ namespace LD31.Graphics
         public static void DrawVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
             NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
+        }
+
+        /// <summary>
+        /// Draws a voxel for the UI
+        /// </summary>
+        /// <param name="x">X Position in world space cord</param>
+        /// <param name="y">Y Position in world space cord</param>
+        /// <param name="z">Z Position in world space cord</param>
+        /// <param name="colour">Colours used when drawing this voxel</param>
+        public static void DrawUIVoxel(Vector3 position, Colour colour, Vector3 scale)
+        {
+            NativeMethods.GraphicsManagerDrawUIVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
         }
 
 

@@ -10,7 +10,7 @@ namespace LD31.Objects
     /// </summary>
     public class Player : Combatant
     {
-        protected Double _JumpCoolDown = 0;
+
         /// <summary>
         /// CTOR
         /// </summary>
@@ -79,10 +79,6 @@ namespace LD31.Objects
                 Console.WriteLine("Bang");
 
                 CurrentWeapon.Fire();
-
-                //Camera camera = GraphicsManager.GetCamera();
-                //Vector3 position = new Vector3(camera.PositionX, camera.PositionY, camera.PositionZ);
-                //Projectile bullet = new Projectile(position, camera.RotationZ);
             }
 
             base.Update(msSinceLastUpdate);

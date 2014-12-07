@@ -10,6 +10,8 @@ public:
 	void Update();
 	void Destroy();
 	void DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ);
+	void DrawUIVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ);
+
 	void SerCameraPosition(double x, double y, double z);
 	void SetCameraRotation(double z, double x);
 	void SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t));
@@ -28,11 +30,10 @@ private:
 
 	double* _UIVertexList;
 	uint8_t* _UIColourList;
-	double* _UINormalList;
 
 
-	int _TriCount;
-	int _UITriCount;
+	int _TriCount=0;
+	int _UITriCount=0;
 
 
 	int _Width;
@@ -40,5 +41,5 @@ private:
 	double _CameraPosX = 0, _CameraPosY = 0, _CameraPosZ = 0, _CameraRotZ = 0, _CameraRotX = 0;
 
 	void SetupGLStates();
-	void DrawTri(double* p1, double* p2, double* p3, int* arrayPosition);
+	void DrawTri(double * vertList, double* p1, double* p2, double* p3, int* arrayPosition);
 };
