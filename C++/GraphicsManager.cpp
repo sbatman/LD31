@@ -25,7 +25,6 @@ GraphicsManager::GraphicsManager()
 	_ColourList = new uint8_t[20000000];
 
 	_UIVertexList = new double[20000];
-	_UINormalList = new double[20000];
 	_UIColourList = new uint8_t[20000];
 }
 
@@ -37,7 +36,6 @@ GraphicsManager::~GraphicsManager()
 
 	delete [] _UIVertexList;
 	delete [] _UIColourList;
-	delete [] _UINormalList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -84,7 +82,8 @@ void GraphicsManager::BeginDraw()
 	glRotatef(_CameraRotZ, 0, 1, 0);
 	glTranslatef(-_CameraPosX, -_CameraPosY, -_CameraPosZ);
 	_TriCount = 0;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	_UITriCount = 0;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
@@ -95,13 +94,23 @@ void GraphicsManager::EndDraw()
 	glNormalPointer(GL_DOUBLE, 0, _NormalList);
 	glDrawArrays(GL_TRIANGLES, 0, _TriCount * 3);
 
+	glPushMatrix();
+	glLoadIdentity();
+
 	if (_UITriCount > 0)
 	{
+		glDisable(GL_FOG);
+		glClear( GL_DEPTH_BUFFER_BIT );
+		glDisableClientState(GL_NORMAL_ARRAY);
 		glVertexPointer(3, GL_DOUBLE, 0, _UIVertexList);
 		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _UIColourList);
-		glNormalPointer(GL_DOUBLE, 0, _UINormalList);
 		glDrawArrays(GL_TRIANGLES, 0, _UITriCount * 3);
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glEnable(GL_FOG);
 	}
+
+	glPopMatrix();
+
 	glEnd();
 	SwapBuffers(_HDC);
 }
@@ -246,11 +255,61 @@ void GraphicsManager::SetupGLStates()
 	_GLStatesSetup = true;
 }
 
-void GraphicsManager::DrawTri(double* p1, double* p2, double* p3, int* arrayPosition)
+void GraphicsManager::DrawTri(double * vertList, double* p1, double* p2, double* p3, int* arrayPosition)
 {
-	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p1, sizeof(double) * 3);	(*arrayPosition) += 3;
-	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p2, sizeof(double) * 3);	(*arrayPosition) += 3;
-	memcpy_s(_VertexList + (*arrayPosition), sizeof(double) * 3, p3, sizeof(double) * 3);	(*arrayPosition) += 3;
+	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p1, sizeof(double) * 3);	(*arrayPosition) += 3;
+	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p2, sizeof(double) * 3);	(*arrayPosition) += 3;
+	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p3, sizeof(double) * 3);	(*arrayPosition) += 3;
+}
+
+void GraphicsManager::DrawUIVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
+{
+	int vertexArrayStart = _UITriCount * 3 * 3;
+	int colourArrayStart = _UITriCount * 3 * 4;
+	int verpos = vertexArrayStart;
+
+	double halfSizeX = sizeX*0.5f;
+	double halfSizeY = sizeY*0.5f;
+	double halfSizeZ = sizeZ*0.5f;
+
+	double _tlf[3] = { x - halfSizeX, y - halfSizeY, z - halfSizeZ };
+	double _trf[3] = { x + halfSizeX, y - halfSizeY, z - halfSizeZ };
+	double _blf[3] = { x - halfSizeX, y + halfSizeY, z - halfSizeZ };
+	double _brf[3] = { x + halfSizeX, y + halfSizeY, z - halfSizeZ };
+	double _tlb[3] = { x - halfSizeX, y - halfSizeY, z + halfSizeZ };
+	double _trb[3] = { x + halfSizeX, y - halfSizeY, z + halfSizeZ };
+	double _blb[3] = { x - halfSizeX, y + halfSizeY, z + halfSizeZ };
+	double _brb[3] = { x + halfSizeX, y + halfSizeY, z + halfSizeZ };
+
+	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
+
+	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_UIColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
+
+	//FRONT
+	DrawTri(_UIVertexList, _tlf, _blf, _trf, &verpos);
+	DrawTri(_UIVertexList, _blf, _brf, _trf, &verpos);
+
+	//LEFT	
+	DrawTri(_UIVertexList, _tlb, _blb, _tlf, &verpos);
+	DrawTri(_UIVertexList, _blb, _blf, _tlf, &verpos);
+
+	//RIGHT	
+	DrawTri(_UIVertexList, _trb, _trf, _brb, &verpos);
+	DrawTri(_UIVertexList, _brf, _brb, _trf, &verpos);
+
+	//Back	
+	DrawTri(_UIVertexList, _blb, _tlb, _trb, &verpos);
+	DrawTri(_UIVertexList, _blb, _trb, _brb, &verpos);
+
+	//Top	
+	DrawTri(_UIVertexList, _tlb, _tlf, _trb, &verpos);
+	DrawTri(_UIVertexList, _tlf, _trf, _trb, &verpos);
+
+	//Bottom	
+	DrawTri(_UIVertexList, _blb, _brb, _blf, &verpos);
+	DrawTri(_UIVertexList, _blf, _brb, _brf, &verpos);
+
+	_UITriCount += 12;
 }
 
 void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
@@ -286,39 +345,39 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 
 	//FRONT
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
-	DrawTri(_tlf, _blf, _trf, &verpos);
+	DrawTri(_VertexList, _tlf, _blf, _trf, &verpos);
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
-	DrawTri(_blf, _brf, _trf, &verpos);
+	DrawTri(_VertexList, _blf, _brf, _trf, &verpos);
 
 	//LEFT	
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
-	DrawTri(_tlb, _blb, _tlf, &verpos);
+	DrawTri(_VertexList, _tlb, _blb, _tlf, &verpos);
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
-	DrawTri(_blb, _blf, _tlf, &verpos);
+	DrawTri(_VertexList, _blb, _blf, _tlf, &verpos);
 
 	//RIGHT	
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
-	DrawTri(_trb, _trf, _brb, &verpos);
+	DrawTri(_VertexList, _trb, _trf, _brb, &verpos);
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
-	DrawTri(_brf, _brb, _trf, &verpos);
+	DrawTri(_VertexList, _brf, _brb, _trf, &verpos);
 
 	//Back	
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
-	DrawTri(_blb, _tlb, _trb, &verpos);
+	DrawTri(_VertexList, _blb, _tlb, _trb, &verpos);
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
-	DrawTri(_blb, _trb, _brb, &verpos);
+	DrawTri(_VertexList, _blb, _trb, _brb, &verpos);
 
 	//Top	
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
-	DrawTri(_tlb, _tlf, _trb, &verpos);
+	DrawTri(_VertexList, _tlb, _tlf, _trb, &verpos);
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
-	DrawTri(_tlf, _trf, _trb, &verpos);
+	DrawTri(_VertexList, _tlf, _trf, _trb, &verpos);
 
 	//Bottom	
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
-	DrawTri(_blb, _brb, _blf, &verpos);
+	DrawTri(_VertexList, _blb, _brb, _blf, &verpos);
 	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
-	DrawTri(_blf, _brb, _brf, &verpos);
+	DrawTri(_VertexList, _blf, _brb, _brf, &verpos);
 
 	_TriCount += 12;
 }
