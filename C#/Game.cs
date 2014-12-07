@@ -28,6 +28,8 @@ namespace LD31
         /// </summary>
         public static Player Player;
 
+        public static Enemy Enemy;
+
         /// <summary>
         /// The current level
         /// </summary>
@@ -47,7 +49,6 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-
             Player = new Player(new Vector3(400, 400, 400));
             //give the player a default weapon and some ammo!
             Weapon defaultWeapon = Weapon.Shotgun;
@@ -71,6 +72,9 @@ namespace LD31
             CurrentLevel.SetBlock(new Block(), 5, 7, 3);
             CurrentLevel.SetBlock(new Block(), 5, 8, 4);
             CurrentLevel.SetBlock(new Block(), 5, 9, 5);
+
+            //create a default enemy!
+            Enemy = new Enemy(new Vector3(30, 30, 0), Player);
         }
 
         /// <summary>
@@ -105,9 +109,10 @@ namespace LD31
             GameObjects = GameObjects.Where(o => o.Alive).ToList();
 
 
-            if (InputHandler.WasButtonPressed(ButtonConcept.TestButton1))
+            if (InputHandler.WasButtonPressed(ButtonConcept.TestButton1) && Enemy.Alive)
             {
-                LastExplosion = new Explosion(new Colour(255, 0, 0, 255), new Vector3(160, 200, 25), 1);
+                Enemy.Kill();
+                LastExplosion = new Explosion(Colour.Red, Enemy.Position, 1);
             }
             //Allow user to quit the game.
             if (InputHandler.IsButtonDown(ButtonConcept.Quit))
