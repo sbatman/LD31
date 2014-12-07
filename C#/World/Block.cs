@@ -16,6 +16,12 @@ namespace LD31.Graphics
 
         private Colour _Colour;
 
+        private int _x;
+
+        private int _y;
+
+        private int _z;
+
         private static Random rnd = new Random();
 
         public Block()

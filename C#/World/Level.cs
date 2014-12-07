@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using LD31.Graphics;
 
 namespace LD31.World
@@ -7,7 +8,7 @@ namespace LD31.World
     public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
-        public const Double GRAVITY = 0.98 * 6;
+        public const Double GRAVITY = 0; //0.98 * 6;
 
         private Block[, ,] _Blocks;
 
@@ -25,7 +26,18 @@ namespace LD31.World
 
         public Level(String levelFile)
         {
-            //TODO: Read level data from file.
+            int worldSize = File.ReadLines(levelFile).Count();
+            _Blocks = new Block[worldSize, worldSize, worldSize];
+
+            using (StreamReader sReader = new StreamReader(levelFile))
+            {
+                while (!sReader.EndOfStream)
+                {
+                    String[] vertexData = sReader.ReadLine().Split(' ');
+
+                    //TODO: Populate the array with the data
+                }
+            }
         }
 
         public void Render()

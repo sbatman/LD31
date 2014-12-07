@@ -55,23 +55,25 @@ namespace LD31
             Player.GiveWeapon(defaultWeapon);
             Player.GiveAmmo(defaultWeapon, 10);
 
-            CurrentLevel = new Level(30, 30, 10);
+            CurrentLevel = new Level("GameLevel.txt");
 
-            for (int x = 0; x < 30; x++)
-            {
-                for (int y = 0; y < 30; y++)
-                {
-                    for (int z = 0; z < 5; z++)
-                    {
-                        if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) CurrentLevel.SetBlock(new Block(), x, y, z);
-                    }
-                }
-            }
-            CurrentLevel.SetBlock(new Block(), 5, 5, 1);
-            CurrentLevel.SetBlock(new Block(), 5, 6, 2);
-            CurrentLevel.SetBlock(new Block(), 5, 7, 3);
-            CurrentLevel.SetBlock(new Block(), 5, 8, 4);
-            CurrentLevel.SetBlock(new Block(), 5, 9, 5);
+            //CurrentLevel = new Level(30, 30, 10);
+
+            //for (int x = 0; x < 30; x++)
+            //{
+            //    for (int y = 0; y < 30; y++)
+            //    {
+            //        for (int z = 0; z < 5; z++)
+            //        {
+            //            if (((x == 0 || x == 29) || (y == 0 || y == 29)) || z == 0) CurrentLevel.SetBlock(new Block(), x, y, z);
+            //        }
+            //    }
+            //}
+            //CurrentLevel.SetBlock(new Block(), 5, 5, 1);
+            //CurrentLevel.SetBlock(new Block(), 5, 6, 2);
+            //CurrentLevel.SetBlock(new Block(), 5, 7, 3);
+            //CurrentLevel.SetBlock(new Block(), 5, 8, 4);
+            //CurrentLevel.SetBlock(new Block(), 5, 9, 5);
         }
 
         /// <summary>
