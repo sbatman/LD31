@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Security.RightsManagement;
+using System.IO;
+using System.Linq;
+using LD31.Graphics;
 
-namespace LD31.Graphics
+namespace LD31.World
 {
-    /// <summary>
-    /// Creates a single OpenGL Mesh out of a chunk of Blocks.
-    /// 
-    /// This single Mesh is then passed to the GraphicsManager for rendering.
-    /// </summary>
     public class Level : IDisposable
     {
         public const int WORLD_BLOCK_SIZE = 32;
-        public const Double GRAVITY = 0.98 * 6;
+        public const Double GRAVITY = 0; //0.98 * 6;
 
         private Block[, ,] _Blocks;
 
@@ -19,14 +16,28 @@ namespace LD31.Graphics
         private readonly int _SizeY;
         private readonly int _SizeZ;
 
-        //private Mesh _chunkMesh
-
         public Level(Int32 sizeX, Int32 sizeY, Int32 sizeZ)
         {
             _SizeX = sizeX;
             _SizeY = sizeY;
             _SizeZ = sizeZ;
             _Blocks = new Block[sizeX, sizeY, sizeZ];
+        }
+
+        public Level(String levelFile)
+        {
+            int worldSize = File.ReadLines(levelFile).Count();
+            _Blocks = new Block[worldSize, worldSize, worldSize];
+
+            using (StreamReader sReader = new StreamReader(levelFile))
+            {
+                while (!sReader.EndOfStream)
+                {
+                    String[] vertexData = sReader.ReadLine().Split(' ');
+
+                    //TODO: Populate the array with the data
+                }
+            }
         }
 
         public void Render()

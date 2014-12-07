@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using LD31.Math;
 using LD31.Objects;
+using LD31.World;
 
 namespace LD31.Graphics
 {

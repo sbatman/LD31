@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LD31.Graphics;
 using LD31.Math;
+using LD31.World;
 
 namespace LD31.Objects
 {
