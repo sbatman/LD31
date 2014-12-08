@@ -22,7 +22,7 @@ namespace LD31.Objects
         /// <summary>
         /// How fast the enemy can move.
         /// </summary>
-        protected readonly Double _MovementSpeed = 0.07;
+        protected readonly Double _MovementSpeed = 0.1;
 
         protected readonly Vector3 _DrawOffset = new Vector3(0, 0, 10);
 
@@ -60,8 +60,8 @@ namespace LD31.Objects
 
             direction.Z = 0;
             ////assuming here that velocity is a length and not a vector.
-            Velocity.X += direction.X > 0 ? -_MovementSpeed : _MovementSpeed;
-            Velocity.Y += direction.Y > 0 ? -_MovementSpeed : _MovementSpeed;
+            Velocity.X += (direction.X > 0 ? -_MovementSpeed : _MovementSpeed) * (msSinceLastUpdate / 16); ;
+            Velocity.Y += (direction.Y > 0 ? -_MovementSpeed : _MovementSpeed) * (msSinceLastUpdate / 16); ;
 
             base.Update(msSinceLastUpdate);
         }
