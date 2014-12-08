@@ -48,7 +48,7 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-            Player = new Player(new Vector3(450, 450, 700));
+            Player = new Player(new Vector3(550, 450, 400));
             //give the player a default weapon and some ammo!
             Weapon defaultWeapon = new Weapon(new Colour(255, 255), Player);
             Player.GiveWeapon(defaultWeapon);
@@ -83,7 +83,7 @@ namespace LD31
         /// </summary>
         void Update(Double msSinceLastUpdate)
         {
-            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(new Vector3(700, 400, 500), Player);
+            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(Player.Position, Player);
 
             InputHandler.Update();
             GraphicsManager.Update();
