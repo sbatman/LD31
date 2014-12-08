@@ -15,6 +15,8 @@ public:
 	void SerCameraPosition(double x, double y, double z);
 	void SetCameraRotation(double z, double x);
 	void SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t));
+	void SetMousePressCallback(void(_stdcall *callBack)(int32_t));
+	void SetMouseReleaseCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyDownCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyUpCallback(void(_stdcall *callBack)(int32_t));
 

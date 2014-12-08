@@ -29,7 +29,7 @@ namespace LD31
         /// </summary>
         public static Player Player;
 
-        public static Enemy Enemy;
+        public static List<Enemy> Enemys = new List<Enemy>();
 
         /// <summary>
         /// The current level
@@ -57,7 +57,7 @@ namespace LD31
             CurrentLevel = new Level("GameLevel.txt");
 
             //create a default enemy!
-           
+
         }
 
         /// <summary>
@@ -83,7 +83,8 @@ namespace LD31
         /// </summary>
         void Update(Double msSinceLastUpdate)
         {
-            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(Player.Position, Player);
+            Enemys = Enemys.Where(a => !a.Disposed).ToList();
+            while (Enemys.Count < 5) Enemys.Add(new Enemy(Player.Position, Player));
 
             InputHandler.Update();
             GraphicsManager.Update();

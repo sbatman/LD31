@@ -24,7 +24,7 @@ namespace LD31.Graphics
 
         List<Particle> _ActiveParticles = new List<Particle>();
         private Vector3 _Positon;
-        private int _ParticleToProduce = 0;
+        private int _ParticleToProduce;
         private Colour _Colour;
         private Double _Strength;
         private static Random _RND = new Random();

@@ -10,7 +10,7 @@ namespace LD31.Objects
     /// </summary>
     public abstract class GameObject : IDisposable
     {
-        private bool _Disposed = false;
+        private bool _Disposed;
         /// <summary>
         /// Ctor of the gameobject object. Adds the new instance to the global game objects list.
         /// </summary>
