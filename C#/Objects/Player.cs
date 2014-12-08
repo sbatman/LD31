@@ -43,7 +43,7 @@ namespace LD31.Objects
             if (Input.InputHandler.IsButtonDown(ButtonConcept.Jump) && IsOnFloor() && _JumpCoolDown <= 0)
             {
                 Velocity.Z += 4 ;
-                _JumpCoolDown = 60;
+                _JumpCoolDown = 250;
             }
 
             if (Input.InputHandler.IsButtonDown(ButtonConcept.Forward) && IsOnFloor())

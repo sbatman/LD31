@@ -19,7 +19,7 @@ namespace LD31.Objects
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
-        protected Int32 _CollisionHeight = 30;
+        protected Int32 _CollisionHeight = 32;
         protected Int32 _CollisionRadius = 8;
 
         protected Double _JumpCoolDown = 0;
@@ -130,25 +130,34 @@ namespace LD31.Objects
                 }
             }
 
-            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + 10))
+            if (System.Math.Abs(Velocity.Z) < 0.01f)
+            {
+                if (Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight + 1))
+                {
+                    Position.Z++;
+                }
+            }
+
+            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + (_CollisionHeight*0.5)))
             {
                 Velocity.Z = 0;
+
+                Position.Z--;
             }
 
             float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
             float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
 
-            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
-            {
-                Velocity.X = 0;
-            }
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z - (_CollisionHeight -2))) Velocity.X = 0;
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z )) Velocity.X = 0;
 
-            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
-            {
-                Velocity.Y = 0;
-            }
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z - (_CollisionHeight - 2))) Velocity.Y = 0;
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z )) Velocity.Y = 0;
+            
 
-            if (_Health <= 0||Position.Z<-200) Kill();
+            
+
+            if (_Health <= 0 || Position.Z < -200) Kill();
 
             Position += Velocity * (msSinceLastUpdate / 16); //the time factor stops fast machines from running too many updates
         }
