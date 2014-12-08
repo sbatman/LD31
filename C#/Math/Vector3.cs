@@ -185,6 +185,12 @@ namespace LD31.Math
             return System.Math.Pow(c1.X - c2.X, 2) + System.Math.Pow(c1.Y - c2.Y, 2) + System.Math.Pow(c1.Z - c2.Z, 2);
         }
 
+        public static Vector3 Normalize(Vector3 vec)
+        {
+            double magnitude = System.Math.Sqrt((vec.X * vec.X) + (vec.Y * vec.Y) + (vec.Z * vec.Z));
+            return new Vector3(vec.X / magnitude, vec.Y / magnitude, vec.Z / magnitude);
+        }
+
         /// <summary>
         /// Allow people to make copies of this vector.
         /// </summary>

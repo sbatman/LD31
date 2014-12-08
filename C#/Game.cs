@@ -106,7 +106,7 @@ namespace LD31
             GameObjects = GameObjects.Where(o => !o.Disposed).ToList();
 
             //Allow user to quit the game.
-            if (InputHandler.IsButtonDown(ButtonConcept.Quit))
+            if (InputHandler.IsButtonDown(ButtonConcept.QUIT))
             {
                 _GameRunning = false;
             }

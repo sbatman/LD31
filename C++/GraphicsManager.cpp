@@ -258,7 +258,7 @@ void GraphicsManager::SetupGLStates()
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float) _Height, 1, 2500);
+	gluPerspective(70, _Width / (float) _Height, 2, 2000);
 	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -305,7 +305,7 @@ void GraphicsManager::SetupGLStates()
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
 	glMatrixMode(GL_MODELVIEW);
 	glCullFace(GL_BACK);
 	_GLStatesSetup = true;

@@ -141,14 +141,15 @@ namespace LD31.Input
         {
             switch (buttonConcept)
             {
-                case ButtonConcept.Quit: return (_KeyStates[0x1B]);
-                case ButtonConcept.Jump: return (_KeyStates[0x20]);
-                case ButtonConcept.Forward: return (_KeyStates[0x26] || _KeyStates[0x57]);
-                case ButtonConcept.Backward: return (_KeyStates[0x28] || _KeyStates[0x53]);
-                case ButtonConcept.Left: return (_KeyStates[0x25] || _KeyStates[0x41]);
-                case ButtonConcept.Right: return (_KeyStates[0x27] || _KeyStates[0x44]);
-                case ButtonConcept.Fire: return (_KeyStates[0x11] || _MouseButtonStates[0]);
-                case ButtonConcept.TestButton1: return (_KeyStates[0x24]);
+                case ButtonConcept.QUIT: return (_KeyStates[0x1B]);
+                case ButtonConcept.JUMP: return (_KeyStates[0x20]);
+                case ButtonConcept.FORWARD: return (_KeyStates[0x26] || _KeyStates[0x57]);
+                case ButtonConcept.BACKWARD: return (_KeyStates[0x28] || _KeyStates[0x53]);
+                case ButtonConcept.LEFT: return (_KeyStates[0x25] || _KeyStates[0x41]);
+                case ButtonConcept.RIGHT: return (_KeyStates[0x27] || _KeyStates[0x44]);
+                case ButtonConcept.FIRE: return (_KeyStates[0x11] || _MouseButtonStates[0]);
+                case ButtonConcept.TEST_BUTTON1: return (_KeyStates[0x24]);
+                case ButtonConcept.SPRINT: return (_KeyStates[0x10]);
             }
 
             return false;
@@ -158,8 +159,8 @@ namespace LD31.Input
         {
             switch (buttonConcept)
             {
-                case ButtonConcept.Fire: return ((_KeyStates[0x11] && !_PastKeyStates[0x11])) || ((_MouseButtonStates[0] && !_PastMouseButtonStates[0]));
-                case ButtonConcept.TestButton1: return (_KeyStates[0x24] && !_PastKeyStates[0x24]);
+                case ButtonConcept.FIRE: return ((_KeyStates[0x11] && !_PastKeyStates[0x11])) || ((_MouseButtonStates[0] && !_PastMouseButtonStates[0]));
+                case ButtonConcept.TEST_BUTTON1: return (_KeyStates[0x24] && !_PastKeyStates[0x24]);
             }
 
             return false;
@@ -170,8 +171,8 @@ namespace LD31.Input
         {
             switch (buttonConcept)
             {
-                case ButtonConcept.Fire: return ((!_KeyStates[0x11] && _PastKeyStates[0x11])) || ((!_MouseButtonStates[0] && _PastMouseButtonStates[0]));
-                case ButtonConcept.TestButton1: return (!_KeyStates[0x24] && _PastKeyStates[0x24]);
+                case ButtonConcept.FIRE: return ((!_KeyStates[0x11] && _PastKeyStates[0x11])) || ((!_MouseButtonStates[0] && _PastMouseButtonStates[0]));
+                case ButtonConcept.TEST_BUTTON1: return (!_KeyStates[0x24] && _PastKeyStates[0x24]);
             }
 
             return false;

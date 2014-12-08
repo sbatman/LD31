@@ -69,7 +69,7 @@ namespace LD31.Objects
 
             if (direction.Z < -5 && IsOnFloor() && _JumpCoolDown <= 0)
             {
-                Velocity.Z += 2;
+                Velocity.Z += 6;
                 _JumpCoolDown = 120;
             }
 
