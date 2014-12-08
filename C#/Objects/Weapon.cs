@@ -1,6 +1,6 @@
-﻿using LD31.Graphics;
+﻿using System;
+using LD31.Graphics;
 using LD31.Math;
-using System;
 
 namespace LD31.Objects
 {
@@ -102,12 +102,12 @@ namespace LD31.Objects
 
                 Vector3 fireDirection = new Vector3(0)
                 {
-                    XY = Vector2.Rotate(new Vector2(0, -1), Graphics.GraphicsManager.GetCamera().RotationZ)
+                    XY = Vector2.Rotate(new Vector2(0, -1), GraphicsManager.GetCamera().RotationZ)
 
                 };
 
                 fireDirection.Z =
-                    Vector2.Rotate(new Vector2(0, 1), Graphics.GraphicsManager.GetCamera().RotationX).X;
+                    Vector2.Rotate(new Vector2(0, 1), GraphicsManager.GetCamera().RotationX).X;
 
 
                 //different guns have different projectiles when they fire!

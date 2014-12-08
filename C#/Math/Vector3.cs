@@ -197,7 +197,7 @@ namespace LD31.Math
         /// <returns></returns>
         public Object Clone()
         {
-            return new Vector3(this.X, this.Y, this.Z);
+            return new Vector3(X, Y, Z);
         }
     }
 }

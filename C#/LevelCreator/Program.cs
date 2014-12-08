@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -8,7 +8,7 @@ namespace LevelCreator
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             const string processedLevelFile = "GameLevel.txt";
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace LD31.Objects
 {

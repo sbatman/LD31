@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.RightsManagement;
 using System.Threading;
 using LD31.Graphics;
 using LD31.Input;

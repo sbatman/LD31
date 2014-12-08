@@ -1,10 +1,6 @@
-﻿using LD31.Graphics;
+﻿using System;
+using LD31.Graphics;
 using LD31.Math;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD31.Objects
 {

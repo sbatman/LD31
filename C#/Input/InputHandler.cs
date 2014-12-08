@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using LD31.Graphics;
 
 namespace LD31.Input
 {
@@ -91,7 +92,7 @@ namespace LD31.Input
         /// <param name="y"></param>
         private static void HandleMouseMove(Int32 x, Int32 y)
         {
-            Graphics.GraphicsManager.GetCamera().Rotatate(x * 0.2f, y * 0.2f);
+            GraphicsManager.GetCamera().Rotatate(x * 0.2f, y * 0.2f);
         }
 
         private static void HandleMousePress(Int32 button)

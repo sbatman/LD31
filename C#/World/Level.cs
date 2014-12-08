@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using LD31.Graphics;
 using LD31.Math;
+using LD31.Objects;
 
 namespace LD31.World
 {
@@ -46,7 +47,7 @@ namespace LD31.World
                     Int32 t = int.Parse(vertexData[3]);
                     if (t == 4)
                     {
-                        Objects.Enemy.SpawnLocations.Add(new Vector3(x * 32, y * 32, z * 32));
+                        Enemy.SpawnLocations.Add(new Vector3(x * 32, y * 32, z * 32));
                         continue;
                     }
 

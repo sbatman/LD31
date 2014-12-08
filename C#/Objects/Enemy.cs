@@ -1,7 +1,7 @@
-﻿using LD31.Graphics;
-using LD31.Math;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using LD31.Graphics;
+using LD31.Math;
 
 namespace LD31.Objects
 {

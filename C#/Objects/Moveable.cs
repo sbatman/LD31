@@ -1,6 +1,4 @@
-﻿using System;
-using LD31.Math;
-using LD31.Graphics;
+﻿using LD31.Math;
 
 namespace LD31.Objects
 {
