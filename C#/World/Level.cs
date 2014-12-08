@@ -44,6 +44,11 @@ namespace LD31.World
                     Int32 z = int.Parse(vertexData[1]);
                     Int32 y = int.Parse(vertexData[2]);
                     Int32 t = int.Parse(vertexData[3]);
+                    if (t == 4)
+                    {
+                        Objects.Enemy.SpawnLocations.Add(new Vector3(x * 32, y * 32, z * 32));
+                        continue;
+                    }
 
                     _Blocks[x,y,z] = new Block();
                     switch (t)
@@ -52,6 +57,7 @@ namespace LD31.World
                         case 8: _Blocks[x, y, z].Colour = new Colour(40, 40, 60, 255); break;
                         case 0: _Blocks[x, y, z].Colour = new Colour(255, 0, 0, 255); break;
                         case 3: _Blocks[x, y, z].Colour = new Colour(255, 255, 0, 255); break;
+                        case 5: _Blocks[x, y, z].Colour = new Colour(120, 120, 120, 255); break;
                     }
 
                     //TODO: Populate the array with the data
