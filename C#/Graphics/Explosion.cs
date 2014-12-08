@@ -81,7 +81,7 @@ namespace LD31.Graphics
 
             foreach (Particle p in new List<Particle>(_ActiveParticles))
             {
-                p.Life -= 0.01f;
+                p.Life -= 0.01f * (msSinceLastUpdate / 16); ;
                 if (p.Life <= 0)
                 {
                     _ActiveParticles.Remove(p);
@@ -120,7 +120,7 @@ namespace LD31.Graphics
                     p.Velocity.Y = 0;
                 }
 
-                p.Position += p.Velocity;
+                p.Position += p.Velocity * (msSinceLastUpdate / 16); ;
             }
         }
     }

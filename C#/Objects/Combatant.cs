@@ -148,9 +148,9 @@ namespace LD31.Objects
                 Velocity.Y = 0;
             }
 
-            if (_Health <= 0) Kill();
+            if (_Health <= 0||Position.Z<-200) Kill();
 
-            Position += Velocity;
+            Position += Velocity * (msSinceLastUpdate / 16); //the time factor stops fast machines from running too many updates
         }
 
         /// <summary>
