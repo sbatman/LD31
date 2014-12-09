@@ -66,8 +66,8 @@ namespace LD31
             CurrentLevel = new Level("GameLevel.txt");
         }
 
-        /// <summary>s
-        ///     This function handles drawing the game to screen
+        /// <summary>
+        /// This function handles drawing the game to screen
         /// </summary>
         private void Draw()
         {

@@ -475,7 +475,7 @@ void GraphicsManager::DrawTextToScreen(char* str, int strLength, int offsetX, in
 	glColor3d(1.0, 1.0, 1.0);// white
 
 	//glViewport(0, 0, _Width, _Height);
-	glRasterPos3f(_CameraPosX + offsetX + 1, _CameraPosY + offsetY, _CameraPosZ + 200); // set start position
+	glRasterPos3f(_CameraPosX + offsetX, _CameraPosY + offsetY, _CameraPosZ + 200); // set start position
 
 	glListBase(font_list_base_2d); //start of our font display list numbers 
 
