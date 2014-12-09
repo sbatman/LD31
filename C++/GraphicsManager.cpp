@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include "GraphicsManager.h"
@@ -20,6 +20,8 @@ void(_stdcall *_CallBackKeyDown)(int32_t) = nullptr;
 void(_stdcall *_CallBackKeyUp)(int32_t) = nullptr;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+//HFONT _Font = CreateFont(-24, 0, 0, 0, 0, ANSI_CHARSET, 0U, 0U, 0U, 0U, 0U, 0U, 0U, TEXT("Arial"));
 
 void ErrorTest()
 {
@@ -58,6 +60,8 @@ GraphicsManager::~GraphicsManager()
 
 	delete [] _UIVertexList;
 	delete [] _UIColourList;
+
+	//DeleteObject(_Font);
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -266,7 +270,7 @@ void GraphicsManager::SetupGLStates()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Somewhere in the initialization part of your program�
+	// Somewhere in the initialization part of your program…
 	glEnable(GL_LIGHTING);
 
 	// Create light components
@@ -459,4 +463,22 @@ void GraphicsManager::SetCameraRotation(double z, double x)
 {
 	_CameraRotZ = z;
 	_CameraRotX = x;
+}
+
+void GraphicsManager::DrawTextToScreen(char* str, int strLength, int offsetX, int offsetY)
+{
+	//globally defined
+	int font_list_base_2d = 2000; // set the start of the display lists for the 2d font
+
+	wglUseFontBitmaps(_HDC, 0, 127, font_list_base_2d); // create a display list for each character (0-127)
+	// start numbering the display lists at font_list_base_2d
+	glColor3d(1.0, 1.0, 1.0);// white
+
+	//glViewport(0, 0, _Width, _Height);
+	glRasterPos3f(_CameraPosX + offsetX + 1, _CameraPosY + offsetY, _CameraPosZ + 200); // set start position
+
+	glListBase(font_list_base_2d); //start of our font display list numbers 
+
+	glCallLists(strLength*2, GL_UNSIGNED_BYTE, str);
+
 }

@@ -37,6 +37,11 @@ extern "C"
 		}
 	}
 
+	__declspec(dllexport) void __cdecl GraphicsManagerDrawTextToScreen(char* str, int strLength, int offsetX, int offsetY)
+	{
+		_GMInstance->DrawTextToScreen(str, strLength, offsetX, offsetY);
+	}
+
 	__declspec(dllexport) void __cdecl GraphicsManagerDrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
 	{
 		_GMInstance->DrawVoxel(x, y, z, colourR, colourG, colourB, colourA, sizeX, sizeY, sizeZ);

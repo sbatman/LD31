@@ -20,6 +20,8 @@ public:
 	void SetKeyDownCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyUpCallback(void(_stdcall *callBack)(int32_t));
 
+	void DrawTextToScreen(char* str, int strLength, int offsetX, int offsetY);
+
 private:
 	const int FACESPERCUBE = 6;
 	const int TRISPERCUBE = FACESPERCUBE * 2;

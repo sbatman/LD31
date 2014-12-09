@@ -66,7 +66,7 @@ namespace LD31
             CurrentLevel = new Level("GameLevel.txt");
         }
 
-        /// <summary>
+        /// <summary>s
         ///     This function handles drawing the game to screen
         /// </summary>
         private void Draw()
@@ -81,6 +81,12 @@ namespace LD31
 
             UI.Draw();
 
+
+            String healthString = String.Format("Health: {0}", Player.Health);
+            String ammoString = String.Format("Ammo: {0}", Player.CurrentWeapon.Aummunition);
+            UI.DrawTextToScreen(ammoString, 0, 30);
+            UI.DrawTextToScreen(healthString, 0, 20);
+            
             GraphicsManager.EndDraw();
         }
 

@@ -74,6 +74,11 @@ namespace LD31.Graphics
             NativeMethods.GraphicsManagerDrawUIVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16) scale.X, (UInt16) scale.Y, (UInt16) scale.Z);
         }
 
+        public static void DrawTextToScreen(String str, Int32 offsetX, Int32 offsetY)
+        {
+            NativeMethods.GraphicsManagerDrawTextToScreen(str, str.Length, offsetX, offsetY);
+        }
+
         /// <summary>
         ///     Call once drawing is complete
         /// </summary>
@@ -148,6 +153,9 @@ namespace LD31.Graphics
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerDrawTextToScreen(String str, Int32 strLength, Int32 offsetX, Int32 offsetY);
         }
     }
 }
