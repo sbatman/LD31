@@ -1,9 +1,9 @@
 ﻿namespace LD31
 {
-    class Program
+    internal class Program
     {
         /// <summary>
-        /// The main entry point for the game. Make sure to release ALL resource before it exits.
+        ///     The main entry point for the game. Make sure to release ALL resource before it exits.
         /// </summary>
         private static void Main()
         {

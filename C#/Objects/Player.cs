@@ -6,13 +6,12 @@ using LD31.Math;
 namespace LD31.Objects
 {
     /// <summary>
-    /// This class represents the player
+    ///     This class represents the player
     /// </summary>
     public class Player : Combatant
     {
-
         /// <summary>
-        /// CTOR
+        ///     CTOR
         /// </summary>
         public Player(Vector3 position)
             : base(position)
@@ -21,7 +20,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// This value represents the position of the object.
+        ///     This value represents the position of the object.
         /// </summary>
         public override Vector3 Position
         {
@@ -34,7 +33,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// The update method of the player class.
+        ///     The update method of the player class.
         /// </summary>
         /// <param name="msSinceLastUpdate"></param>
         public override void Update(Double msSinceLastUpdate)
@@ -49,7 +48,7 @@ namespace LD31.Objects
             if (InputHandler.IsButtonDown(ButtonConcept.FORWARD) && IsOnFloor())
             {
                 double speedMultiplier = InputHandler.IsButtonDown(ButtonConcept.SPRINT) ? 1.5 : 1;
-                Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2 * speedMultiplier), GraphicsManager.GetCamera().RotationZ);
+                Vector2 movement = Vector2.Rotate(new Vector2(0, -0.2*speedMultiplier), GraphicsManager.GetCamera().RotationZ);
                 Velocity.X += movement.X;
                 Velocity.Y += movement.Y;
             }

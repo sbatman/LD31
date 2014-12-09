@@ -9,7 +9,7 @@
 
         public override string ToString()
         {
-            return X.ToString() + " " + Y.ToString() + " " + Z.ToString() + " " + T.ToString();
+            return X + " " + Y + " " + Z + " " + T;
         }
     }
 }
