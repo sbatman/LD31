@@ -3,22 +3,22 @@
 namespace LD31.Objects
 {
     /// <summary>
-    /// This class represents a game object that can be moved.
+    ///     This class represents a game object that can be moved.
     /// </summary>
     public abstract class Moveable : GameObject
     {
         /// <summary>
-        /// Private backing field for position
+        ///     Private backing field for position
         /// </summary>
         private Vector3 _Position;
 
         /// <summary>
-        /// Backing field for velocity
+        ///     Backing field for velocity
         /// </summary>
         private Vector3 _Velocity;
 
         /// <summary>
-        /// CTOR
+        ///     CTOR
         /// </summary>
         public Moveable(Vector3 position)
         {
@@ -27,7 +27,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// This value represents the position of the object.
+        ///     This value represents the position of the object.
         /// </summary>
         public virtual Vector3 Position
         {
@@ -36,7 +36,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// This value represents the position of the object.
+        ///     This value represents the position of the object.
         /// </summary>
         public virtual Vector3 Velocity
         {
@@ -45,7 +45,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// This function moves the object.
+        ///     This function moves the object.
         /// </summary>
         /// <param name="movement"></param>
         public virtual void Move(Vector3 movement)
@@ -55,7 +55,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// Adds to the moveables velocity
+        ///     Adds to the moveables velocity
         /// </summary>
         /// <param name="impulse"></param>
         public virtual void ApplyImpulse(Vector3 impulse)

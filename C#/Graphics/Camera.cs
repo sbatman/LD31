@@ -2,16 +2,14 @@
 
 namespace LD31.Graphics
 {
-    class Camera
+    internal class Camera
     {
+        private bool _Dirty;
         private Double _PositionX;
         private Double _PositionY;
         private Double _PositionZ;
-
-        private Double _RotationZ;
         private Double _RotationX;
-
-        private bool _Dirty;
+        private Double _RotationZ;
 
         public double RotationX
         {
@@ -42,7 +40,7 @@ namespace LD31.Graphics
         {
             if (_Dirty)
             {
-                GraphicsManager.NativeMethods.GraphicsManagerSerCameraPosition(_PositionX, _PositionZ,_PositionY );
+                GraphicsManager.NativeMethods.GraphicsManagerSerCameraPosition(_PositionX, _PositionZ, _PositionY);
                 GraphicsManager.NativeMethods.GraphicsManagerSetCameraRotation(_RotationZ, _RotationX);
             }
         }
@@ -78,6 +76,5 @@ namespace LD31.Graphics
             _RotationZ += z;
             _Dirty = true;
         }
-
     }
 }
