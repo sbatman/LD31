@@ -37,7 +37,7 @@ private:
 	double* _UIVertexList;
 	uint8_t* _UIColourList;
 
-	int _TriCount=0;
+	int _TriCount = 0;
 	int _UITriCount = 0;
 	int _TTriCount = 0;
 
@@ -46,5 +46,5 @@ private:
 	double _CameraPosX = 0, _CameraPosY = 0, _CameraPosZ = 0, _CameraRotZ = 0, _CameraRotX = 0;
 
 	void SetupGLStates();
-	void DrawTri(double * vertList, double* p1, double* p2, double* p3, int* arrayPosition);
+	void DrawTri(double* vertList, double* p1, double* p2, double* p3, int* arrayPosition);
 };

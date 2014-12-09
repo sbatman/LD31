@@ -1,9 +1,9 @@
 ﻿namespace LD31.Input
 {
     /// <summary>
-    /// This enum represents the conceptual buttons for the game.
+    ///     This enum represents the conceptual buttons for the game.
     /// </summary>
-    enum ButtonConcept
+    internal enum ButtonConcept
     {
         QUIT,
         JUMP,

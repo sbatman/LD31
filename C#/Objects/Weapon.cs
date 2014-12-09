@@ -5,35 +5,42 @@ using LD31.Math;
 namespace LD31.Objects
 {
     /// <summary>
-    /// This class represents game weapons. The constructor is private as it is a class enum pattern implementation.
-    /// All types of weapon are existing static instances.
+    ///     This class represents game weapons. The constructor is private as it is a class enum pattern implementation.
+    ///     All types of weapon are existing static instances.
     /// </summary>
     public class Weapon : GameObject
     {
-
         public enum WeaponTypes
         {
             PISTOL,
             SHOTGUN
         }
-        /// <summary>
-        /// The color of the projectiles for this weapon
-        /// </summary>
-        readonly Colour _ProjectileColor;
 
         /// <summary>
-        /// backing field
+        ///     backing field
         /// </summary>
-        Int32 _Ammunition;
-
-        private readonly Combatant _Owner;
+        private Int32 _Ammunition;
 
         private Double _DamagePerShot = 30;
-
         private WeaponTypes _WeaponType;
+        private readonly Combatant _Owner;
 
         /// <summary>
-        /// How much ammunition this weapon has.
+        ///     The color of the projectiles for this weapon
+        /// </summary>
+        private readonly Colour _ProjectileColor;
+
+        /// <summary>
+        ///     CTOR
+        /// </summary>
+        public Weapon(Colour projectileColour, Combatant owner)
+        {
+            _Owner = owner;
+            _ProjectileColor = projectileColour;
+        }
+
+        /// <summary>
+        ///     How much ammunition this weapon has.
         /// </summary>
         public Int32 Aummunition
         {
@@ -58,17 +65,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// CTOR
-        /// </summary>
-        public Weapon(Colour projectileColour, Combatant owner)
-        {
-            _Owner = owner;
-            _ProjectileColor = projectileColour;
-        }
-
-
-        /// <summary>
-        /// This method gives ammo to the weapon
+        ///     This method gives ammo to the weapon
         /// </summary>
         /// <param name="ammoToGive"></param>
         public void IncreaseAmmo(Int32 ammoToGive)
@@ -76,9 +73,8 @@ namespace LD31.Objects
             if (ammoToGive > 0) _Ammunition += ammoToGive;
         }
 
-
         /// <summary>
-        /// This method takes ammo from the weapon.
+        ///     This method takes ammo from the weapon.
         /// </summary>
         /// <param name="ammoToTake"></param>
         public void DecreaseAmmo(Int32 ammoToTake)
@@ -86,9 +82,8 @@ namespace LD31.Objects
             if (ammoToTake > 0) _Ammunition -= ammoToTake;
         }
 
-
         /// <summary>
-        /// This method fires the weapon if it has ammo.
+        ///     This method fires the weapon if it has ammo.
         /// </summary>
         public void Fire()
         {
@@ -103,7 +98,6 @@ namespace LD31.Objects
                 Vector3 fireDirection = new Vector3(0)
                 {
                     XY = Vector2.Rotate(new Vector2(0, -1), GraphicsManager.GetCamera().RotationZ)
-
                 };
 
                 fireDirection.Z =
@@ -129,16 +123,11 @@ namespace LD31.Objects
                 //    Projectile bullet4 = new Projectile(this, position, fireDirection, _ProjectileColor);
                 //    Projectile bullet5 = new Projectile(this, position, fireDirection, _ProjectileColor);
                 //}
-
             }
             //   else
             {
                 Console.WriteLine("Out of ammo for current weapon - no Bang :(");
             }
-
-
         }
-
-
     }
 }
