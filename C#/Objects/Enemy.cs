@@ -1,6 +1,7 @@
 ﻿using LD31.Graphics;
 using LD31.Math;
 using System;
+using System.Collections.Generic;
 
 namespace LD31.Objects
 {
@@ -12,24 +13,39 @@ namespace LD31.Objects
         /// <summary>
         /// The size of the enemy
         /// </summary>
-        protected Vector3 _Scale = new Vector3(40);
+        protected readonly Vector3 _Scale = new Vector3(8, 24, 8);
 
         /// <summary>
         /// The player this enemy targets.
         /// </summary>
-        protected Player _Target;
+        protected readonly Player _Target;
 
         /// <summary>
         /// How fast the enemy can move.
         /// </summary>
-        protected Double _MovementSpeed = 0.005;
+        protected readonly Double _MovementSpeed = 0.1;
 
-         /// <summary>
+        protected readonly Vector3 _DrawOffset = new Vector3(0, 0, 10);
+
+        public static readonly  List<Vector3> SpawnLocations = new List<Vector3>();
+
+        private static readonly Random _RND = new Random();
+
+        /// <summary>
         /// CTOR
         /// </summary>
         public Enemy(Vector3 position, Player target)
             : base(position)
         {
+            if (SpawnLocations.Count <= 0)
+            {
+                Dispose();
+                return;
+                ;
+            }
+            int randomPosition = _RND.Next(0, SpawnLocations.Count);
+            Position = SpawnLocations[randomPosition];
+
             _Target = target;
         }
 
@@ -39,7 +55,7 @@ namespace LD31.Objects
         /// </summary>
         public override void Draw()
         {
-            GraphicsManager.DrawVoxel(Position, Colour.Green, _Scale);
+            GraphicsManager.DrawVoxel(Position - _DrawOffset, Colour.Green, _Scale);
         }
 
         /// <summary>
@@ -47,11 +63,22 @@ namespace LD31.Objects
         /// </summary>
         public override void Update(Double msSinceLastUpdate)
         {
+            if (Disposed) return;
             //// heroPos is the position of the hero.
             Vector3 direction = Position - _Target.Position;
 
+            if (direction.Z < -5 && IsOnFloor() && _JumpCoolDown <= 0)
+            {
+                Velocity.Z += 2;
+                _JumpCoolDown = 120;
+            }
+
+            direction.Z = 0;
             ////assuming here that velocity is a length and not a vector.
-            Position -= direction * _MovementSpeed;
+            Velocity.X += (direction.X > 0 ? -_MovementSpeed : _MovementSpeed) * (msSinceLastUpdate / 16); ;
+            Velocity.Y += (direction.Y > 0 ? -_MovementSpeed : _MovementSpeed) * (msSinceLastUpdate / 16); ;
+
+            base.Update(msSinceLastUpdate);
         }
 
         public override void Kill()

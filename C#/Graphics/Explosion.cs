@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using LD31.Math;
 using LD31.Objects;
+using LD31.World;
 
 namespace LD31.Graphics
 {
@@ -55,13 +56,14 @@ namespace LD31.Graphics
             set { _Positon = value; }
         }
 
-        public void Draw()
+        public override void Draw()
         {
             foreach (Particle p in new List<Particle>(_ActiveParticles).Where(a => a.Life >= 0))
             {
                 GraphicsManager.DrawVoxel(p.Position, p.Colour, new Vector3(p.Size));
             }
         }
+
 
         public override void Update(double msSinceLastUpdate)
         {
@@ -71,9 +73,15 @@ namespace LD31.Graphics
                 CreateParticle();
             }
 
+            if (!_ActiveParticles.Any(a => a.Life > 0))
+            {
+                Dispose();
+                return;
+            }
+
             foreach (Particle p in new List<Particle>(_ActiveParticles))
             {
-                p.Life -= 0.01f;
+                p.Life -= 0.01f * (msSinceLastUpdate / 16); ;
                 if (p.Life <= 0)
                 {
                     _ActiveParticles.Remove(p);
@@ -112,7 +120,7 @@ namespace LD31.Graphics
                     p.Velocity.Y = 0;
                 }
 
-                p.Position += p.Velocity;
+                p.Position += p.Velocity * (msSinceLastUpdate / 16); ;
             }
         }
     }

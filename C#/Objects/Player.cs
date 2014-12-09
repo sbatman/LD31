@@ -10,7 +10,7 @@ namespace LD31.Objects
     /// </summary>
     public class Player : Combatant
     {
-        protected Double _JumpCoolDown = 0;
+
         /// <summary>
         /// CTOR
         /// </summary>

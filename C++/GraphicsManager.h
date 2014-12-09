@@ -28,12 +28,17 @@ private:
 	uint8_t* _ColourList;
 	double* _NormalList;
 
+	double* _TVertexList;
+	uint8_t* _TColourList;
+	double* _TNormalList;
+
 	double* _UIVertexList;
 	uint8_t* _UIColourList;
 
 
 	int _TriCount=0;
-	int _UITriCount=0;
+	int _UITriCount = 0;
+	int _TTriCount = 0;
 
 
 	int _Width;

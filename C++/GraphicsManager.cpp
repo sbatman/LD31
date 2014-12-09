@@ -2,6 +2,7 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include "GraphicsManager.h"
+#include <cstdio>
 
 HDC			_HDC = nullptr;		// Private GDI Device Context
 HGLRC		_HDR = nullptr;		// Permanent Rendering Context
@@ -18,24 +19,44 @@ void(_stdcall *_CallBackKeyUp)(int32_t) = nullptr;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+void ErrorTest()
+{
+	int error = glGetError();
+	if (error != 0)
+	{
+		printf("%s", gluErrorString(error));
+		int g = 7;
+		g = g*g;
+	}
+}
+
 GraphicsManager::GraphicsManager()
 {
 	_VertexList = new double[20000000];
 	_NormalList = new double[20000000];
 	_ColourList = new uint8_t[20000000];
 
-	_UIVertexList = new double[20000];
-	_UIColourList = new uint8_t[20000];
+	_TVertexList = new double[2000000];
+	_TNormalList = new double[2000000];
+	_TColourList = new uint8_t[2000000];
+
+	_UIVertexList = new double[200000];
+	_UIColourList = new uint8_t[200000];
 }
 
 GraphicsManager::~GraphicsManager()
 {
-	delete [] _VertexList;
-	delete [] _ColourList;
-	delete [] _NormalList;
+	delete[] _VertexList;
+	delete[] _ColourList;
+	delete[] _NormalList;
 
-	delete [] _UIVertexList;
-	delete [] _UIColourList;
+	delete[] _TVertexList;
+	delete[] _TColourList;
+	delete[] _TNormalList;
+
+
+	delete[] _UIVertexList;
+	delete[] _UIColourList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -58,7 +79,7 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	_Width = width;
 	_Height = height;
 	WNDCLASSEX windowClass = { 0 };
-	hInstance = (HINSTANCE) handle;
+	hInstance = (HINSTANCE)handle;
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.lpfnWndProc = WndProc;
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -83,8 +104,11 @@ void GraphicsManager::BeginDraw()
 	glTranslatef(-_CameraPosX, -_CameraPosY, -_CameraPosZ);
 	_TriCount = 0;
 	_UITriCount = 0;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	_TTriCount = 0;
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 }
 
 void GraphicsManager::EndDraw()
@@ -94,13 +118,22 @@ void GraphicsManager::EndDraw()
 	glNormalPointer(GL_DOUBLE, 0, _NormalList);
 	glDrawArrays(GL_TRIANGLES, 0, _TriCount * 3);
 
+	if (_TTriCount > 0){
+		glDepthMask(false);
+		glVertexPointer(3, GL_DOUBLE, 0, _TVertexList);
+		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _TColourList);
+		glNormalPointer(GL_DOUBLE, 0, _TNormalList);
+		glDrawArrays(GL_TRIANGLES, 0, _TTriCount * 3);
+		glDepthMask(true);
+	}
+
 	glPushMatrix();
 	glLoadIdentity();
 
 	if (_UITriCount > 0)
 	{
 		glDisable(GL_FOG);
-		glClear( GL_DEPTH_BUFFER_BIT );
+		glClear(GL_DEPTH_BUFFER_BIT);
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glVertexPointer(3, GL_DOUBLE, 0, _UIVertexList);
 		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _UIColourList);
@@ -111,8 +144,10 @@ void GraphicsManager::EndDraw()
 
 	glPopMatrix();
 
-	glEnd();
+	//glEnd();
+
 	SwapBuffers(_HDC);
+	;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -120,31 +155,31 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PIXELFORMATDESCRIPTOR pfd;
 	switch (message)
 	{
-		case WM_CREATE:
-			_HDC = GetDC(hwnd);
-			int nPixelFormat;
-			pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
-			nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
-			SetPixelFormat(_HDC, nPixelFormat, &pfd);
-			_HDR = wglCreateContext(_HDC);
-			wglMakeCurrent(_HDC, _HDR);
-			break;
-		case WM_CLOSE:
-			PostQuitMessage(0);
-			return 0;
-			break;
-		case WM_SETFOCUS:
+	case WM_CREATE:
+		_HDC = GetDC(hwnd);
+		int nPixelFormat;
+		pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+		nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
+		SetPixelFormat(_HDC, nPixelFormat, &pfd);
+		_HDR = wglCreateContext(_HDC);
+		wglMakeCurrent(_HDC, _HDR);
+		break;
+	case WM_CLOSE:
+		PostQuitMessage(0);
+		return 0;
+		break;
+	case WM_SETFOCUS:
+		_HasFocus = true;
+		break;
+	case WM_KILLFOCUS:
+		_HasFocus = false;
+		break;
+	case WM_ACTIVATE:
+		if (LOWORD(message) == WA_ACTIVE)
 			_HasFocus = true;
-			break;
-		case WM_KILLFOCUS:
+		else
 			_HasFocus = false;
-			break;
-		case WM_ACTIVATE:
-			if (LOWORD(message) == WA_ACTIVE)
-				_HasFocus = true;
-			else
-				_HasFocus = false;
-			break;
+		break;
 	}
 	return (DefWindowProc(hwnd, message, wParam, lParam));
 }
@@ -156,34 +191,34 @@ void GraphicsManager::Update()
 	{
 		switch (msg.message)
 		{
-			case WM_MOUSEMOVE:
-			{
-				POINT point = POINT();
-				GetCursorPos(&point);
+		case WM_MOUSEMOVE:
+		{
+			POINT point = POINT();
+			GetCursorPos(&point);
 
-				int32_t xPos = point.x;
-				int32_t yPos = point.y;
+			int32_t xPos = point.x;
+			int32_t yPos = point.y;
 
-				if (xPos != _LastMouseX || yPos != _LastMouseY)
-				{
-					_LastMouseX = xPos;
-					_LastMouseY = yPos;
-					if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
-				}
-			}
-				break;
-			case WM_KEYDOWN:
+			if (xPos != _LastMouseX || yPos != _LastMouseY)
 			{
-				int a = (int) msg.wParam;
-				if (_HasFocus) _CallBackKeyDown(a);
+				_LastMouseX = xPos;
+				_LastMouseY = yPos;
+				if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
 			}
-				break;
-			case WM_KEYUP:
-			{
-				int a = (int) msg.wParam;
-				if (_HasFocus) _CallBackKeyUp(a);
-			}
-				break;
+		}
+			break;
+		case WM_KEYDOWN:
+		{
+			int a = (int)msg.wParam;
+			if (_HasFocus) _CallBackKeyDown(a);
+		}
+			break;
+		case WM_KEYUP:
+		{
+			int a = (int)msg.wParam;
+			if (_HasFocus) _CallBackKeyUp(a);
+		}
+			break;
 		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -198,11 +233,12 @@ void GraphicsManager::Destroy()
 
 void GraphicsManager::SetupGLStates()
 {
+
 	glShadeModel(GL_SMOOTH);
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float) _Height, 1, 2500);
+	gluPerspective(70, _Width / (float)_Height, 1, 2500);
 	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -213,10 +249,10 @@ void GraphicsManager::SetupGLStates()
 	glEnable(GL_LIGHTING);
 
 	// Create light components
-	GLfloat ambientLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat diffuseLight [] = { 0.8f, 0.8f, 0.8, 1.0f };
-	GLfloat specularLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat position [] = { 0, 1, 0.5, 0 };
+	GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
+	GLfloat specularLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat position[] = { 0, 1, 0.5, 0 };
 
 	// Assign created components to GL_LIGHT0
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -231,10 +267,10 @@ void GraphicsManager::SetupGLStates()
 
 	glFogi(GL_FOG_MODE, GL_EXP);        // Fog Mode
 	glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-	glFogf(GL_FOG_DENSITY, 0.004f);              // How Dense Will The Fog Be
+	glFogf(GL_FOG_DENSITY, 0.0004f);              // How Dense Will The Fog Be
 	glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
 	glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
-	glFogf(GL_FOG_END, 2500);               // Fog End Depth
+	glFogf(GL_FOG_END, 4000);               // Fog End Depth
 	glEnable(GL_FOG);                   // Enables GL_FOG
 
 	// enable color tracking
@@ -242,7 +278,7 @@ void GraphicsManager::SetupGLStates()
 	// set material properties which will be assigned by glColor
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-	float specReflection [] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
 	glMateriali(GL_FRONT, GL_SHININESS, 96);
 
@@ -253,6 +289,7 @@ void GraphicsManager::SetupGLStates()
 	glMatrixMode(GL_MODELVIEW);
 	glCullFace(GL_BACK);
 	_GLStatesSetup = true;
+
 }
 
 void GraphicsManager::DrawTri(double * vertList, double* p1, double* p2, double* p3, int* arrayPosition)
@@ -314,8 +351,14 @@ void GraphicsManager::DrawUIVoxel(double x, double y, double z, uint8_t colourR,
 
 void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
 {
-	int vertexArrayStart = _TriCount * 3 * 3;
-	int colourArrayStart = _TriCount * 3 * 4;
+	if (colourA == 0)return;
+	double * vertArray = (colourA == 255) ? _VertexList : _TVertexList;
+	uint8_t * colArray = (colourA == 255) ? _ColourList : _TColourList;
+	double * normArray = (colourA == 255) ? _NormalList : _TNormalList;
+	int * triCount = (colourA == 255) ? (&_TriCount) : (&_TTriCount);
+
+	int vertexArrayStart = (*triCount) * 3 * 3;
+	int colourArrayStart = (*triCount) * 3 * 4;
 	int verpos = vertexArrayStart;
 
 	double halfSizeX = sizeX*0.5f;
@@ -333,7 +376,7 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 
 	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
 
-	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_ColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
+	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(colArray + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
 
 
 	double _FrontNormals[9] = { 0, 0, -1, 0, 0, -1, 0, 0, -1 };
@@ -344,42 +387,42 @@ void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, u
 	double _BottomNormals[9] = { 0, 1, 0, 0, 1, 0, 0, 1, 0 };
 
 	//FRONT
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _tlf, _blf, _trf, &verpos);
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _blf, _brf, _trf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _tlf, _blf, _trf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _blf, _brf, _trf, &verpos);
 
 	//LEFT	
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _tlb, _blb, _tlf, &verpos);
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _blb, _blf, _tlf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _tlb, _blb, _tlf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _LeftNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _blb, _blf, _tlf, &verpos);
 
 	//RIGHT	
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _trb, _trf, _brb, &verpos);
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _brf, _brb, _trf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _trb, _trf, _brb, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _RightNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _brf, _brb, _trf, &verpos);
 
 	//Back	
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _blb, _tlb, _trb, &verpos);
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _blb, _trb, _brb, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _blb, _tlb, _trb, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _BackNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _blb, _trb, _brb, &verpos);
 
 	//Top	
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _tlb, _tlf, _trb, &verpos);
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _tlf, _trf, _trb, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _tlb, _tlf, _trb, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _TopNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _tlf, _trf, _trb, &verpos);
 
 	//Bottom	
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _blb, _brb, _blf, &verpos);
-	memcpy_s(_NormalList + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
-	DrawTri(_VertexList, _blf, _brb, _brf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _blb, _brb, _blf, &verpos);
+	memcpy_s(normArray + (verpos), sizeof(double) * 9, _BottomNormals, sizeof(double) * 9);
+	DrawTri(vertArray, _blf, _brb, _brf, &verpos);
 
-	_TriCount += 12;
+	(*triCount) += 12;
 }
 
 void GraphicsManager::SerCameraPosition(double x, double y, double z)
