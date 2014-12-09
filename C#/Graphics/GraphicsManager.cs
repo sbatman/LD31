@@ -20,6 +20,7 @@ namespace LD31.Graphics
         /// </summary>
         public static void Init()
         {
+            _PrimaryCamera = new Camera();
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
 
@@ -157,6 +158,9 @@ namespace LD31.Graphics
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerInitShaders(StringBuilder z, StringBuilder x);
         }
     }
 }
