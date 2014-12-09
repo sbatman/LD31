@@ -80,12 +80,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\GameLevel.txt">
+    <Content Include="Content\Levels\Level1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="GameLevel.txt">
+    </Content>
+    <Content Include="Content\Shaders\MainFragment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Shaders\MainVertex.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

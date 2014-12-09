@@ -55,6 +55,11 @@ extern "C" {
 		_GMInstance->SetCameraRotation(z, x);
 	}
 
+	__declspec(dllexport) void __cdecl GraphicsManagerInitShaders(char * vertexShader, char * fragmentShader)
+	{
+		_GMInstance->InitShaders(vertexShader, fragmentShader);
+	}
+
 	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 	{
 		_GMInstance->SetMouseMoveCallback(callBack);

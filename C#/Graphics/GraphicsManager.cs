@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using LD31.Math;
 using LD31.World;
 
@@ -16,7 +18,7 @@ namespace LD31.Graphics
         /// </summary>
         public static class NativeMethods
         {
-        
+
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerInit(Int32 width, Int32 height, Int32 handle);
@@ -42,7 +44,8 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
-
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerInitShaders(StringBuilder vertexShader, StringBuilder fragmentShaders);
 
         }
 
@@ -55,6 +58,9 @@ namespace LD31.Graphics
         {
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
+
+
+
 
             _PrimaryCamera = new Camera(); ;
         }
@@ -119,6 +125,14 @@ namespace LD31.Graphics
         {
             _PrimaryCamera.Update();
             NativeMethods.GraphicsManagerEndDraw();
+
+            if (Input.InputHandler.WasButtonReleased(Input.ButtonConcept.TEST_BUTTON1))
+            {
+                string vertexShader = File.ReadAllText("Content/Shaders/MainVertex.txt");
+                string fragmentShader = File.ReadAllText("Content/Shaders/MainFragment.txt");
+
+                NativeMethods.GraphicsManagerInitShaders(new StringBuilder(vertexShader), new StringBuilder(fragmentShader));
+            }
         }
 
         /// <summary>

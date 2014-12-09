@@ -1,8 +1,6 @@
-#include "stdafx.h"
-#include <gl/gl.h>
-#include <gl/glu.h>
+﻿#include "stdafx.h"
 #include "GraphicsManager.h"
-#include <cstdio>
+
 
 HDC			_HDC = nullptr;		// Private GDI Device Context
 HGLRC		_HDR = nullptr;		// Permanent Rendering Context
@@ -175,6 +173,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetPixelFormat(_HDC, nPixelFormat, &pfd);
 			_HDR = wglCreateContext(_HDC);
 			wglMakeCurrent(_HDC, _HDR);
+
+			glewInit();
 			break;
 		case WM_CLOSE:
 			PostQuitMessage(0);
@@ -265,7 +265,7 @@ void GraphicsManager::SetupGLStates()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Somewhere in the initialization part of your program�
+	// Somewhere in the initialization part of your program…
 	glEnable(GL_LIGHTING);
 
 	// Create light components
@@ -455,4 +455,38 @@ void GraphicsManager::SetCameraRotation(double z, double x)
 {
 	_CameraRotZ = z;
 	_CameraRotX = x;
+}
+
+void GraphicsManager::InitShaders(std::string vertexShader, std::string fragmentShader)
+{
+	const GLcharARB * my_fragment_shader_source = vertexShader.c_str();
+	const GLcharARB * my_vertex_shader_source = fragmentShader.c_str();
+
+	GLenum my_program;
+	GLenum my_vertex_shader;
+	GLenum my_fragment_shader;
+
+	// Create Shader And Program Objects
+	my_program = glCreateProgram();
+	my_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	my_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	ErrorTest();
+	// Load Shader Sources
+	glShaderSource(my_vertex_shader, 1, &my_vertex_shader_source, NULL);
+	glShaderSource(my_fragment_shader, 1, &my_fragment_shader_source, NULL);
+	ErrorTest();
+	// Compile The Shaders
+	glCompileShader(my_vertex_shader);
+	glCompileShader(my_fragment_shader);
+	ErrorTest();
+	// Attach The Shader Objects To The Program Object
+	glAttachShader(my_program, my_vertex_shader);
+	glAttachShader(my_program, my_fragment_shader);
+	ErrorTest();
+	// Link The Program Object
+	glLinkProgram(my_program);
+	ErrorTest();
+	// Use The Program Object Instead Of Fixed Function OpenGL
+	glUseProgram(my_program);
+	ErrorTest();
 }

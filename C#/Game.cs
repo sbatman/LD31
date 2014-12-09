@@ -53,7 +53,7 @@ namespace LD31
             Player.GiveWeapon(defaultWeapon);
             Player.GiveAmmo(defaultWeapon, 10);
 
-            CurrentLevel = new Level("GameLevel.txt");
+            CurrentLevel = new Level("Content/Levels/Level1.txt");
 
             //create a default enemy!
 
