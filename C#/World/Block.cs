@@ -1,7 +1,8 @@
 ﻿using System;
+using LD31.Graphics;
 using LD31.Math;
 
-namespace LD31.Graphics
+namespace LD31.World
 {
     /// <summary>
     /// Represents a single 'Block' in our Game World
@@ -16,20 +17,14 @@ namespace LD31.Graphics
 
         private Colour _Colour;
 
-        private int _x;
-
-        private int _y;
-
-        private int _z;
-
-        private static Random rnd = new Random();
+        private static readonly Random _RND = new Random();
 
         public Block()
         {
-            _BlockType = BlockType.Default;
+            _BlockType = BlockType.DEFAULT;
             IsActive = true;
             IsCollidable = true;
-            _Colour = new Colour((byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), 255);
+            _Colour = new Colour((byte)_RND.Next(10, 255), (byte)_RND.Next(10, 255), (byte)_RND.Next(10, 255), 255);
         }
 
         public Block(BlockType type)

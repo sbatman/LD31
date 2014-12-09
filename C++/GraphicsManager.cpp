@@ -14,6 +14,8 @@ int _LastMouseX;
 int _LastMouseY;
 
 void(_stdcall *_CallBackMouseMove)(int32_t, int32_t) = nullptr;
+void(_stdcall *_CallBackMousePress)(int32_t button) = nullptr;
+void(_stdcall *_CallBackMouseRelease)(int32_t button) = nullptr;
 void(_stdcall *_CallBackKeyDown)(int32_t) = nullptr;
 void(_stdcall *_CallBackKeyUp)(int32_t) = nullptr;
 
@@ -26,7 +28,6 @@ void ErrorTest()
 	{
 		printf("%s", gluErrorString(error));
 		int g = 7;
-		g = g*g;
 	}
 }
 
@@ -46,22 +47,31 @@ GraphicsManager::GraphicsManager()
 
 GraphicsManager::~GraphicsManager()
 {
-	delete[] _VertexList;
-	delete[] _ColourList;
-	delete[] _NormalList;
+	delete [] _VertexList;
+	delete [] _ColourList;
+	delete [] _NormalList;
 
-	delete[] _TVertexList;
-	delete[] _TColourList;
-	delete[] _TNormalList;
+	delete [] _TVertexList;
+	delete [] _TColourList;
+	delete [] _TNormalList;
 
 
-	delete[] _UIVertexList;
-	delete[] _UIColourList;
+	delete [] _UIVertexList;
+	delete [] _UIColourList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 {
 	_CallBackMouseMove = callBack;
+}
+void GraphicsManager::SetMousePressCallback(void(_stdcall *callBack)(int32_t))
+{
+	_CallBackMousePress = callBack;
+}
+
+void GraphicsManager::SetMouseReleaseCallback(void(_stdcall *callBack)(int32_t))
+{
+	_CallBackMouseRelease = callBack;
 }
 
 void GraphicsManager::SetKeyDownCallback(void(_stdcall *callBack)(int32_t))
@@ -79,18 +89,19 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	_Width = width;
 	_Height = height;
 	WNDCLASSEX windowClass = { 0 };
-	hInstance = (HINSTANCE)handle;
+	hInstance = reinterpret_cast<HINSTANCE>(handle);
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.lpfnWndProc = WndProc;
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInstance;
-	windowClass.hbrBackground = 0;
+	windowClass.hbrBackground = nullptr;
 	windowClass.lpszClassName = L"0";
 	RegisterClassEx(&windowClass);
-	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, 0, 0, hInstance, 0);
+	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, nullptr, nullptr, hInstance, nullptr);
 	ShowWindow(_HWnd, SW_SHOW);
+	ShowCursor(false);
 }
 
 void GraphicsManager::BeginDraw()
@@ -147,7 +158,6 @@ void GraphicsManager::EndDraw()
 	//glEnd();
 
 	SwapBuffers(_HDC);
-	;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -155,31 +165,30 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PIXELFORMATDESCRIPTOR pfd;
 	switch (message)
 	{
-	case WM_CREATE:
-		_HDC = GetDC(hwnd);
-		int nPixelFormat;
-		pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
-		nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
-		SetPixelFormat(_HDC, nPixelFormat, &pfd);
-		_HDR = wglCreateContext(_HDC);
-		wglMakeCurrent(_HDC, _HDR);
-		break;
-	case WM_CLOSE:
-		PostQuitMessage(0);
-		return 0;
-		break;
+		case WM_CREATE:
+			_HDC = GetDC(hwnd);
+			int nPixelFormat;
+			pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+			nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
+			SetPixelFormat(_HDC, nPixelFormat, &pfd);
+			_HDR = wglCreateContext(_HDC);
+			wglMakeCurrent(_HDC, _HDR);
+			break;
+		case WM_CLOSE:
+			PostQuitMessage(0);
+			return 0;
 	case WM_SETFOCUS:
-		_HasFocus = true;
-		break;
-	case WM_KILLFOCUS:
-		_HasFocus = false;
-		break;
-	case WM_ACTIVATE:
-		if (LOWORD(message) == WA_ACTIVE)
 			_HasFocus = true;
-		else
+			break;
+		case WM_KILLFOCUS:
 			_HasFocus = false;
-		break;
+			break;
+		case WM_ACTIVATE:
+			if (LOWORD(message) == WA_ACTIVE)
+				_HasFocus = true;
+			else
+				_HasFocus = false;
+			break;
 	}
 	return (DefWindowProc(hwnd, message, wParam, lParam));
 }
@@ -187,38 +196,46 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 void GraphicsManager::Update()
 {
 	MSG		msg;
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
 		switch (msg.message)
 		{
-		case WM_MOUSEMOVE:
-		{
-			POINT point = POINT();
-			GetCursorPos(&point);
-
-			int32_t xPos = point.x;
-			int32_t yPos = point.y;
-
-			if (xPos != _LastMouseX || yPos != _LastMouseY)
+			case WM_MOUSEMOVE:
 			{
-				_LastMouseX = xPos;
-				_LastMouseY = yPos;
-				if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
+				POINT point = POINT();
+				GetCursorPos(&point);
+
+				int32_t xPos = point.x;
+				int32_t yPos = point.y;
+
+				if (xPos != _LastMouseX || yPos != _LastMouseY)
+				{
+					_LastMouseX = xPos;
+					_LastMouseY = yPos;
+					if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
+				}
 			}
-		}
-			break;
-		case WM_KEYDOWN:
-		{
-			int a = (int)msg.wParam;
-			if (_HasFocus) _CallBackKeyDown(a);
-		}
-			break;
-		case WM_KEYUP:
-		{
-			int a = (int)msg.wParam;
-			if (_HasFocus) _CallBackKeyUp(a);
-		}
-			break;
+				break;
+			case WM_KEYDOWN:
+			{
+				int a = static_cast<int>(msg.wParam);
+				if (_HasFocus) _CallBackKeyDown(a);
+			}
+				break;
+			case WM_KEYUP:
+			{
+				int a = static_cast<int>(msg.wParam);
+				if (_HasFocus) _CallBackKeyUp(a);
+			}
+				break;
+
+			case WM_LBUTTONDOWN: if (_HasFocus)_CallBackMousePress(0); break;
+			case WM_LBUTTONUP: if (_HasFocus)_CallBackMouseRelease(0); break;
+			case WM_MBUTTONDOWN: if (_HasFocus)_CallBackMousePress(2); break;
+			case WM_MBUTTONUP: if (_HasFocus)_CallBackMouseRelease(2); break;
+			case WM_RBUTTONDOWN: if (_HasFocus)_CallBackMousePress(1); break;
+			case WM_RBUTTONUP: if (_HasFocus)_CallBackMouseRelease(1); break;
+
 		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -238,7 +255,7 @@ void GraphicsManager::SetupGLStates()
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float)_Height, 1, 2500);
+	gluPerspective(70, _Width / static_cast<float>(_Height), 2, 2000);
 	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -249,10 +266,10 @@ void GraphicsManager::SetupGLStates()
 	glEnable(GL_LIGHTING);
 
 	// Create light components
-	GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
-	GLfloat specularLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat position[] = { 0, 1, 0.5, 0 };
+	GLfloat ambientLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat diffuseLight [] = { 0.8f, 0.8f, 0.8, 1.0f };
+	GLfloat specularLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	GLfloat position [] = { 0, 1, 0.5, 0 };
 
 	// Assign created components to GL_LIGHT0
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -278,14 +295,14 @@ void GraphicsManager::SetupGLStates()
 	// set material properties which will be assigned by glColor
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-	float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	float specReflection [] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
 	glMateriali(GL_FRONT, GL_SHININESS, 96);
 
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
 	glMatrixMode(GL_MODELVIEW);
 	glCullFace(GL_BACK);
 	_GLStatesSetup = true;

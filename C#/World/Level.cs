@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using LD31.Graphics;
 using LD31.Math;
+using LD31.Objects;
 
 namespace LD31.World
 {
@@ -27,7 +26,6 @@ namespace LD31.World
 
         public Level(String levelFile)
         {
-            int worldSize = File.ReadLines(levelFile).Count();
             _Blocks = new Block[64, 64, 32];
 
 
@@ -39,14 +37,16 @@ namespace LD31.World
             {
                 while (!sReader.EndOfStream)
                 {
-                    String[] vertexData = sReader.ReadLine().Split(' ');
+                    string line = sReader.ReadLine();
+                    if (line == null) continue;
+                    String[] vertexData = line.Split(' ');
                     Int32 x = int.Parse(vertexData[0]);
                     Int32 z = int.Parse(vertexData[1]);
                     Int32 y = int.Parse(vertexData[2]);
                     Int32 t = int.Parse(vertexData[3]);
                     if (t == 4)
                     {
-                        Objects.Enemy.SpawnLocations.Add(new Vector3(x * 32, y * 32, z * 32));
+                        Enemy.SpawnLocations.Add(new Vector3(x * 32, y * 32, z * 32));
                         continue;
                     }
 

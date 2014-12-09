@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using LD31.Graphics;
 
 namespace LD31.Input
 {
@@ -15,6 +16,7 @@ namespace LD31.Input
         {
             public delegate void KeyboardCallBack(Int32 key);
             public delegate void MouseMoveCallBack(Int32 x, Int32 y);
+            public delegate void MouseActionCallBack(Int32 x);
 
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetKeyboardDownCallback(KeyboardCallBack callback);
@@ -25,36 +27,61 @@ namespace LD31.Input
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack callback);
 
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerSetMousePressCallback(MouseActionCallBack callback);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerSetMouseReleaseCallback(MouseActionCallBack callback);
+
         }
 
-        static NativeMethods.KeyboardCallBack KeyboardDownCallBack;
-        static NativeMethods.KeyboardCallBack KeyboardUpCallBack;
-        static NativeMethods.MouseMoveCallBack MouseMoveCallBack;
+        static NativeMethods.KeyboardCallBack _KeyboardDownCallBack;
+        static NativeMethods.KeyboardCallBack _KeyboardUpCallBack;
+        static NativeMethods.MouseMoveCallBack _MouseMoveCallBack;
+        static NativeMethods.MouseActionCallBack _MousePressCallBack;
+        static NativeMethods.MouseActionCallBack _MouseReleaseCallBack;
 
         /// <summary>
         /// This array of bools holds all the current key states
         /// </summary>
-        private static Boolean[] _KeyStates = new Boolean[255];
+        private static readonly Boolean[] _KeyStates = new Boolean[255];
 
         /// <summary>
         /// This array of bools holds all the previous keystates
         /// </summary>
-        private static Boolean[] _PastKeyStates = new Boolean[255];
+        private static readonly Boolean[] _PastKeyStates = new Boolean[255];
+
+        /// <summary>
+        /// This array of bools holds all the current key MouseButtonstates
+        /// </summary>
+        private static readonly Boolean[] _MouseButtonStates = new Boolean[3];
+
+        /// <summary>
+        /// This array of bools holds all the previous MouseButtonstates
+        /// </summary>
+        private static readonly Boolean[] _PastMouseButtonStates = new Boolean[3];
+
 
         /// <summary>
         /// Input handle initialization. Must be called before the input handler is used!
         /// </summary>
         public static void Init()
         {
-            KeyboardDownCallBack = HandleKeyDown;
-            KeyboardUpCallBack = HandleKeyUp;
-            MouseMoveCallBack = HandleMouseMove;
-            GC.KeepAlive(KeyboardDownCallBack);
-            GC.KeepAlive(KeyboardUpCallBack);
-            GC.KeepAlive(MouseMoveCallBack);
-            NativeMethods.GraphicsManagerSetKeyboardDownCallback(KeyboardDownCallBack);
-            NativeMethods.GraphicsManagerSetKeyboardUpCallback(KeyboardUpCallBack);
-            NativeMethods.GraphicsManagerSetMouseMoveCallback(MouseMoveCallBack);
+            _KeyboardDownCallBack = HandleKeyDown;
+            _KeyboardUpCallBack = HandleKeyUp;
+            _MouseMoveCallBack = HandleMouseMove;
+            _MousePressCallBack = HandleMousePress;
+            _MouseReleaseCallBack = HandleMouseRelase;
+            GC.KeepAlive(_KeyboardDownCallBack);
+            GC.KeepAlive(_KeyboardUpCallBack);
+            GC.KeepAlive(_MouseMoveCallBack);
+            GC.KeepAlive(_MousePressCallBack);
+            GC.KeepAlive(_MouseReleaseCallBack);
+            NativeMethods.GraphicsManagerSetKeyboardDownCallback(_KeyboardDownCallBack);
+            NativeMethods.GraphicsManagerSetKeyboardUpCallback(_KeyboardUpCallBack);
+            NativeMethods.GraphicsManagerSetMouseMoveCallback(_MouseMoveCallBack);
+            NativeMethods.GraphicsManagerSetMousePressCallback(_MousePressCallBack);
+            NativeMethods.GraphicsManagerSetMouseReleaseCallback(_MouseReleaseCallBack);
         }
 
 
@@ -65,8 +92,18 @@ namespace LD31.Input
         /// <param name="y"></param>
         private static void HandleMouseMove(Int32 x, Int32 y)
         {
-            Graphics.GraphicsManager.GetCamera().Rotatate(x * 0.2f, y * 0.2f);
-            Console.WriteLine("Mouse Moved Callback {0}x{1}", x, y);
+            GraphicsManager.GetCamera().Rotatate(x * 0.2f, y * 0.2f);
+        }
+
+        private static void HandleMousePress(Int32 button)
+        {
+            if (button < 0 || button > 2) return;
+            _MouseButtonStates[button] = true;
+        }
+        private static void HandleMouseRelase(Int32 button)
+        {
+            if (button < 0 || button > 2) return;
+            _MouseButtonStates[button] = false;
         }
 
         /// <summary>
@@ -92,7 +129,8 @@ namespace LD31.Input
         /// </summary>
         public static void Update()
         {
-            Array.Copy(_KeyStates, _PastKeyStates,255);
+            Array.Copy(_KeyStates, _PastKeyStates, 255);
+            Array.Copy(_MouseButtonStates, _PastMouseButtonStates, 3);
         }
 
         /// <summary>
@@ -104,25 +142,26 @@ namespace LD31.Input
         {
             switch (buttonConcept)
             {
-                case ButtonConcept.Quit: return (_KeyStates[0x1B]); break;
-                case ButtonConcept.Jump: return (_KeyStates[0x20]); break;
-                case ButtonConcept.Forward: return (_KeyStates[0x26] || _KeyStates[0x57]); break;
-                case ButtonConcept.Backward: return (_KeyStates[0x28] || _KeyStates[0x53]); break;
-                case ButtonConcept.Left: return (_KeyStates[0x25] || _KeyStates[0x41]); break;
-                case ButtonConcept.Right: return (_KeyStates[0x27] || _KeyStates[0x44]); break;
-                case ButtonConcept.Fire: return (_KeyStates[0x11]); break;
-                case ButtonConcept.TestButton1: return (_KeyStates[0x24]); break;
+                case ButtonConcept.QUIT: return (_KeyStates[0x1B]);
+                case ButtonConcept.JUMP: return (_KeyStates[0x20]);
+                case ButtonConcept.FORWARD: return (_KeyStates[0x26] || _KeyStates[0x57]);
+                case ButtonConcept.BACKWARD: return (_KeyStates[0x28] || _KeyStates[0x53]);
+                case ButtonConcept.LEFT: return (_KeyStates[0x25] || _KeyStates[0x41]);
+                case ButtonConcept.RIGHT: return (_KeyStates[0x27] || _KeyStates[0x44]);
+                case ButtonConcept.FIRE: return (_KeyStates[0x11] || _MouseButtonStates[0]);
+                case ButtonConcept.TEST_BUTTON1: return (_KeyStates[0x24]);
+                case ButtonConcept.SPRINT: return (_KeyStates[0x10]);
             }
 
             return false;
         }
 
-        public static Boolean WasButtonPressed(ButtonConcept buttonConcept)
+        private static Boolean WasButtonPressed(ButtonConcept buttonConcept)
         {
             switch (buttonConcept)
             {
-                case ButtonConcept.Fire: return (_KeyStates[0x11] && !_PastKeyStates[0x11]); break;
-                case ButtonConcept.TestButton1: return (_KeyStates[0x24] && !_PastKeyStates[0x24]); break;
+                case ButtonConcept.FIRE: return ((_KeyStates[0x11] && !_PastKeyStates[0x11])) || ((_MouseButtonStates[0] && !_PastMouseButtonStates[0]));
+                case ButtonConcept.TEST_BUTTON1: return (_KeyStates[0x24] && !_PastKeyStates[0x24]);
             }
 
             return false;
@@ -133,8 +172,8 @@ namespace LD31.Input
         {
             switch (buttonConcept)
             {
-                case ButtonConcept.Fire: return (!_KeyStates[0x11] && _PastKeyStates[0x11]); break;
-                case ButtonConcept.TestButton1: return (!_KeyStates[0x24] && _PastKeyStates[0x24]); break;
+                case ButtonConcept.FIRE: return ((!_KeyStates[0x11] && _PastKeyStates[0x11])) || ((!_MouseButtonStates[0] && _PastMouseButtonStates[0]));
+                case ButtonConcept.TEST_BUTTON1: return (!_KeyStates[0x24] && _PastKeyStates[0x24]);
             }
 
             return false;

@@ -1,28 +1,24 @@
-﻿using LD31.Graphics;
+﻿using System;
+using LD31.Graphics;
 using LD31.Math;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD31.Objects
 {
     public class Projectile : Moveable
     {
-        protected Int32 _Size = 2;
-        protected Vector3 _Scale;
+        protected const Int32 SIZE = 2;
+        protected readonly Vector3 _Scale;
         protected DateTime _CreationTime;
         protected TimeSpan _MaxLifeSpan = TimeSpan.FromMinutes(1);
-        protected Vector3 _Velocity;
+        protected readonly Vector3 _Velocity;
         protected Colour _Colour;
         protected Weapon _Owner;
 
-        protected Int32 _CollisionRadius = 4;
+        protected const Int32 COLLISION_RADIUS = 4;
 
         public int Size
         {
-            get { return _Size; }
+            get { return SIZE; }
         }
 
         public Double Damage
@@ -37,7 +33,7 @@ namespace LD31.Objects
             _CreationTime = DateTime.Now;
             _Velocity = velocity;
             _Colour = colour;
-            _Scale = new Vector3(_Size);
+            _Scale = new Vector3(SIZE);
         }
 
         public override void Update(double msSinceLastUpdate)
@@ -49,8 +45,8 @@ namespace LD31.Objects
             Position += Velocity;
 
             ////Make sure all projectiles die after they hit things/walls.
-            float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
-            float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
+            float xRadius = Velocity.X > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
+            float yRadius = Velocity.Y > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
 
             if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
             {

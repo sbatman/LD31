@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD31.Graphics
 {
@@ -15,7 +11,7 @@ namespace LD31.Graphics
         private Double _RotationZ;
         private Double _RotationX;
 
-        private bool _Dirty = false;
+        private bool _Dirty;
 
         public double RotationX
         {
