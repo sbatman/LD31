@@ -19,14 +19,14 @@ namespace LD31.Objects
         /// <summary>
         /// The color of the projectiles for this weapon
         /// </summary>
-        Colour _ProjectileColor;
+        readonly Colour _ProjectileColor;
 
         /// <summary>
         /// backing field
         /// </summary>
         Int32 _Ammunition;
 
-        private Combatant _Owner;
+        private readonly Combatant _Owner;
 
         private Double _DamagePerShot = 30;
 
@@ -113,7 +113,7 @@ namespace LD31.Objects
                 //different guns have different projectiles when they fire!
                 //if (this == Weapon.Pistol)
                 //{
-                Projectile bullet = new Projectile(this, position, fireDirection, _ProjectileColor);
+                new Projectile(this, position, fireDirection, _ProjectileColor);
                 //}
                 //if (this == Weapon.Shotgun)
                 //{

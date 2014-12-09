@@ -14,11 +14,6 @@ namespace LD31
     class Game : IDisposable
     {
         /// <summary>
-        /// This value is used to stop the main update loop running too fast.
-        /// </summary>
-        private const Int32 UPDATE_DELAY = 8;
-
-        /// <summary>
         /// This flag shows if the game is still running or not. 
         /// </summary>
         private static Boolean _GameRunning = true;
@@ -54,9 +49,6 @@ namespace LD31
             Player.GiveAmmo(defaultWeapon, 10);
 
             CurrentLevel = new Level("GameLevel.txt");
-
-            //create a default enemy!
-
         }
 
         /// <summary>
@@ -118,8 +110,6 @@ namespace LD31
         {
             Init();
             Stopwatch updateTime = new Stopwatch();
-            Stopwatch drawTime = new Stopwatch();
-
             Double lastUpdateMS = 0;
 
             updateTime.Start();

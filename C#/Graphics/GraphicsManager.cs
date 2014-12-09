@@ -56,7 +56,7 @@ namespace LD31.Graphics
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
 
-            _PrimaryCamera = new Camera(); ;
+            _PrimaryCamera = new Camera();
         }
 
         /// <summary>
@@ -90,10 +90,9 @@ namespace LD31.Graphics
         /// <summary>
         /// Draws a voxel in the game world
         /// </summary>
-        /// <param name="x">X Position in world space cord</param>
-        /// <param name="y">Y Position in world space cord</param>
-        /// <param name="z">Z Position in world space cord</param>
+        /// <param name="position"></param>
         /// <param name="colour">Colours used when drawing this voxel</param>
+        /// <param name="scale"></param>
         public static void DrawVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
             NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
@@ -102,10 +101,9 @@ namespace LD31.Graphics
         /// <summary>
         /// Draws a voxel for the UI
         /// </summary>
-        /// <param name="x">X Position in world space cord</param>
-        /// <param name="y">Y Position in world space cord</param>
-        /// <param name="z">Z Position in world space cord</param>
+        /// <param name="position"></param>
         /// <param name="colour">Colours used when drawing this voxel</param>
+        /// <param name="scale"></param>
         public static void DrawUIVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
             NativeMethods.GraphicsManagerDrawUIVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);

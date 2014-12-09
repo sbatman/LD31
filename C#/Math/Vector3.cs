@@ -130,6 +130,7 @@ namespace LD31.Math
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// <param name="z"></param>
         public Vector3(Double x, Double y, Double z)
         {
             _X = x;

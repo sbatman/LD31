@@ -11,7 +11,7 @@ namespace LD31.Objects
         /// <summary>
         /// Ctor of the gameobject object. Adds the new instance to the global game objects list.
         /// </summary>
-        public GameObject()
+        protected GameObject()
         {
             Game.GameObjects.Add(this);
         }

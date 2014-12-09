@@ -37,11 +37,9 @@ private:
 	double* _UIVertexList;
 	uint8_t* _UIColourList;
 
-
 	int _TriCount=0;
 	int _UITriCount = 0;
 	int _TTriCount = 0;
-
 
 	int _Width;
 	int _Height;

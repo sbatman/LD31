@@ -18,12 +18,12 @@ namespace LD31.Graphics
             public Vector3 Velocity;
         }
 
-        List<Particle> _ActiveParticles = new List<Particle>();
+        readonly List<Particle> _ActiveParticles = new List<Particle>();
         private Vector3 _Positon;
         private int _ParticleToProduce;
-        private Colour _Colour;
-        private Double _Strength;
-        private static Random _RND = new Random();
+        private readonly Colour _Colour;
+        private readonly Double _Strength;
+        private static readonly Random _RND = new Random();
 
         public Explosion(Colour colour, Vector3 position, Double strength)
         {
@@ -77,7 +77,7 @@ namespace LD31.Graphics
 
             foreach (Particle p in new List<Particle>(_ActiveParticles))
             {
-                p.Life -= 0.01f * (msSinceLastUpdate / 16); ;
+                p.Life -= 0.01f * (msSinceLastUpdate / 16);
                 if (p.Life <= 0)
                 {
                     _ActiveParticles.Remove(p);
@@ -116,7 +116,7 @@ namespace LD31.Graphics
                     p.Velocity.Y = 0;
                 }
 
-                p.Position += p.Velocity * (msSinceLastUpdate / 16); ;
+                p.Position += p.Velocity * (msSinceLastUpdate / 16);
             }
         }
     }

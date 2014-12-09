@@ -28,7 +28,6 @@ void ErrorTest()
 	{
 		printf("%s", gluErrorString(error));
 		int g = 7;
-		g = g*g;
 	}
 }
 
@@ -90,17 +89,17 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	_Width = width;
 	_Height = height;
 	WNDCLASSEX windowClass = { 0 };
-	hInstance = (HINSTANCE) handle;
+	hInstance = reinterpret_cast<HINSTANCE>(handle);
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.lpfnWndProc = WndProc;
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInstance;
-	windowClass.hbrBackground = 0;
+	windowClass.hbrBackground = nullptr;
 	windowClass.lpszClassName = L"0";
 	RegisterClassEx(&windowClass);
-	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, 0, 0, hInstance, 0);
+	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, nullptr, nullptr, hInstance, nullptr);
 	ShowWindow(_HWnd, SW_SHOW);
 	ShowCursor(false);
 }
@@ -159,7 +158,6 @@ void GraphicsManager::EndDraw()
 	//glEnd();
 
 	SwapBuffers(_HDC);
-	;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -179,8 +177,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_CLOSE:
 			PostQuitMessage(0);
 			return 0;
-			break;
-		case WM_SETFOCUS:
+	case WM_SETFOCUS:
 			_HasFocus = true;
 			break;
 		case WM_KILLFOCUS:
@@ -199,7 +196,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 void GraphicsManager::Update()
 {
 	MSG		msg;
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
 		switch (msg.message)
 		{
@@ -221,13 +218,13 @@ void GraphicsManager::Update()
 				break;
 			case WM_KEYDOWN:
 			{
-				int a = (int) msg.wParam;
+				int a = static_cast<int>(msg.wParam);
 				if (_HasFocus) _CallBackKeyDown(a);
 			}
 				break;
 			case WM_KEYUP:
 			{
-				int a = (int) msg.wParam;
+				int a = static_cast<int>(msg.wParam);
 				if (_HasFocus) _CallBackKeyUp(a);
 			}
 				break;
@@ -258,7 +255,7 @@ void GraphicsManager::SetupGLStates()
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float) _Height, 2, 2000);
+	gluPerspective(70, _Width / static_cast<float>(_Height), 2, 2000);
 	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
