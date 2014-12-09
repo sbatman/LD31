@@ -48,13 +48,9 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-<<<<<<< HEAD
 
-            Player = new Player(new Vector3(400, 400, 400));
-
-=======
             Player = new Player(new Vector3(550, 450, 400));
->>>>>>> origin/development
+
             //give the player a default weapon and some ammo!
             Weapon defaultWeapon = new Weapon(new Colour(255, 255), Player);
             Player.GiveWeapon(defaultWeapon);
