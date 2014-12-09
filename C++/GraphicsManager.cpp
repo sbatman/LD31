@@ -4,20 +4,22 @@
 #include "GraphicsManager.h"
 #include <cstdio>
 
-HDC			_HDC = nullptr;		// Private GDI Device Context
-HGLRC		_HDR = nullptr;		// Permanent Rendering Context
-HWND		_HWnd = nullptr;		// Holds Our Window Handle
-HINSTANCE	hInstance;		// Holds The Instance Of The Application
+HDC _HDC = nullptr; // Private GDI Device Context
+HGLRC _HDR = nullptr; // Permanent Rendering Context
+HWND _HWnd = nullptr; // Holds Our Window Handle
+HINSTANCE hInstance; // Holds The Instance Of The Application
 bool _HasFocus;
 
 int _LastMouseX;
 int _LastMouseY;
 
 void(_stdcall *_CallBackMouseMove)(int32_t, int32_t) = nullptr;
+void(_stdcall *_CallBackMousePress)(int32_t button) = nullptr;
+void(_stdcall *_CallBackMouseRelease)(int32_t button) = nullptr;
 void(_stdcall *_CallBackKeyDown)(int32_t) = nullptr;
 void(_stdcall *_CallBackKeyUp)(int32_t) = nullptr;
 
-LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void ErrorTest()
 {
@@ -26,7 +28,6 @@ void ErrorTest()
 	{
 		printf("%s", gluErrorString(error));
 		int g = 7;
-		g = g*g;
 	}
 }
 
@@ -46,22 +47,32 @@ GraphicsManager::GraphicsManager()
 
 GraphicsManager::~GraphicsManager()
 {
-	delete[] _VertexList;
-	delete[] _ColourList;
-	delete[] _NormalList;
+	delete [] _VertexList;
+	delete [] _ColourList;
+	delete [] _NormalList;
 
-	delete[] _TVertexList;
-	delete[] _TColourList;
-	delete[] _TNormalList;
+	delete [] _TVertexList;
+	delete [] _TColourList;
+	delete [] _TNormalList;
 
 
-	delete[] _UIVertexList;
-	delete[] _UIColourList;
+	delete [] _UIVertexList;
+	delete [] _UIColourList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 {
 	_CallBackMouseMove = callBack;
+}
+
+void GraphicsManager::SetMousePressCallback(void(_stdcall *callBack)(int32_t))
+{
+	_CallBackMousePress = callBack;
+}
+
+void GraphicsManager::SetMouseReleaseCallback(void(_stdcall *callBack)(int32_t))
+{
+	_CallBackMouseRelease = callBack;
 }
 
 void GraphicsManager::SetKeyDownCallback(void(_stdcall *callBack)(int32_t))
@@ -78,19 +89,20 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 {
 	_Width = width;
 	_Height = height;
-	WNDCLASSEX windowClass = { 0 };
-	hInstance = (HINSTANCE)handle;
+	WNDCLASSEX windowClass = {0};
+	hInstance = reinterpret_cast<HINSTANCE>(handle);
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.lpfnWndProc = WndProc;
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInstance;
-	windowClass.hbrBackground = 0;
+	windowClass.hbrBackground = nullptr;
 	windowClass.lpszClassName = L"0";
 	RegisterClassEx(&windowClass);
-	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, 0, 0, hInstance, 0);
+	_HWnd = CreateWindowEx(0, L"0", L"LD31", WS_OVERLAPPEDWINDOW, 0, 0, _Width, _Height, nullptr, nullptr, hInstance, nullptr);
 	ShowWindow(_HWnd, SW_SHOW);
+	ShowCursor(false);
 }
 
 void GraphicsManager::BeginDraw()
@@ -108,7 +120,6 @@ void GraphicsManager::BeginDraw()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 }
 
 void GraphicsManager::EndDraw()
@@ -118,7 +129,8 @@ void GraphicsManager::EndDraw()
 	glNormalPointer(GL_DOUBLE, 0, _NormalList);
 	glDrawArrays(GL_TRIANGLES, 0, _TriCount * 3);
 
-	if (_TTriCount > 0){
+	if (_TTriCount > 0)
+	{
 		glDepthMask(false);
 		glVertexPointer(3, GL_DOUBLE, 0, _TVertexList);
 		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _TColourList);
@@ -147,7 +159,6 @@ void GraphicsManager::EndDraw()
 	//glEnd();
 
 	SwapBuffers(_HDC);
-	;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -158,7 +169,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		_HDC = GetDC(hwnd);
 		int nPixelFormat;
-		pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+		pfd = {sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0};
 		nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
 		SetPixelFormat(_HDC, nPixelFormat, &pfd);
 		_HDR = wglCreateContext(_HDC);
@@ -167,7 +178,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		return 0;
-		break;
 	case WM_SETFOCUS:
 		_HasFocus = true;
 		break;
@@ -186,59 +196,70 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void GraphicsManager::Update()
 {
-	MSG		msg;
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+	MSG msg;
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
 		switch (msg.message)
 		{
 		case WM_MOUSEMOVE:
-		{
-			POINT point = POINT();
-			GetCursorPos(&point);
-
-			int32_t xPos = point.x;
-			int32_t yPos = point.y;
-
-			if (xPos != _LastMouseX || yPos != _LastMouseY)
 			{
-				_LastMouseX = xPos;
-				_LastMouseY = yPos;
-				if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
+				POINT point = POINT();
+				GetCursorPos(&point);
+
+				int32_t xPos = point.x;
+				int32_t yPos = point.y;
+
+				if (xPos != _LastMouseX || yPos != _LastMouseY)
+				{
+					_LastMouseX = xPos;
+					_LastMouseY = yPos;
+					if (_HasFocus)_CallBackMouseMove(xPos - (_Width * 0.5f), yPos - (_Height * 0.5f));
+				}
 			}
-		}
 			break;
 		case WM_KEYDOWN:
-		{
-			int a = (int)msg.wParam;
-			if (_HasFocus) _CallBackKeyDown(a);
-		}
+			{
+				int a = static_cast<int>(msg.wParam);
+				if (_HasFocus) _CallBackKeyDown(a);
+			}
 			break;
 		case WM_KEYUP:
-		{
-			int a = (int)msg.wParam;
-			if (_HasFocus) _CallBackKeyUp(a);
-		}
+			{
+				int a = static_cast<int>(msg.wParam);
+				if (_HasFocus) _CallBackKeyUp(a);
+			}
+			break;
+
+		case WM_LBUTTONDOWN: if (_HasFocus)_CallBackMousePress(0);
+			break;
+		case WM_LBUTTONUP: if (_HasFocus)_CallBackMouseRelease(0);
+			break;
+		case WM_MBUTTONDOWN: if (_HasFocus)_CallBackMousePress(2);
+			break;
+		case WM_MBUTTONUP: if (_HasFocus)_CallBackMouseRelease(2);
+			break;
+		case WM_RBUTTONDOWN: if (_HasFocus)_CallBackMousePress(1);
+			break;
+		case WM_RBUTTONUP: if (_HasFocus)_CallBackMouseRelease(1);
 			break;
 		}
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	if (_HasFocus)SetCursorPos(static_cast<int>(_Width*0.5f), static_cast<int>(_Height*0.5f));
+	if (_HasFocus)SetCursorPos(static_cast<int>(_Width * 0.5f), static_cast<int>(_Height * 0.5f));
 }
 
 void GraphicsManager::Destroy()
 {
-
 }
 
 void GraphicsManager::SetupGLStates()
 {
-
 	glShadeModel(GL_SMOOTH);
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float)_Height, 1, 2500);
+	gluPerspective(70, _Width / static_cast<float>(_Height), 2, 2000);
 	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -249,10 +270,10 @@ void GraphicsManager::SetupGLStates()
 	glEnable(GL_LIGHTING);
 
 	// Create light components
-	GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
-	GLfloat specularLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat position[] = { 0, 1, 0.5, 0 };
+	GLfloat ambientLight [] = {0.2f, 0.2f, 0.2f, 1.0f};
+	GLfloat diffuseLight [] = {0.8f, 0.8f, 0.8, 1.0f};
+	GLfloat specularLight [] = {0.2f, 0.2f, 0.2f, 1.0f};
+	GLfloat position [] = {0, 1, 0.5, 0};
 
 	// Assign created components to GL_LIGHT0
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -262,41 +283,43 @@ void GraphicsManager::SetupGLStates()
 	glEnable(GL_LIGHT0);
 
 
-	GLfloat fogColor[4] = { 0.3, 0.7, 0.9, 1.0f };      // Fog Color
+	GLfloat fogColor[4] = {0.3, 0.7, 0.9, 1.0f}; // Fog Color
 
 
-	glFogi(GL_FOG_MODE, GL_EXP);        // Fog Mode
-	glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-	glFogf(GL_FOG_DENSITY, 0.0004f);              // How Dense Will The Fog Be
-	glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
-	glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
-	glFogf(GL_FOG_END, 4000);               // Fog End Depth
-	glEnable(GL_FOG);                   // Enables GL_FOG
+	glFogi(GL_FOG_MODE, GL_EXP); // Fog Mode
+	glFogfv(GL_FOG_COLOR, fogColor); // Set Fog Color
+	glFogf(GL_FOG_DENSITY, 0.0004f); // How Dense Will The Fog Be
+	glHint(GL_FOG_HINT, GL_DONT_CARE); // Fog Hint Value
+	glFogf(GL_FOG_START, 1.0f); // Fog Start Depth
+	glFogf(GL_FOG_END, 4000); // Fog End Depth
+	glEnable(GL_FOG); // Enables GL_FOG
 
 	// enable color tracking
 	glEnable(GL_COLOR_MATERIAL);
 	// set material properties which will be assigned by glColor
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-	float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	float specReflection [] = {0.8f, 0.8f, 0.8f, 1.0f};
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
 	glMateriali(GL_FRONT, GL_SHININESS, 96);
 
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glDepthFunc(GL_LEQUAL);
+	glDepthFunc(GL_LESS);
 	glMatrixMode(GL_MODELVIEW);
 	glCullFace(GL_BACK);
 	_GLStatesSetup = true;
-
 }
 
-void GraphicsManager::DrawTri(double * vertList, double* p1, double* p2, double* p3, int* arrayPosition)
+void GraphicsManager::DrawTri(double* vertList, double* p1, double* p2, double* p3, int* arrayPosition)
 {
-	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p1, sizeof(double) * 3);	(*arrayPosition) += 3;
-	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p2, sizeof(double) * 3);	(*arrayPosition) += 3;
-	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p3, sizeof(double) * 3);	(*arrayPosition) += 3;
+	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p1, sizeof(double) * 3);
+	(*arrayPosition) += 3;
+	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p2, sizeof(double) * 3);
+	(*arrayPosition) += 3;
+	memcpy_s(vertList + (*arrayPosition), sizeof(double) * 3, p3, sizeof(double) * 3);
+	(*arrayPosition) += 3;
 }
 
 void GraphicsManager::DrawUIVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
@@ -305,22 +328,22 @@ void GraphicsManager::DrawUIVoxel(double x, double y, double z, uint8_t colourR,
 	int colourArrayStart = _UITriCount * 3 * 4;
 	int verpos = vertexArrayStart;
 
-	double halfSizeX = sizeX*0.5f;
-	double halfSizeY = sizeY*0.5f;
-	double halfSizeZ = sizeZ*0.5f;
+	double halfSizeX = sizeX * 0.5f;
+	double halfSizeY = sizeY * 0.5f;
+	double halfSizeZ = sizeZ * 0.5f;
 
-	double _tlf[3] = { x - halfSizeX, y - halfSizeY, z - halfSizeZ };
-	double _trf[3] = { x + halfSizeX, y - halfSizeY, z - halfSizeZ };
-	double _blf[3] = { x - halfSizeX, y + halfSizeY, z - halfSizeZ };
-	double _brf[3] = { x + halfSizeX, y + halfSizeY, z - halfSizeZ };
-	double _tlb[3] = { x - halfSizeX, y - halfSizeY, z + halfSizeZ };
-	double _trb[3] = { x + halfSizeX, y - halfSizeY, z + halfSizeZ };
-	double _blb[3] = { x - halfSizeX, y + halfSizeY, z + halfSizeZ };
-	double _brb[3] = { x + halfSizeX, y + halfSizeY, z + halfSizeZ };
+	double _tlf[3] = {x - halfSizeX, y - halfSizeY, z - halfSizeZ};
+	double _trf[3] = {x + halfSizeX, y - halfSizeY, z - halfSizeZ};
+	double _blf[3] = {x - halfSizeX, y + halfSizeY, z - halfSizeZ};
+	double _brf[3] = {x + halfSizeX, y + halfSizeY, z - halfSizeZ};
+	double _tlb[3] = {x - halfSizeX, y - halfSizeY, z + halfSizeZ};
+	double _trb[3] = {x + halfSizeX, y - halfSizeY, z + halfSizeZ};
+	double _blb[3] = {x - halfSizeX, y + halfSizeY, z + halfSizeZ};
+	double _brb[3] = {x + halfSizeX, y + halfSizeY, z + halfSizeZ};
 
-	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
+	uint8_t colourArray[4] = {colourR, colourG, colourB, colourA};
 
-	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(_UIColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
+	for (int i = 0; i < FACESPERCUBE * VERTSPERFACE; i++)memcpy_s(_UIColourList + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
 
 	//FRONT
 	DrawTri(_UIVertexList, _tlf, _blf, _trf, &verpos);
@@ -352,39 +375,39 @@ void GraphicsManager::DrawUIVoxel(double x, double y, double z, uint8_t colourR,
 void GraphicsManager::DrawVoxel(double x, double y, double z, uint8_t colourR, uint8_t colourG, uint8_t colourB, uint8_t colourA, uint16_t sizeX, uint16_t sizeY, uint16_t sizeZ)
 {
 	if (colourA == 0)return;
-	double * vertArray = (colourA == 255) ? _VertexList : _TVertexList;
-	uint8_t * colArray = (colourA == 255) ? _ColourList : _TColourList;
-	double * normArray = (colourA == 255) ? _NormalList : _TNormalList;
-	int * triCount = (colourA == 255) ? (&_TriCount) : (&_TTriCount);
+	double* vertArray = (colourA == 255) ? _VertexList : _TVertexList;
+	uint8_t* colArray = (colourA == 255) ? _ColourList : _TColourList;
+	double* normArray = (colourA == 255) ? _NormalList : _TNormalList;
+	int* triCount = (colourA == 255) ? (&_TriCount) : (&_TTriCount);
 
 	int vertexArrayStart = (*triCount) * 3 * 3;
 	int colourArrayStart = (*triCount) * 3 * 4;
 	int verpos = vertexArrayStart;
 
-	double halfSizeX = sizeX*0.5f;
-	double halfSizeY = sizeY*0.5f;
-	double halfSizeZ = sizeZ*0.5f;
+	double halfSizeX = sizeX * 0.5f;
+	double halfSizeY = sizeY * 0.5f;
+	double halfSizeZ = sizeZ * 0.5f;
 
-	double _tlf[3] = { x - halfSizeX, y - halfSizeY, z - halfSizeZ };
-	double _trf[3] = { x + halfSizeX, y - halfSizeY, z - halfSizeZ };
-	double _blf[3] = { x - halfSizeX, y + halfSizeY, z - halfSizeZ };
-	double _brf[3] = { x + halfSizeX, y + halfSizeY, z - halfSizeZ };
-	double _tlb[3] = { x - halfSizeX, y - halfSizeY, z + halfSizeZ };
-	double _trb[3] = { x + halfSizeX, y - halfSizeY, z + halfSizeZ };
-	double _blb[3] = { x - halfSizeX, y + halfSizeY, z + halfSizeZ };
-	double _brb[3] = { x + halfSizeX, y + halfSizeY, z + halfSizeZ };
+	double _tlf[3] = {x - halfSizeX, y - halfSizeY, z - halfSizeZ};
+	double _trf[3] = {x + halfSizeX, y - halfSizeY, z - halfSizeZ};
+	double _blf[3] = {x - halfSizeX, y + halfSizeY, z - halfSizeZ};
+	double _brf[3] = {x + halfSizeX, y + halfSizeY, z - halfSizeZ};
+	double _tlb[3] = {x - halfSizeX, y - halfSizeY, z + halfSizeZ};
+	double _trb[3] = {x + halfSizeX, y - halfSizeY, z + halfSizeZ};
+	double _blb[3] = {x - halfSizeX, y + halfSizeY, z + halfSizeZ};
+	double _brb[3] = {x + halfSizeX, y + halfSizeY, z + halfSizeZ};
 
-	uint8_t colourArray[4] = { colourR, colourG, colourB, colourA };
+	uint8_t colourArray[4] = {colourR, colourG, colourB, colourA};
 
-	for (int i = 0; i < FACESPERCUBE* VERTSPERFACE; i++)memcpy_s(colArray + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
+	for (int i = 0; i < FACESPERCUBE * VERTSPERFACE; i++)memcpy_s(colArray + colourArrayStart + (i * 4), sizeof(uint8_t) * 4, colourArray, sizeof(uint8_t) * 4);
 
 
-	double _FrontNormals[9] = { 0, 0, -1, 0, 0, -1, 0, 0, -1 };
-	double _LeftNormals[9] = { -1, 0, 0, -1, 0, 0, -1, 0, 0 };
-	double _RightNormals[9] = { 1, 0, 0, 1, 0, 0, 1, 0, 0 };
-	double _BackNormals[9] = { 0, 0, 1, 0, 0, 1, 0, 0, 1 };
-	double _TopNormals[9] = { 0, -1, 0, 0, -1, 0, 0, -1, 0 };
-	double _BottomNormals[9] = { 0, 1, 0, 0, 1, 0, 0, 1, 0 };
+	double _FrontNormals[9] = {0, 0, -1, 0, 0, -1, 0, 0, -1};
+	double _LeftNormals[9] = {-1, 0, 0, -1, 0, 0, -1, 0, 0};
+	double _RightNormals[9] = {1, 0, 0, 1, 0, 0, 1, 0, 0};
+	double _BackNormals[9] = {0, 0, 1, 0, 0, 1, 0, 0, 1};
+	double _TopNormals[9] = {0, -1, 0, 0, -1, 0, 0, -1, 0};
+	double _BottomNormals[9] = {0, 1, 0, 0, 1, 0, 0, 1, 0};
 
 	//FRONT
 	memcpy_s(normArray + (verpos), sizeof(double) * 9, _FrontNormals, sizeof(double) * 9);
@@ -431,6 +454,7 @@ void GraphicsManager::SerCameraPosition(double x, double y, double z)
 	_CameraPosY = y;
 	_CameraPosZ = z;
 }
+
 void GraphicsManager::SetCameraRotation(double z, double x)
 {
 	_CameraRotZ = z;

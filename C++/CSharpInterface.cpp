@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "GraphicsManager.h"
 
-GraphicsManager * _GMInstance = nullptr;
+GraphicsManager* _GMInstance = nullptr;
 
-extern "C" {
+extern "C"
+{
 	__declspec(dllexport) void __cdecl GraphicsManagerInit(int32_t width, int32_t height, int32_t handle)
 	{
 		if (_GMInstance == nullptr)_GMInstance = new GraphicsManager();
 
 		_GMInstance->Init(width, height, handle);
 	}
+
 	__declspec(dllexport) void __cdecl GraphicsManagerUpdate()
 	{
 		_GMInstance->Update();
@@ -52,12 +54,22 @@ extern "C" {
 
 	__declspec(dllexport) void __cdecl GraphicsManagerSetCameraRotation(double z, double x)
 	{
-		_GMInstance->SetCameraRotation(z, x);		
+		_GMInstance->SetCameraRotation(z, x);
 	}
 
 	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 	{
 		_GMInstance->SetMouseMoveCallback(callBack);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetMousePressCallback(void(_stdcall *callBack)(int32_t))
+	{
+		_GMInstance->SetMousePressCallback(callBack);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseReleaseCallback(void(_stdcall *callBack)(int32_t))
+	{
+		_GMInstance->SetMouseReleaseCallback(callBack);
 	}
 
 	__declspec(dllexport) void __cdecl GraphicsManagerSetKeyboardDownCallback(void(_stdcall *callBack)(int32_t))

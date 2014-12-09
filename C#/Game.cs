@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.RightsManagement;
 using System.Threading;
 using LD31.Graphics;
 using LD31.Input;
@@ -12,39 +11,47 @@ using LD31.World;
 
 namespace LD31
 {
-    class Game : IDisposable
+    internal class Game : IDisposable
     {
         /// <summary>
-        /// This value is used to stop the main update loop running too fast.
-        /// </summary>
-        private const Int32 UPDATE_DELAY = 8;
-
-        /// <summary>
-        /// This flag shows if the game is still running or not. 
+        ///     This flag shows if the game is still running or not.
         /// </summary>
         private static Boolean _GameRunning = true;
 
         /// <summary>
-        /// The player object.
+        ///     The player object.
         /// </summary>
         public static Player Player;
 
-        public static Enemy Enemy;
+        public static List<Enemy> Enemys = new List<Enemy>();
 
         /// <summary>
-        /// The current level
+        ///     The current level
         /// </summary>
         public static Level CurrentLevel;
 
         /// <summary>
-        /// A collection of all gameobjects currently available
+        ///     A collection of all gameobjects currently available
         /// </summary>
         public static List<GameObject> GameObjects = new List<GameObject>();
 
         /// <summary>
-        /// This function should be called first as it will initialize the renderer and other critical game objects.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        void Init()
+        public void Dispose()
+        {
+            foreach (GameObject o in new List<GameObject>(GameObjects)) o.Dispose();
+            GameObjects.Clear();
+            GameObjects = null;
+            Player = null;
+            CurrentLevel.Dispose();
+            GraphicsManager.Destroy();
+        }
+
+        /// <summary>
+        ///     This function should be called first as it will initialize the renderer and other critical game objects.
+        /// </summary>
+        private void Init()
         {
             InputHandler.Init();
             GraphicsManager.Init();
@@ -57,15 +64,12 @@ namespace LD31
             Player.GiveAmmo(defaultWeapon, 10);
 
             CurrentLevel = new Level("GameLevel.txt");
-
-            //create a default enemy!
-           
         }
 
         /// <summary>
-        /// This function handles drawing the game to screen
+        ///     This function handles drawing the game to screen
         /// </summary>
-        void Draw()
+        private void Draw()
         {
             GraphicsManager.StartDraw();
 
@@ -81,11 +85,12 @@ namespace LD31
         }
 
         /// <summary>
-        /// This function handles all logic updates
+        ///     This function handles all logic updates
         /// </summary>
-        void Update(Double msSinceLastUpdate)
+        private void Update(Double msSinceLastUpdate)
         {
-            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(Player.Position, Player);
+            Enemys = Enemys.Where(a => !a.Disposed).ToList();
+            while (Enemys.Count < 5) Enemys.Add(new Enemy(Player.Position, Player));
 
             InputHandler.Update();
             GraphicsManager.Update();
@@ -98,7 +103,7 @@ namespace LD31
                 {
                     foreach (Combatant obj in currentObjects.OfType<Combatant>())
                     {
-                        ((Projectile)o).AttemptToHit(obj);
+                        ((Projectile) o).AttemptToHit(obj);
                     }
                 }
             }
@@ -107,21 +112,19 @@ namespace LD31
             GameObjects = GameObjects.Where(o => !o.Disposed).ToList();
 
             //Allow user to quit the game.
-            if (InputHandler.IsButtonDown(ButtonConcept.Quit))
+            if (InputHandler.IsButtonDown(ButtonConcept.QUIT))
             {
                 _GameRunning = false;
             }
         }
 
         /// <summary>
-        /// The main game run function.
+        ///     The main game run function.
         /// </summary>
         public void Run()
         {
             Init();
             Stopwatch updateTime = new Stopwatch();
-            Stopwatch drawTime = new Stopwatch();
-
             Double lastUpdateMS = 0;
 
             updateTime.Start();
@@ -135,19 +138,6 @@ namespace LD31
             }
 
             //exit logic
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            foreach (GameObject o in new List<GameObject>(GameObjects)) o.Dispose();
-            GameObjects.Clear();
-            GameObjects = null;
-            Player = null;
-            CurrentLevel.Dispose();
-            GraphicsManager.Destroy();
         }
     }
 }

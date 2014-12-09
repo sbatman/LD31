@@ -3,153 +3,129 @@
 namespace LD31.Math
 {
     /// <summary>
-    /// This struct represents a two dimensional vector.
+    ///     This struct represents a two dimensional vector.
     /// </summary>
     public class Vector3 : ICloneable
     {
         /// <summary>
-        /// backing field
-        /// </summary>
-        private Double _X;
-
-        /// <summary>
-        /// backing field
-        /// </summary>
-        private Double _Y;
-
-        /// <summary>
-        /// backing field
+        ///     backing field
         /// </summary>
         private Double _Z;
 
         /// <summary>
-        /// X value
+        ///     Secondary CTOR
         /// </summary>
-        public Double X
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        public Vector3(Double x, Double y, Double z)
         {
-            get
-            {
-                return _X;
-            }
-            set
-            {
-                _X = value;
-            }
+            X = x;
+            Y = y;
+            _Z = z;
         }
 
         /// <summary>
-        /// Y value
+        ///     Teritiary Ctor
         /// </summary>
-        public Double Y
+        /// <param name="xyz"></param>
+        public Vector3(Double xyz)
         {
-            get
-            {
-                return _Y;
-            }
-            set
-            {
-                _Y = value;
-            }
+            X = xyz;
+            Y = xyz;
+            _Z = xyz;
         }
 
         /// <summary>
-        /// Z value
+        ///     X value
+        /// </summary>
+        public Double X { get; set; }
+
+        /// <summary>
+        ///     Y value
+        /// </summary>
+        public Double Y { get; set; }
+
+        /// <summary>
+        ///     Z value
         /// </summary>
         public Double Z
         {
-            get
-            {
-                return _Z;
-            }
-            set
-            {
-                _Z = value;
-            }
+            get { return _Z; }
+            set { _Z = value; }
         }
 
         public Vector2 XY
         {
-            get { return new Vector2(_X, _Y); }
+            get { return new Vector2(X, Y); }
             set
             {
-                _X = value.X;
-                _Y = value.Y;
+                X = value.X;
+                Y = value.Y;
             }
         }
+
         public Vector2 XZ
         {
-            get { return new Vector2(_X, _Z); }
+            get { return new Vector2(X, _Z); }
             set
             {
-                _X = value.X;
+                X = value.X;
                 _Z = value.Y;
             }
         }
 
         public Vector2 YZ
         {
-            get { return new Vector2(_Y, _Z); }
+            get { return new Vector2(Y, _Z); }
             set
             {
-                _Y = value.X;
+                Y = value.X;
                 _Z = value.Y;
             }
         }
 
         public Vector2 YX
         {
-            get { return new Vector2(_Y, _X); }
+            get { return new Vector2(Y, X); }
             set
             {
-                _Y = value.X;
-                _X = value.Y;
+                Y = value.X;
+                X = value.Y;
             }
         }
+
         public Vector2 ZX
         {
-            get { return new Vector2(_Z, _X); }
+            get { return new Vector2(_Z, X); }
             set
             {
                 _Z = value.X;
-                _X = value.Y;
+                X = value.Y;
             }
         }
 
         public Vector2 ZY
         {
-            get { return new Vector2(_Z, _Y); }
+            get { return new Vector2(_Z, Y); }
             set
             {
                 _Z = value.X;
-                _Y = value.Y;
+                Y = value.Y;
             }
         }
 
         /// <summary>
-        /// Secondary CTOR
+        ///     Allow people to make copies of this vector.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        public Vector3(Double x, Double y, Double z)
+        /// <returns></returns>
+        public Object Clone()
         {
-            _X = x;
-            _Y = y;
-            _Z = z;
+            return new Vector3(X, Y, Z);
         }
 
         /// <summary>
-        /// Teritiary Ctor
-        /// </summary>
-        /// <param name="xyz"></param>
-        public Vector3(Double xyz)
-        {
-            _X = xyz;
-            _Y = xyz;
-            _Z = xyz;
-        }
-
-        /// <summary>
-        /// Overload of '+' operator
+        ///     Overload of '+' operator
         /// </summary>
         public static Vector3 operator +(Vector3 c1, Vector3 c2)
         {
@@ -157,7 +133,7 @@ namespace LD31.Math
         }
 
         /// <summary>
-        /// Overload of '-' operator
+        ///     Overload of '-' operator
         /// </summary>
         public static Vector3 operator -(Vector3 c1, Vector3 c2)
         {
@@ -165,19 +141,19 @@ namespace LD31.Math
         }
 
         /// <summary>
-        /// Overload of '*' operator
+        ///     Overload of '*' operator
         /// </summary>
         public static Vector3 operator *(Vector3 c1, double c2)
         {
-            return new Vector3(c1.X * c2, c1.Y * c2, c1.Z * c2);
+            return new Vector3(c1.X*c2, c1.Y*c2, c1.Z*c2);
         }
 
         /// <summary>
-        /// Overload of '*' operator
+        ///     Overload of '*' operator
         /// </summary>
         public static Vector3 operator *(Vector3 c1, Vector3 c2)
         {
-            return new Vector3(c1.X * c2.X, c1.Y * c2.Y, c1.Z * c2.Z);
+            return new Vector3(c1.X*c2.X, c1.Y*c2.Y, c1.Z*c2.Z);
         }
 
         public static Double DistanceSquared(Vector3 c1, Vector3 c2)
@@ -185,13 +161,10 @@ namespace LD31.Math
             return System.Math.Pow(c1.X - c2.X, 2) + System.Math.Pow(c1.Y - c2.Y, 2) + System.Math.Pow(c1.Z - c2.Z, 2);
         }
 
-        /// <summary>
-        /// Allow people to make copies of this vector.
-        /// </summary>
-        /// <returns></returns>
-        public Object Clone()
+        public static Vector3 Normalize(Vector3 vec)
         {
-            return new Vector3(this.X, this.Y, this.Z);
+            double magnitude = System.Math.Sqrt((vec.X*vec.X) + (vec.Y*vec.Y) + (vec.Z*vec.Z));
+            return new Vector3(vec.X/magnitude, vec.Y/magnitude, vec.Z/magnitude);
         }
     }
 }

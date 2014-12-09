@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LD31.Math;
+﻿using LD31.Math;
 
 namespace LD31.Graphics
 {
-    class UI
+    internal class UI
     {
-
         public static void Draw()
         {
-            for (int x = -3; x <= 3; x++) GraphicsManager.DrawUIVoxel(new Vector3(x, -200, 0), new Colour(0,255), new Vector3(1));
+            for (int x = -3; x <= 3; x++) GraphicsManager.DrawUIVoxel(new Vector3(x, -200, 0), new Colour(0, 255), new Vector3(1));
             for (int y = -3; y <= 3; y++) GraphicsManager.DrawUIVoxel(new Vector3(0, -200, y), new Colour(0, 255), new Vector3(1));
         }
     }

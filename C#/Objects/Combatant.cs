@@ -9,49 +9,28 @@ namespace LD31.Objects
 {
     public abstract class Combatant : Moveable
     {
-        /// <summary>
-        /// backing field
-        /// </summary>
-        protected Weapon _CurrentWeapon = null;
+        protected const Int32 COLLISION_HEIGHT = 32;
+        protected const Int32 COLLISION_RADIUS = 8;
 
         /// <summary>
-        /// backing field
+        ///     backing field
+        /// </summary>
+        protected Weapon _CurrentWeapon;
+
+        /// <summary>
+        ///     backing field
+        /// </summary>
+        private Double _Health = 100;
+
+        protected Double _JumpCoolDown;
+
+        /// <summary>
+        ///     backing field
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
-        protected Int32 _CollisionHeight = 30;
-        protected Int32 _CollisionRadius = 8;
-
-        protected Double _JumpCoolDown = 0;
-
-
-
         /// <summary>
-        /// The currently selected weapon of the Combatant.
-        /// </summary>
-        public Weapon CurrentWeapon
-        {
-            get { return _CurrentWeapon; }
-        }
-
-        /// <summary>
-        /// This collection represents all the weapons a Combatant currently has.
-        /// </summary>
-        public IEnumerable<Weapon> Weapons
-        {
-            get { return _CurrentWeapons; }
-        }
-
-        /// <summary>
-        /// This value represents the health of the player. Starts at 100, player dies at 0.
-        /// </summary>
-        public virtual Double Health
-        {
-            get { return _Health; }
-        }
-
-        /// <summary>
-        /// CTOR
+        ///     CTOR
         /// </summary>
         public Combatant(Vector3 position)
             : base(position)
@@ -59,7 +38,31 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// This function gives a weapon to the Combatant IF they don't already have it.
+        ///     The currently selected weapon of the Combatant.
+        /// </summary>
+        public Weapon CurrentWeapon
+        {
+            get { return _CurrentWeapon; }
+        }
+
+        /// <summary>
+        ///     This collection represents all the weapons a Combatant currently has.
+        /// </summary>
+        public IEnumerable<Weapon> Weapons
+        {
+            get { return _CurrentWeapons; }
+        }
+
+        /// <summary>
+        ///     This value represents the health of the player. Starts at 100, player dies at 0.
+        /// </summary>
+        public virtual Double Health
+        {
+            get { return _Health; }
+        }
+
+        /// <summary>
+        ///     This function gives a weapon to the Combatant IF they don't already have it.
         /// </summary>
         /// <param name="weapon"></param>
         public void GiveWeapon(Weapon weapon)
@@ -68,9 +71,9 @@ namespace LD31.Objects
             _CurrentWeapon = weapon;
         }
 
-
         /// <summary>
-        /// This function gives ammo to the Combatant for a specific weapon. Does nothing if the Combatant doesnt have that weapon.
+        ///     This function gives ammo to the Combatant for a specific weapon. Does nothing if the Combatant doesnt have that
+        ///     weapon.
         /// </summary>
         /// <param name="weapon"></param>
         /// <param name="ammoCount"></param>
@@ -82,9 +85,8 @@ namespace LD31.Objects
             }
         }
 
-
         /// <summary>
-        /// This method fires the currently selected weapon.
+        ///     This method fires the currently selected weapon.
         /// </summary>
         public void FireCurrentWeapon()
         {
@@ -92,12 +94,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// backing field
-        /// </summary>
-        private Double _Health = 100;
-
-        /// <summary>
-        /// This function damages the mortal.
+        ///     This function damages the mortal.
         /// </summary>
         /// <param name="damage"></param>
         public virtual void Damage(Double damage)
@@ -106,7 +103,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// This function heals the mortal.
+        ///     This function heals the mortal.
         /// </summary>
         /// <param name="healAmount"></param>
         public virtual void Heal(Int32 healAmount)
@@ -119,7 +116,7 @@ namespace LD31.Objects
             _JumpCoolDown -= msSinceLastUpdate;
             if (!IsOnFloor())
             {
-                Velocity.Z -= Level.GRAVITY * (msSinceLastUpdate / 1000);
+                Velocity.Z -= Level.GRAVITY*(msSinceLastUpdate/1000);
             }
             else
             {
@@ -130,40 +127,46 @@ namespace LD31.Objects
                 }
             }
 
-            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + 10))
+            if (System.Math.Abs(Velocity.Z) < 0.01f)
+            {
+                if (Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - COLLISION_HEIGHT + 1))
+                {
+                    Position.Z++;
+                }
+            }
+
+            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + (COLLISION_HEIGHT*0.5)))
             {
                 Velocity.Z = 0;
+
+                Position.Z--;
             }
 
-            float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
-            float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
+            float xRadius = Velocity.X > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
+            float yRadius = Velocity.Y > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
 
-            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
-            {
-                Velocity.X = 0;
-            }
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z - (COLLISION_HEIGHT - 2))) Velocity.X = 0;
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z)) Velocity.X = 0;
 
-            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
-            {
-                Velocity.Y = 0;
-            }
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z - (COLLISION_HEIGHT - 2))) Velocity.Y = 0;
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z)) Velocity.Y = 0;
 
-            if (_Health <= 0||Position.Z<-200) Kill();
+            if (_Health <= 0 || Position.Z < -200) Kill();
 
-            Position += Velocity * (msSinceLastUpdate / 16); //the time factor stops fast machines from running too many updates
+            Position += Velocity*(msSinceLastUpdate/16); //the time factor stops fast machines from running too many updates
         }
 
         /// <summary>
-        /// This bool will tell the user if the combatant is on the floor or not.
+        ///     This bool will tell the user if the combatant is on the floor or not.
         /// </summary>
         /// <returns></returns>
         public virtual bool IsOnFloor()
         {
-            return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
+            return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - COLLISION_HEIGHT);
         }
 
         /// <summary>
-        /// This method will kill/set the combatant health to 0;
+        ///     This method will kill/set the combatant health to 0;
         /// </summary>
         public virtual void Kill()
         {
@@ -174,13 +177,13 @@ namespace LD31.Objects
 
         public virtual void AttemptToHit(Projectile bullet)
         {
-            if (bullet.Position.X + bullet.Size > Position.X - _CollisionRadius && bullet.Position.X - bullet.Size < Position.X + _CollisionRadius)
+            if (bullet.Position.X + bullet.Size > Position.X - COLLISION_RADIUS && bullet.Position.X - bullet.Size < Position.X + COLLISION_RADIUS)
             {
-                if (bullet.Position.Y + bullet.Size > Position.Y - _CollisionRadius &&
-                    bullet.Position.Y - bullet.Size < Position.Y + _CollisionRadius)
+                if (bullet.Position.Y + bullet.Size > Position.Y - COLLISION_RADIUS &&
+                    bullet.Position.Y - bullet.Size < Position.Y + COLLISION_RADIUS)
                 {
-                    if (bullet.Position.Z + bullet.Size > Position.Z - _CollisionHeight &&
-                        bullet.Position.Z - bullet.Size < Position.Z + _CollisionHeight)
+                    if (bullet.Position.Z + bullet.Size > Position.Z - COLLISION_HEIGHT &&
+                        bullet.Position.Z - bullet.Size < Position.Z + COLLISION_HEIGHT)
                     {
                         Damage(bullet.Damage);
                         bullet.Dispose();

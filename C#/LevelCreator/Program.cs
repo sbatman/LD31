@@ -1,14 +1,14 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
 namespace LevelCreator
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             const string processedLevelFile = "GameLevel.txt";
 
@@ -23,7 +23,7 @@ namespace LevelCreator
             using (StreamReader sReader = new StreamReader(levelFile))
             {
                 String jsonData = sReader.ReadToEnd();
-                
+
                 blockList = JsonConvert.DeserializeObject<List<Block>>(jsonData);
             }
 
@@ -51,7 +51,7 @@ namespace LevelCreator
             fStream.Dispose();
 
             Console.WriteLine("Level Data Successfully Saved");
-            
+
             Console.ReadKey();
         }
     }

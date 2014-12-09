@@ -15,6 +15,8 @@ public:
 	void SerCameraPosition(double x, double y, double z);
 	void SetCameraRotation(double z, double x);
 	void SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t));
+	void SetMousePressCallback(void(_stdcall *callBack)(int32_t));
+	void SetMouseReleaseCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyDownCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyUpCallback(void(_stdcall *callBack)(int32_t));
 
@@ -35,16 +37,14 @@ private:
 	double* _UIVertexList;
 	uint8_t* _UIColourList;
 
-
-	int _TriCount=0;
+	int _TriCount = 0;
 	int _UITriCount = 0;
 	int _TTriCount = 0;
-
 
 	int _Width;
 	int _Height;
 	double _CameraPosX = 0, _CameraPosY = 0, _CameraPosZ = 0, _CameraRotZ = 0, _CameraRotX = 0;
 
 	void SetupGLStates();
-	void DrawTri(double * vertList, double* p1, double* p2, double* p3, int* arrayPosition);
+	void DrawTri(double* vertList, double* p1, double* p2, double* p3, int* arrayPosition);
 };

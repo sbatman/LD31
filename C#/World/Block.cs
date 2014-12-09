@@ -1,35 +1,24 @@
 ﻿using System;
+using LD31.Graphics;
 using LD31.Math;
 
-namespace LD31.Graphics
+namespace LD31.World
 {
     /// <summary>
-    /// Represents a single 'Block' in our Game World
+    ///     Represents a single 'Block' in our Game World
     /// </summary>
     public class Block : IDisposable
     {
-        private Boolean _Active;
-
-        private Boolean _Collidable;
-
+        private static readonly Random _RND = new Random();
         private BlockType _BlockType;
-
-        private Colour _Colour;
-
-        private int _x;
-
-        private int _y;
-
-        private int _z;
-
-        private static Random rnd = new Random();
+        private Boolean _Collidable;
 
         public Block()
         {
-            _BlockType = BlockType.Default;
+            _BlockType = BlockType.DEFAULT;
             IsActive = true;
             IsCollidable = true;
-            _Colour = new Colour((byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), (byte)rnd.Next(10, 255), 255);
+            Colour = new Colour((byte) _RND.Next(10, 255), (byte) _RND.Next(10, 255), (byte) _RND.Next(10, 255), 255);
         }
 
         public Block(BlockType type)
@@ -39,7 +28,7 @@ namespace LD31.Graphics
         }
 
         /// <summary>
-        /// Gets/Sets if the Player can pass through the Block or not
+        ///     Gets/Sets if the Player can pass through the Block or not
         /// </summary>
         public Boolean IsCollidable
         {
@@ -48,13 +37,9 @@ namespace LD31.Graphics
         }
 
         /// <summary>
-        /// Sets if the Block is 'Active' or not (In-Active Blocks won't be rendered)
+        ///     Sets if the Block is 'Active' or not (In-Active Blocks won't be rendered)
         /// </summary>
-        public Boolean IsActive
-        {
-            get { return _Active; }
-            set { _Active = value; }
-        }
+        public Boolean IsActive { get; set; }
 
         public BlockType Type
         {
@@ -62,20 +47,16 @@ namespace LD31.Graphics
             set { _BlockType = value; }
         }
 
-        public Colour Colour
+        public Colour Colour { get; set; }
+
+        public void Dispose()
         {
-            get { return _Colour; }
-            set { _Colour = value; }
         }
 
         public void Draw(Int32 x, Int32 y, Int32 z)
         {
-            if (!_Active) return;
-            GraphicsManager.DrawWorldVoxel(x, y, z, _Colour);
-        }
-
-        public void Dispose()
-        {
+            if (!IsActive) return;
+            GraphicsManager.DrawWorldVoxel(x, y, z, Colour);
         }
     }
 }
