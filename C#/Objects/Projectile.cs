@@ -6,25 +6,14 @@ namespace LD31.Objects
 {
     public class Projectile : Moveable
     {
-        protected Int32 _Size = 2;
-        protected Vector3 _Scale;
+        protected const Int32 SIZE = 2;
+        protected const Int32 COLLISION_RADIUS = 4;
+        protected Colour _Colour;
         protected DateTime _CreationTime;
         protected TimeSpan _MaxLifeSpan = TimeSpan.FromMinutes(1);
-        protected Vector3 _Velocity;
-        protected Colour _Colour;
         protected Weapon _Owner;
-
-        protected Int32 _CollisionRadius = 4;
-
-        public int Size
-        {
-            get { return _Size; }
-        }
-
-        public Double Damage
-        {
-            get { return _Owner.DamagePerShot; }
-        }
+        protected readonly Vector3 _Scale;
+        protected readonly Vector3 _Velocity;
 
         public Projectile(Weapon owner, Vector3 position, Vector3 velocity, Colour colour)
             : base(position)
@@ -33,7 +22,17 @@ namespace LD31.Objects
             _CreationTime = DateTime.Now;
             _Velocity = velocity;
             _Colour = colour;
-            _Scale = new Vector3(_Size);
+            _Scale = new Vector3(SIZE);
+        }
+
+        public int Size
+        {
+            get { return SIZE; }
+        }
+
+        public Double Damage
+        {
+            get { return _Owner.DamagePerShot; }
         }
 
         public override void Update(double msSinceLastUpdate)
@@ -45,12 +44,12 @@ namespace LD31.Objects
             Position += Velocity;
 
             ////Make sure all projectiles die after they hit things/walls.
-            float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
-            float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
+            float xRadius = Velocity.X > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
+            float yRadius = Velocity.Y > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
 
             if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
             {
-               Dispose();
+                Dispose();
             }
 
             if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
@@ -66,7 +65,7 @@ namespace LD31.Objects
         }
 
         /// <summary>
-        /// Make sure we can draw projectiles.
+        ///     Make sure we can draw projectiles.
         /// </summary>
         public override void Draw()
         {
@@ -77,7 +76,6 @@ namespace LD31.Objects
         {
             base.Dispose();
             _Owner = null;
-           
         }
 
         public void AttemptToHit(Combatant combatant)

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "GraphicsManager.h"
 
 
@@ -265,7 +265,7 @@ void GraphicsManager::SetupGLStates()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Somewhere in the initialization part of your program…
+	// Somewhere in the initialization part of your program�
 	glEnable(GL_LIGHTING);
 
 	// Create light components
