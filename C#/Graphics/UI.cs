@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LD31.Math;
+﻿using LD31.Math;
 
 namespace LD31.Graphics
 {

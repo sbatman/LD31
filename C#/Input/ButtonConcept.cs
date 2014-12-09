@@ -5,14 +5,15 @@
     /// </summary>
     enum ButtonConcept
     {
-        Quit,
-        Jump,
-        Forward,
-        Backward,
-        Left,
-        Right,
-        Fire,
-        Activate,
-        TestButton1
+        QUIT,
+        JUMP,
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+        SPRINT,
+        FIRE,
+        ACTIVATE,
+        TEST_BUTTON1
     }
 }

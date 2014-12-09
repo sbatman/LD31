@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace LD31.Objects
 {
@@ -10,11 +7,11 @@ namespace LD31.Objects
     /// </summary>
     public abstract class GameObject : IDisposable
     {
-        private bool _Disposed = false;
+        private bool _Disposed;
         /// <summary>
         /// Ctor of the gameobject object. Adds the new instance to the global game objects list.
         /// </summary>
-        public GameObject()
+        protected GameObject()
         {
             Game.GameObjects.Add(this);
         }

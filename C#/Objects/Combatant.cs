@@ -12,19 +12,17 @@ namespace LD31.Objects
         /// <summary>
         /// backing field
         /// </summary>
-        protected Weapon _CurrentWeapon = null;
+        protected Weapon _CurrentWeapon;
 
         /// <summary>
         /// backing field
         /// </summary>
         protected readonly HashSet<Weapon> _CurrentWeapons = new HashSet<Weapon>();
 
-        protected Int32 _CollisionHeight = 30;
-        protected Int32 _CollisionRadius = 8;
+        protected const Int32 COLLISION_HEIGHT = 32;
+        protected const Int32 COLLISION_RADIUS = 8;
 
-        protected Double _JumpCoolDown = 0;
-
-
+        protected Double _JumpCoolDown;
 
         /// <summary>
         /// The currently selected weapon of the Combatant.
@@ -130,27 +128,33 @@ namespace LD31.Objects
                 }
             }
 
-            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + 10))
+            if (System.Math.Abs(Velocity.Z) < 0.01f)
+            {
+                if (Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - COLLISION_HEIGHT + 1))
+                {
+                    Position.Z++;
+                }
+            }
+
+            if (Velocity.Z > 0 && Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z + (COLLISION_HEIGHT * 0.5)))
             {
                 Velocity.Z = 0;
+
+                Position.Z--;
             }
 
-            float xRadius = Velocity.X > 0 ? _CollisionRadius : -_CollisionRadius;
-            float yRadius = Velocity.Y > 0 ? _CollisionRadius : -_CollisionRadius;
+            float xRadius = Velocity.X > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
+            float yRadius = Velocity.Y > 0 ? COLLISION_RADIUS : -COLLISION_RADIUS;
 
-            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z))
-            {
-                Velocity.X = 0;
-            }
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z - (COLLISION_HEIGHT - 2))) Velocity.X = 0;
+            if (Game.CurrentLevel.IsSolid(Position.X + Velocity.X + xRadius, Position.Y, Position.Z)) Velocity.X = 0;
 
-            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z))
-            {
-                Velocity.Y = 0;
-            }
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z - (COLLISION_HEIGHT - 2))) Velocity.Y = 0;
+            if (Game.CurrentLevel.IsSolid(Position.X, Position.Y + Velocity.Y + yRadius, Position.Z)) Velocity.Y = 0;
 
-            if (_Health <= 0) Kill();
+            if (_Health <= 0 || Position.Z < -200) Kill();
 
-            Position += Velocity;
+            Position += Velocity * (msSinceLastUpdate / 16); //the time factor stops fast machines from running too many updates
         }
 
         /// <summary>
@@ -159,7 +163,7 @@ namespace LD31.Objects
         /// <returns></returns>
         public virtual bool IsOnFloor()
         {
-            return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - _CollisionHeight);
+            return Game.CurrentLevel.IsSolid(Position.X, Position.Y, Position.Z - COLLISION_HEIGHT);
         }
 
         /// <summary>
@@ -174,13 +178,13 @@ namespace LD31.Objects
 
         public virtual void AttemptToHit(Projectile bullet)
         {
-            if (bullet.Position.X + bullet.Size > Position.X - _CollisionRadius && bullet.Position.X - bullet.Size < Position.X + _CollisionRadius)
+            if (bullet.Position.X + bullet.Size > Position.X - COLLISION_RADIUS && bullet.Position.X - bullet.Size < Position.X + COLLISION_RADIUS)
             {
-                if (bullet.Position.Y + bullet.Size > Position.Y - _CollisionRadius &&
-                    bullet.Position.Y - bullet.Size < Position.Y + _CollisionRadius)
+                if (bullet.Position.Y + bullet.Size > Position.Y - COLLISION_RADIUS &&
+                    bullet.Position.Y - bullet.Size < Position.Y + COLLISION_RADIUS)
                 {
-                    if (bullet.Position.Z + bullet.Size > Position.Z - _CollisionHeight &&
-                        bullet.Position.Z - bullet.Size < Position.Z + _CollisionHeight)
+                    if (bullet.Position.Z + bullet.Size > Position.Z - COLLISION_HEIGHT &&
+                        bullet.Position.Z - bullet.Size < Position.Z + COLLISION_HEIGHT)
                     {
                         Damage(bullet.Damage);
                         bullet.Dispose();

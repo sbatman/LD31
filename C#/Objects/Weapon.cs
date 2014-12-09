@@ -1,6 +1,6 @@
-﻿using LD31.Graphics;
+﻿using System;
+using LD31.Graphics;
 using LD31.Math;
-using System;
 
 namespace LD31.Objects
 {
@@ -11,19 +11,26 @@ namespace LD31.Objects
     public class Weapon : GameObject
     {
 
+        public enum WeaponTypes
+        {
+            PISTOL,
+            SHOTGUN
+        }
         /// <summary>
         /// The color of the projectiles for this weapon
         /// </summary>
-        Colour _ProjectileColor;
+        readonly Colour _ProjectileColor;
 
         /// <summary>
         /// backing field
         /// </summary>
         Int32 _Ammunition;
 
-        private Combatant _Owner;
+        private readonly Combatant _Owner;
 
         private Double _DamagePerShot = 30;
+
+        private WeaponTypes _WeaponType;
 
         /// <summary>
         /// How much ammunition this weapon has.
@@ -42,6 +49,12 @@ namespace LD31.Objects
         public Combatant Owner
         {
             get { return _Owner; }
+        }
+
+        public WeaponTypes WeaponType
+        {
+            get { return _WeaponType; }
+            set { _WeaponType = value; }
         }
 
         /// <summary>
@@ -89,14 +102,18 @@ namespace LD31.Objects
 
                 Vector3 fireDirection = new Vector3(0)
                 {
-                    XY = Vector2.Rotate(new Vector2(0, -1), Graphics.GraphicsManager.GetCamera().RotationZ),
-                    Z = Vector2.Rotate(new Vector2(0, -1), -Graphics.GraphicsManager.GetCamera().RotationX).X
+                    XY = Vector2.Rotate(new Vector2(0, -1), GraphicsManager.GetCamera().RotationZ)
+
                 };
+
+                fireDirection.Z =
+                    Vector2.Rotate(new Vector2(0, 1), GraphicsManager.GetCamera().RotationX).X;
+
 
                 //different guns have different projectiles when they fire!
                 //if (this == Weapon.Pistol)
                 //{
-                    Projectile bullet = new Projectile(this, position, fireDirection, _ProjectileColor);
+                new Projectile(this, position, fireDirection, _ProjectileColor);
                 //}
                 //if (this == Weapon.Shotgun)
                 //{

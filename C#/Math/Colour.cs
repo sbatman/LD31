@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LD31.Math
 {
@@ -112,8 +108,10 @@ namespace LD31.Math
         /// <summary>
         /// Constructor. This sets all RGB values to the individual arguments..
         /// </summary>
-        /// <param name="rgb"></param>
+        /// <param name="b"></param>
         /// <param name="a"></param>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
         public Colour(Byte r, Byte g, Byte b, Byte a)
         {
             _R = r;

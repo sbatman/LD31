@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.RightsManagement;
 using System.Threading;
 using LD31.Graphics;
 using LD31.Input;
@@ -15,11 +14,6 @@ namespace LD31
     class Game : IDisposable
     {
         /// <summary>
-        /// This value is used to stop the main update loop running too fast.
-        /// </summary>
-        private const Int32 UPDATE_DELAY = 8;
-
-        /// <summary>
         /// This flag shows if the game is still running or not. 
         /// </summary>
         private static Boolean _GameRunning = true;
@@ -29,7 +23,7 @@ namespace LD31
         /// </summary>
         public static Player Player;
 
-        public static Enemy Enemy;
+        public static List<Enemy> Enemys = new List<Enemy>();
 
         /// <summary>
         /// The current level
@@ -48,16 +42,13 @@ namespace LD31
         {
             InputHandler.Init();
             GraphicsManager.Init();
-            Player = new Player(new Vector3(450, 450, 700));
+            Player = new Player(new Vector3(550, 450, 400));
             //give the player a default weapon and some ammo!
             Weapon defaultWeapon = new Weapon(new Colour(255, 255), Player);
             Player.GiveWeapon(defaultWeapon);
             Player.GiveAmmo(defaultWeapon, 10);
 
             CurrentLevel = new Level("GameLevel.txt");
-
-            //create a default enemy!
-           
         }
 
         /// <summary>
@@ -83,7 +74,8 @@ namespace LD31
         /// </summary>
         void Update(Double msSinceLastUpdate)
         {
-            if (Enemy == null || Enemy.Disposed) Enemy = new Enemy(new Vector3(700, 400, 500), Player);
+            Enemys = Enemys.Where(a => !a.Disposed).ToList();
+            while (Enemys.Count < 5) Enemys.Add(new Enemy(Player.Position, Player));
 
             InputHandler.Update();
             GraphicsManager.Update();
@@ -105,7 +97,7 @@ namespace LD31
             GameObjects = GameObjects.Where(o => !o.Disposed).ToList();
 
             //Allow user to quit the game.
-            if (InputHandler.IsButtonDown(ButtonConcept.Quit))
+            if (InputHandler.IsButtonDown(ButtonConcept.QUIT))
             {
                 _GameRunning = false;
             }
@@ -118,8 +110,6 @@ namespace LD31
         {
             Init();
             Stopwatch updateTime = new Stopwatch();
-            Stopwatch drawTime = new Stopwatch();
-
             Double lastUpdateMS = 0;
 
             updateTime.Start();
