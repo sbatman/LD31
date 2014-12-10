@@ -1,5 +1,20 @@
-﻿void main()
+﻿varying vec3 normal;
+varying vec3 vertex_to_light_vector;
+ 
+void main()
 {
-    // Setting Each Pixel To Red
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    // Scaling The Input Vector To Length 1
+    vec3 normalized_normal = normalize(normal);
+    vec3 normalized_vertex_to_light_vector = normalize(vertex_to_light_vector);
+ 
+    // Calculating The Diffuse Term And Clamping It To [0;1]
+    float DiffuseTerm = clamp(dot(normal, normalized_vertex_to_light_vector), 0.2, 1.0);
+	const vec4 AmbientColor = vec4(0.15,0.15,0.15,1.0);
+	const vec4 FogColor = vec4( 0.3, 0.7, 0.9,1.0);
+	//Fog
+    double multiplier =  clamp((gl_FragCoord.w*250),0.0,1.0);
+
+    // Calculating The Final Color
+    gl_FragColor = (FogColor*(1-multiplier)) +(multiplier*( AmbientColor + (gl_Color * DiffuseTerm)));
+	gl_FragColor.w =  gl_Color.w;
 }

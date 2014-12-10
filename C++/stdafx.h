@@ -9,5 +9,7 @@
 #include "libs\GLEW\glew.h"
 //#include <gl/gl.h>
 //#include <gl/glu.h>
+#include <memory.h>
+#include <stdio.h>
 #include <cstdio>
-#include <String>
+#include <string>

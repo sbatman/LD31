@@ -11,6 +11,9 @@ bool _HasFocus;
 int _LastMouseX;
 int _LastMouseY;
 
+char * my_fragment_shader_source;
+char * my_vertex_shader_source;
+
 void(_stdcall *_CallBackMouseMove)(int32_t, int32_t) = nullptr;
 void(_stdcall *_CallBackMousePress)(int32_t button) = nullptr;
 void(_stdcall *_CallBackMouseRelease)(int32_t button) = nullptr;
@@ -265,7 +268,7 @@ void GraphicsManager::SetupGLStates()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Somewhere in the initialization part of your program�
+	// Somewhere in the initialization part of your program…
 	glEnable(GL_LIGHTING);
 
 	// Create light components
@@ -457,10 +460,27 @@ void GraphicsManager::SetCameraRotation(double z, double x)
 	_CameraRotX = x;
 }
 
+bool ShaderCompileSuccessful(int obj)
+{
+	int status;
+	glGetShaderiv(obj, GL_COMPILE_STATUS, &status);
+	return status == GL_TRUE;
+}
+
+bool ShaderLinkSuccessful(int obj)
+{
+	int status;
+	glGetProgramiv(obj, GL_LINK_STATUS, &status);
+	return status == GL_TRUE;
+}
+
 void GraphicsManager::InitShaders(std::string vertexShader, std::string fragmentShader)
 {
-	const GLcharARB * my_fragment_shader_source = vertexShader.c_str();
-	const GLcharARB * my_vertex_shader_source = fragmentShader.c_str();
+	my_vertex_shader_source = new char[vertexShader.length()+1];
+	my_fragment_shader_source = new char[fragmentShader.length()+1];
+
+	strcpy_s(my_vertex_shader_source, vertexShader.length() + 1, vertexShader.c_str());
+	strcpy_s(my_fragment_shader_source, fragmentShader.length() + 1, fragmentShader.c_str());
 
 	GLenum my_program;
 	GLenum my_vertex_shader;
@@ -471,22 +491,35 @@ void GraphicsManager::InitShaders(std::string vertexShader, std::string fragment
 	my_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	my_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	ErrorTest();
-	// Load Shader Sources
+
 	glShaderSource(my_vertex_shader, 1, &my_vertex_shader_source, NULL);
 	glShaderSource(my_fragment_shader, 1, &my_fragment_shader_source, NULL);
 	ErrorTest();
-	// Compile The Shaders
 	glCompileShader(my_vertex_shader);
 	glCompileShader(my_fragment_shader);
 	ErrorTest();
-	// Attach The Shader Objects To The Program Object
 	glAttachShader(my_program, my_vertex_shader);
 	glAttachShader(my_program, my_fragment_shader);
 	ErrorTest();
-	// Link The Program Object
 	glLinkProgram(my_program);
 	ErrorTest();
-	// Use The Program Object Instead Of Fixed Function OpenGL
 	glUseProgram(my_program);
+	bool vCompileOK = ShaderCompileSuccessful(my_vertex_shader);
+	if (!vCompileOK){
+		GLsizei logLength = 0;
+		glGetShaderiv(my_vertex_shader, GL_INFO_LOG_LENGTH, &logLength);
+		GLchar* log_string = new GLchar[logLength + 1];
+		glGetShaderInfoLog(my_program, logLength, 0, log_string);
+		printf("%s", log_string);
+	}
+	bool fCompileOK = ShaderCompileSuccessful(my_fragment_shader);
+	if (!fCompileOK){
+		GLsizei logLength = 0;
+		glGetShaderiv(my_fragment_shader, GL_INFO_LOG_LENGTH, &logLength);
+		GLchar* log_string = new char[logLength + 1];
+		glGetShaderInfoLog(my_program, logLength, 0, log_string);
+		printf("%s", log_string);
+	}
+	bool linkOK = ShaderLinkSuccessful(my_program);
 	ErrorTest();
 }
