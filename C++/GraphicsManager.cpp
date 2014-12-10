@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "Shader.h"
 #include "GraphicsManager.h"
 
 
@@ -11,9 +12,6 @@ bool _HasFocus;
 int _LastMouseX;
 int _LastMouseY;
 
-char * my_fragment_shader_source;
-char * my_vertex_shader_source;
-
 void(_stdcall *_CallBackMouseMove)(int32_t, int32_t) = nullptr;
 void(_stdcall *_CallBackMousePress)(int32_t button) = nullptr;
 void(_stdcall *_CallBackMouseRelease)(int32_t button) = nullptr;
@@ -21,6 +19,8 @@ void(_stdcall *_CallBackKeyDown)(int32_t) = nullptr;
 void(_stdcall *_CallBackKeyUp)(int32_t) = nullptr;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+std::vector<Shader *> * _LoadedShaders;
 
 void ErrorTest()
 {
@@ -35,6 +35,7 @@ void ErrorTest()
 
 GraphicsManager::GraphicsManager()
 {
+	_LoadedShaders = new std::vector<Shader *>();
 	_VertexList = new double[20000000];
 	_NormalList = new double[20000000];
 	_ColourList = new uint8_t[20000000];
@@ -49,17 +50,20 @@ GraphicsManager::GraphicsManager()
 
 GraphicsManager::~GraphicsManager()
 {
-	delete [] _VertexList;
-	delete [] _ColourList;
-	delete [] _NormalList;
+	for (Shader * s : (*_LoadedShaders)) delete s;
 
-	delete [] _TVertexList;
-	delete [] _TColourList;
-	delete [] _TNormalList;
+	delete _LoadedShaders;
+	delete[] _VertexList;
+	delete[] _ColourList;
+	delete[] _NormalList;
+
+	delete[] _TVertexList;
+	delete[] _TColourList;
+	delete[] _TNormalList;
 
 
-	delete [] _UIVertexList;
-	delete [] _UIColourList;
+	delete[] _UIVertexList;
+	delete[] _UIColourList;
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -91,7 +95,7 @@ void GraphicsManager::Init(int32_t width, int32_t height, int32_t handle)
 	_Width = width;
 	_Height = height;
 	WNDCLASSEX windowClass = { 0 };
-	hInstance = (HINSTANCE) handle;
+	hInstance = (HINSTANCE)handle;
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.lpfnWndProc = WndProc;
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -145,22 +149,16 @@ void GraphicsManager::EndDraw()
 
 	if (_UITriCount > 0)
 	{
-		glDisable(GL_FOG);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glVertexPointer(3, GL_DOUBLE, 0, _UIVertexList);
 		glColorPointer(4, GL_UNSIGNED_BYTE, 0, _UIColourList);
 		glDrawArrays(GL_TRIANGLES, 0, _UITriCount * 3);
 		glEnableClientState(GL_NORMAL_ARRAY);
-		glEnable(GL_FOG);
 	}
 
 	glPopMatrix();
-
-	//glEnd();
-
 	SwapBuffers(_HDC);
-	;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -168,33 +166,38 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PIXELFORMATDESCRIPTOR pfd;
 	switch (message)
 	{
-		case WM_CREATE:
-			_HDC = GetDC(hwnd);
-			int nPixelFormat;
-			pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
-			nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
-			SetPixelFormat(_HDC, nPixelFormat, &pfd);
-			_HDR = wglCreateContext(_HDC);
-			wglMakeCurrent(_HDC, _HDR);
+	case WM_CREATE:
+		_HDC = GetDC(hwnd);
+		int nPixelFormat;
+		pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+		pfd.iPixelType = PFD_TYPE_RGBA;
+		pfd.cColorBits = static_cast<BYTE>(32);
+		pfd.cDepthBits = static_cast<BYTE>(24);
+		pfd.cStencilBits = static_cast<BYTE>(8);
+		pfd.cAlphaBits = 8;
+		nPixelFormat = ChoosePixelFormat(_HDC, &pfd);
+		SetPixelFormat(_HDC, nPixelFormat, &pfd);
+		_HDR = wglCreateContext(_HDC);
+		wglMakeCurrent(_HDC, _HDR);
 
-			glewInit();
-			break;
-		case WM_CLOSE:
-			PostQuitMessage(0);
-			return 0;
-			break;
-		case WM_SETFOCUS:
+		glewInit();
+		break;
+	case WM_CLOSE:
+		PostQuitMessage(0);
+		return 0;
+		break;
+	case WM_SETFOCUS:
+		_HasFocus = true;
+		break;
+	case WM_KILLFOCUS:
+		_HasFocus = false;
+		break;
+	case WM_ACTIVATE:
+		if (LOWORD(message) == WA_ACTIVE)
 			_HasFocus = true;
-			break;
-		case WM_KILLFOCUS:
+		else
 			_HasFocus = false;
-			break;
-		case WM_ACTIVATE:
-			if (LOWORD(message) == WA_ACTIVE)
-				_HasFocus = true;
-			else
-				_HasFocus = false;
-			break;
+		break;
 	}
 	return (DefWindowProc(hwnd, message, wParam, lParam));
 }
@@ -206,41 +209,41 @@ void GraphicsManager::Update()
 	{
 		switch (msg.message)
 		{
-			case WM_MOUSEMOVE:
-			{
-				POINT point = POINT();
-				GetCursorPos(&point);
+		case WM_MOUSEMOVE:
+		{
+			POINT point = POINT();
+			GetCursorPos(&point);
 
-				int32_t xPos = point.x;
-				int32_t yPos = point.y;
+			int32_t xPos = point.x;
+			int32_t yPos = point.y;
 
-				if (xPos != _LastMouseX || yPos != _LastMouseY)
-				{
-					_LastMouseX = xPos;
-					_LastMouseY = yPos;
-					if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
-				}
-			}
-				break;
-			case WM_KEYDOWN:
+			if (xPos != _LastMouseX || yPos != _LastMouseY)
 			{
-				int a = (int) msg.wParam;
-				if (_HasFocus) _CallBackKeyDown(a);
+				_LastMouseX = xPos;
+				_LastMouseY = yPos;
+				if (_HasFocus)_CallBackMouseMove(xPos - (_Width*0.5f), yPos - (_Height*0.5f));
 			}
-				break;
-			case WM_KEYUP:
-			{
-				int a = (int) msg.wParam;
-				if (_HasFocus) _CallBackKeyUp(a);
-			}
-				break;
+		}
+			break;
+		case WM_KEYDOWN:
+		{
+			int a = (int)msg.wParam;
+			if (_HasFocus) _CallBackKeyDown(a);
+		}
+			break;
+		case WM_KEYUP:
+		{
+			int a = (int)msg.wParam;
+			if (_HasFocus) _CallBackKeyUp(a);
+		}
+			break;
 
-			case WM_LBUTTONDOWN: if (_HasFocus)_CallBackMousePress(0); break;
-			case WM_LBUTTONUP: if (_HasFocus)_CallBackMouseRelease(0); break;
-			case WM_MBUTTONDOWN: if (_HasFocus)_CallBackMousePress(2); break;
-			case WM_MBUTTONUP: if (_HasFocus)_CallBackMouseRelease(2); break;
-			case WM_RBUTTONDOWN: if (_HasFocus)_CallBackMousePress(1); break;
-			case WM_RBUTTONUP: if (_HasFocus)_CallBackMouseRelease(1); break;
+		case WM_LBUTTONDOWN: if (_HasFocus)_CallBackMousePress(0); break;
+		case WM_LBUTTONUP: if (_HasFocus)_CallBackMouseRelease(0); break;
+		case WM_MBUTTONDOWN: if (_HasFocus)_CallBackMousePress(2); break;
+		case WM_MBUTTONUP: if (_HasFocus)_CallBackMouseRelease(2); break;
+		case WM_RBUTTONDOWN: if (_HasFocus)_CallBackMousePress(1); break;
+		case WM_RBUTTONUP: if (_HasFocus)_CallBackMouseRelease(1); break;
 
 		}
 		TranslateMessage(&msg);
@@ -261,49 +264,14 @@ void GraphicsManager::SetupGLStates()
 	glViewport(0, 0, _Width, _Height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, _Width / (float) _Height, 2, 2000);
+	gluPerspective(70, _Width / (float)_Height, 2, 2000);
 	glClearColor(0.2, 0.6, 0.8, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Somewhere in the initialization part of your program…
-	glEnable(GL_LIGHTING);
-
-	// Create light components
-	GLfloat ambientLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat diffuseLight [] = { 0.8f, 0.8f, 0.8, 1.0f };
-	GLfloat specularLight [] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat position [] = { 0, 1, 0.5, 0 };
-
-	// Assign created components to GL_LIGHT0
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-	glLightfv(GL_LIGHT0, GL_POSITION, position);
-	glEnable(GL_LIGHT0);
-
-
-	GLfloat fogColor[4] = { 0.3, 0.7, 0.9, 1.0f };      // Fog Color
-
-
-	glFogi(GL_FOG_MODE, GL_EXP);        // Fog Mode
-	glFogfv(GL_FOG_COLOR, fogColor);            // Set Fog Color
-	glFogf(GL_FOG_DENSITY, 0.0004f);              // How Dense Will The Fog Be
-	glHint(GL_FOG_HINT, GL_DONT_CARE);          // Fog Hint Value
-	glFogf(GL_FOG_START, 1.0f);             // Fog Start Depth
-	glFogf(GL_FOG_END, 4000);               // Fog End Depth
-	glEnable(GL_FOG);                   // Enables GL_FOG
-
-	// enable color tracking
-	glEnable(GL_COLOR_MATERIAL);
-	// set material properties which will be assigned by glColor
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
-	float specReflection [] = { 0.8f, 0.8f, 0.8f, 1.0f };
-	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
-	glMateriali(GL_FRONT, GL_SHININESS, 96);
+	glDisable(GL_LIGHTING);
 
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
@@ -460,66 +428,39 @@ void GraphicsManager::SetCameraRotation(double z, double x)
 	_CameraRotX = x;
 }
 
-bool ShaderCompileSuccessful(int obj)
+int GraphicsManager::CreateShader(std::string vertexSource, std::string fragementSource)
 {
-	int status;
-	glGetShaderiv(obj, GL_COMPILE_STATUS, &status);
-	return status == GL_TRUE;
+	Shader * newShader = new Shader(vertexSource, fragementSource);
+	_LoadedShaders->push_back(newShader);
+	return newShader->GetID();
 }
 
-bool ShaderLinkSuccessful(int obj)
+Shader * FindShader(int32_t id)
 {
-	int status;
-	glGetProgramiv(obj, GL_LINK_STATUS, &status);
-	return status == GL_TRUE;
+	for (Shader * s : *_LoadedShaders)
+	{
+		if (s->GetID() == id)
+		{			
+			return s;
+		}
+	}
+	return nullptr;
 }
 
-void GraphicsManager::InitShaders(std::string vertexShader, std::string fragmentShader)
+bool GraphicsManager::CompileShader(int32_t id)
 {
-	my_vertex_shader_source = new char[vertexShader.length()+1];
-	my_fragment_shader_source = new char[fragmentShader.length()+1];
+	Shader * s = FindShader(id);
+	return (s != nullptr)? s->Compile():false;
+}
 
-	strcpy_s(my_vertex_shader_source, vertexShader.length() + 1, vertexShader.c_str());
-	strcpy_s(my_fragment_shader_source, fragmentShader.length() + 1, fragmentShader.c_str());
+void GraphicsManager::EnableShader(int32_t id)
+{
+	Shader * s = FindShader(id);
+	if(s != nullptr)  s->Enable();
+}
 
-	GLenum my_program;
-	GLenum my_vertex_shader;
-	GLenum my_fragment_shader;
-
-	// Create Shader And Program Objects
-	my_program = glCreateProgram();
-	my_vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	my_fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	ErrorTest();
-
-	glShaderSource(my_vertex_shader, 1, &my_vertex_shader_source, NULL);
-	glShaderSource(my_fragment_shader, 1, &my_fragment_shader_source, NULL);
-	ErrorTest();
-	glCompileShader(my_vertex_shader);
-	glCompileShader(my_fragment_shader);
-	ErrorTest();
-	glAttachShader(my_program, my_vertex_shader);
-	glAttachShader(my_program, my_fragment_shader);
-	ErrorTest();
-	glLinkProgram(my_program);
-	ErrorTest();
-	glUseProgram(my_program);
-	bool vCompileOK = ShaderCompileSuccessful(my_vertex_shader);
-	if (!vCompileOK){
-		GLsizei logLength = 0;
-		glGetShaderiv(my_vertex_shader, GL_INFO_LOG_LENGTH, &logLength);
-		GLchar* log_string = new GLchar[logLength + 1];
-		glGetShaderInfoLog(my_program, logLength, 0, log_string);
-		printf("%s", log_string);
-	}
-	bool fCompileOK = ShaderCompileSuccessful(my_fragment_shader);
-	if (!fCompileOK){
-		GLsizei logLength = 0;
-		glGetShaderiv(my_fragment_shader, GL_INFO_LOG_LENGTH, &logLength);
-		GLchar* log_string = new char[logLength + 1];
-		glGetShaderInfoLog(my_program, logLength, 0, log_string);
-		printf("%s", log_string);
-	}
-	bool linkOK = ShaderLinkSuccessful(my_program);
-	ErrorTest();
+void GraphicsManager::DisableShader(int32_t id)
+{
+	Shader * s = FindShader(id);
+	if (s != nullptr)  s->Disable();
 }

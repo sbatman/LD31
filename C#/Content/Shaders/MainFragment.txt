@@ -1,20 +1,24 @@
 ﻿varying vec3 normal;
-varying vec3 vertex_to_light_vector;
- 
+varying vec3 vertpos;
+
 void main()
 {
-    // Scaling The Input Vector To Length 1
-    vec3 normalized_normal = normalize(normal);
-    vec3 normalized_vertex_to_light_vector = normalize(vertex_to_light_vector);
- 
-    // Calculating The Diffuse Term And Clamping It To [0;1]
-    float DiffuseTerm = clamp(dot(normal, normalized_vertex_to_light_vector), 0.2, 1.0);
-	const vec4 AmbientColor = vec4(0.15,0.15,0.15,1.0);
+    const vec3 Light_Position = vec3(0,1.0,0.5);
+	const vec4 AmbientColor = vec4(1.0,1.0,1.0,1.0);
+	const vec4 LightColor = vec4(1.0,1.0,1.0,1.0);
 	const vec4 FogColor = vec4( 0.3, 0.7, 0.9,1.0);
-	//Fog
-    float multiplier =  clamp((gl_FragCoord.w*250),0.0,1.0);
+	
+	float coord = gl_FragCoord.w*2500;
+	float multiplier = exp2( -0.2 * 0.2 * coord * coord * 1.442695 );
+	multiplier = clamp(multiplier,0.0,1.0);	
 
-    // Calculating The Final Color
-    gl_FragColor = (FogColor*(1-multiplier)) +(multiplier*( AmbientColor + (gl_Color * DiffuseTerm)));
+	vec3 NormalizedNormal = normalize(normal);
+	vec3 L = normalize(Light_Position - vertpos);
+	
+	vec4 Ambient = vec4(0.1,0.1,0.1,1.0);
+	
+	vec4 Idiff = gl_Color * max(dot(NormalizedNormal,L), 0.0);
+	
+	gl_FragColor = ((Ambient + Idiff)*(1-multiplier))+(FogColor * multiplier);
 	gl_FragColor.w =  gl_Color.w;
 }

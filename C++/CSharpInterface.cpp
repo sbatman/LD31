@@ -57,11 +57,26 @@ extern "C"
 		_GMInstance->SetCameraRotation(z, x);
 	}
 
-	__declspec(dllexport) void __cdecl GraphicsManagerInitShaders(char * vertexShader, char * fragmentShader)
+	__declspec(dllexport) int32_t __cdecl GraphicsManagerCreateShader(char * vertexShader, char * fragmentShader)
 	{
-		_GMInstance->InitShaders(vertexShader, fragmentShader);
+		return _GMInstance->CreateShader(vertexShader, fragmentShader);
 	}
 
+	__declspec(dllexport) bool __cdecl GraphicsManagerCompileShader(int32_t id)
+	{
+		return _GMInstance->CompileShader(id);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerEnableShader(int32_t id)
+	{
+		_GMInstance->EnableShader(id);
+	}
+
+	__declspec(dllexport) void __cdecl GraphicsManagerDisableShader(int32_t id)
+	{
+		_GMInstance->DisableShader(id);
+	}
+	
 	__declspec(dllexport) void __cdecl GraphicsManagerSetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
 	{
 		_GMInstance->SetMouseMoveCallback(callBack);

@@ -85,11 +85,12 @@ namespace LD31.Graphics
 
             if (Input.InputHandler.WasButtonReleased(Input.ButtonConcept.TEST_BUTTON1))
             {
-                string vertexShader = File.ReadAllText("Content/Shaders/MainVertex.txt").Replace("\r","");
+                string vertexShader = File.ReadAllText("Content/Shaders/MainVertex.txt").Replace("\r", "");
                 string fragmentShader = File.ReadAllText("Content/Shaders/MainFragment.txt").Replace("\r", "");
 
-                NativeMethods.GraphicsManagerInitShaders(new StringBuilder(vertexShader), new StringBuilder(fragmentShader));
-
+                int id = NativeMethods.GraphicsManagerCreateShader(new StringBuilder(vertexShader), new StringBuilder(fragmentShader));
+                bool  compiled = NativeMethods.GraphicsManagerCompileShader(id);
+                NativeMethods.GraphicsManagerEnableShader(id);
             }
         }
 
@@ -160,7 +161,16 @@ namespace LD31.Graphics
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
             [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-            public static extern void GraphicsManagerInitShaders(StringBuilder z, StringBuilder x);
+            public static extern Int32 GraphicsManagerCreateShader(StringBuilder z, StringBuilder x);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern bool GraphicsManagerCompileShader(Int32 id);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerEnableShader(Int32 id);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerDisableShader(Int32 id);
         }
     }
 }
