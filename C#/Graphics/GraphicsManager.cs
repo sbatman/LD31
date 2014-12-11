@@ -165,10 +165,9 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
-<<<<<<< HEAD
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerDrawTextToScreen(String str, Int32 strLength, Int32 offsetX, Int32 offsetY);
-=======
+
             [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
             public static extern Int32 GraphicsManagerCreateShader(StringBuilder z, StringBuilder x);
 
@@ -180,7 +179,7 @@ namespace LD31.Graphics
 
             [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerDisableShader(Int32 id);
->>>>>>> origin/development
+
         }
     }
 }

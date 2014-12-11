@@ -1,10 +1,7 @@
 ﻿#include "stdafx.h"
-<<<<<<< HEAD
 #include <gl/gl.h>
 #include <gl/glu.h>
-=======
 #include "Shader.h"
->>>>>>> origin/development
 #include "GraphicsManager.h"
 
 
@@ -68,16 +65,8 @@ GraphicsManager::~GraphicsManager()
 	delete[] _TColourList;
 	delete[] _TNormalList;
 
-<<<<<<< HEAD
-	delete [] _UIVertexList;
-	delete [] _UIColourList;
-
-	//DeleteObject(_Font);
-=======
-
 	delete[] _UIVertexList;
 	delete[] _UIColourList;
->>>>>>> origin/development
 }
 
 void GraphicsManager::SetMouseMoveCallback(void(_stdcall *callBack)(int32_t, int32_t))
@@ -285,7 +274,6 @@ void GraphicsManager::SetupGLStates()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-<<<<<<< HEAD
 	// Somewhere in the initialization part of your program…
 	glEnable(GL_LIGHTING);
 
@@ -322,9 +310,8 @@ void GraphicsManager::SetupGLStates()
 	float specReflection [] = {0.8f, 0.8f, 0.8f, 1.0f};
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
 	glMateriali(GL_FRONT, GL_SHININESS, 96);
-=======
+
 	glDisable(GL_LIGHTING);
->>>>>>> origin/development
 
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
@@ -481,7 +468,7 @@ void GraphicsManager::SetCameraRotation(double z, double x)
 	_CameraRotX = x;
 }
 
-<<<<<<< HEAD
+
 void GraphicsManager::DrawTextToScreen(char* str, int strLength, int offsetX, int offsetY)
 {
 	//globally defined
@@ -496,9 +483,9 @@ void GraphicsManager::DrawTextToScreen(char* str, int strLength, int offsetX, in
 
 	glListBase(font_list_base_2d); //start of our font display list numbers 
 
-	glCallLists(strLength*2, GL_UNSIGNED_BYTE, str);
+	glCallLists(strLength * 2, GL_UNSIGNED_BYTE, str);
+}
 
-=======
 int GraphicsManager::CreateShader(std::string vertexSource, std::string fragementSource)
 {
 	Shader * newShader = new Shader(vertexSource, fragementSource);
@@ -534,5 +521,5 @@ void GraphicsManager::DisableShader(int32_t id)
 {
 	Shader * s = FindShader(id);
 	if (s != nullptr)  s->Disable();
->>>>>>> origin/development
+
 }
