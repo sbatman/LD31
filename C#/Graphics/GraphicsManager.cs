@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using LD31.Math;
 using LD31.World;
 
@@ -18,10 +20,9 @@ namespace LD31.Graphics
         /// </summary>
         public static void Init()
         {
+            _PrimaryCamera = new Camera();
             Int32 handelID = Process.GetCurrentProcess().Handle.ToInt32();
             NativeMethods.GraphicsManagerInit(1440, 800, handelID);
-
-            _PrimaryCamera = new Camera();
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace LD31.Graphics
         /// <param name="colour">Colours used when drawing this voxel</param>
         public static void DrawWorldVoxel(Int32 x, Int32 y, Int32 z, Colour colour)
         {
-            NativeMethods.GraphicsManagerDrawVoxel(x*Level.WORLD_BLOCK_SIZE, z*Level.WORLD_BLOCK_SIZE, y*Level.WORLD_BLOCK_SIZE, colour.R, colour.G, colour.B, colour.A, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE);
+            NativeMethods.GraphicsManagerDrawVoxel(x * Level.WORLD_BLOCK_SIZE, z * Level.WORLD_BLOCK_SIZE, y * Level.WORLD_BLOCK_SIZE, colour.R, colour.G, colour.B, colour.A, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE, Level.WORLD_BLOCK_SIZE);
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace LD31.Graphics
         /// <param name="scale"></param>
         public static void DrawVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
-            NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16) scale.X, (UInt16) scale.Y, (UInt16) scale.Z);
+            NativeMethods.GraphicsManagerDrawVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
         }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace LD31.Graphics
         /// <param name="scale"></param>
         public static void DrawUIVoxel(Vector3 position, Colour colour, Vector3 scale)
         {
-            NativeMethods.GraphicsManagerDrawUIVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16) scale.X, (UInt16) scale.Y, (UInt16) scale.Z);
+            NativeMethods.GraphicsManagerDrawUIVoxel(position.X, position.Z, position.Y, colour.R, colour.G, colour.B, colour.A, (UInt16)scale.X, (UInt16)scale.Y, (UInt16)scale.Z);
         }
 
         public static void DrawTextToScreen(String str, Int32 offsetX, Int32 offsetY)
@@ -86,6 +87,16 @@ namespace LD31.Graphics
         {
             _PrimaryCamera.Update();
             NativeMethods.GraphicsManagerEndDraw();
+
+            if (Input.InputHandler.WasButtonReleased(Input.ButtonConcept.TEST_BUTTON1))
+            {
+                string vertexShader = File.ReadAllText("Content/Shaders/MainVertex.txt").Replace("\r", "");
+                string fragmentShader = File.ReadAllText("Content/Shaders/MainFragment.txt").Replace("\r", "");
+
+                int id = NativeMethods.GraphicsManagerCreateShader(new StringBuilder(vertexShader), new StringBuilder(fragmentShader));
+                bool  compiled = NativeMethods.GraphicsManagerCompileShader(id);
+                NativeMethods.GraphicsManagerEnableShader(id);
+            }
         }
 
         /// <summary>
@@ -154,8 +165,22 @@ namespace LD31.Graphics
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerSetCameraRotation(Double z, Double x);
 
+<<<<<<< HEAD
             [DllImport("Renderer.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
             public static extern void GraphicsManagerDrawTextToScreen(String str, Int32 strLength, Int32 offsetX, Int32 offsetY);
+=======
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern Int32 GraphicsManagerCreateShader(StringBuilder z, StringBuilder x);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern bool GraphicsManagerCompileShader(Int32 id);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerEnableShader(Int32 id);
+
+            [DllImport("Renderer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void GraphicsManagerDisableShader(Int32 id);
+>>>>>>> origin/development
         }
     }
 }

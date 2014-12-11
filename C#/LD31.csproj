@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D9DCF270-B53C-4706-BF21-FE19D0136B10}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LD31</RootNamespace>
     <AssemblyName>LD31</AssemblyName>
@@ -80,12 +80,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\GameLevel.txt">
+    <Content Include="Content\Levels\Level1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="GameLevel.txt">
+    </Content>
+    <Content Include="Content\Shaders\MainFragment.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Shaders\MainVertex.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

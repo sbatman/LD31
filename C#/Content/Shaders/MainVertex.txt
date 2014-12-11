@@ -1,0 +1,12 @@
+﻿#version 120
+ 
+varying vec3 normal;
+varying vec3 vertpos;
+ 
+void main()
+{
+	vertpos = vec3(gl_ModelViewMatrix * gl_Vertex);
+	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+ 	gl_FrontColor = gl_Color;
+	normal = gl_NormalMatrix * gl_Normal; 
+}

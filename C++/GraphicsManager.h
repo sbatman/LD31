@@ -19,9 +19,16 @@ public:
 	void SetMouseReleaseCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyDownCallback(void(_stdcall *callBack)(int32_t));
 	void SetKeyUpCallback(void(_stdcall *callBack)(int32_t));
+<<<<<<< HEAD
 
 	void DrawTextToScreen(char* str, int strLength, int offsetX, int offsetY);
 
+=======
+	int32_t CreateShader(std::string vertexSource, std::string fragementSource);
+	bool CompileShader(int32_t id);
+	void EnableShader(int32_t id);
+	void DisableShader(int32_t id);
+>>>>>>> origin/development
 private:
 	const int FACESPERCUBE = 6;
 	const int TRISPERCUBE = FACESPERCUBE * 2;
@@ -49,4 +56,5 @@ private:
 
 	void SetupGLStates();
 	void DrawTri(double* vertList, double* p1, double* p2, double* p3, int* arrayPosition);
+
 };
